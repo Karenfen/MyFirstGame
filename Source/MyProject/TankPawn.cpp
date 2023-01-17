@@ -1,7 +1,9 @@
 #include "TankPawn.h"
+#include "TankPlayerController.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ATankPawn::ATankPawn()
 {
@@ -27,13 +29,15 @@ ATankPawn::ATankPawn()
 void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
-
+	TankController = Cast<ATankPlayerController>( GetController());
 }
 
 void ATankPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	Move(DeltaTime);
+	Rotate(DeltaTime);
+	RotateTurret(DeltaTime);
 }
 
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -52,14 +56,41 @@ void ATankPawn::MoveRight(float AxisValue)
 	_targetRightdAxisValue = AxisValue;
 }
 
+void ATankPawn::RotateRight(float AxisValue)
+{
+	_targetRotateRightdAxisValue = AxisValue;
+}
+
 void ATankPawn::Move(float DeltaTime)
 {
 	FVector currentLocation = GetActorLocation();
 	FVector forwardVector = GetActorForwardVector();
 	FVector rightVector = GetActorRightVector();
-	//FRotator currentRotation = GetActorRotation();
 	FVector movePosition = currentLocation + ((forwardVector * _targetForwardAxisValue + rightVector * _targetRightdAxisValue) * MoveSpeed * DeltaTime);
 	SetActorLocation(movePosition, true);
-	//SetActorRotation(currentRotation);
+}
+
+void ATankPawn::Rotate(float DeltaTime)
+{
+	float yawRotation = RotationSpeed * _targetRotateRightdAxisValue * DeltaTime;
+	FRotator currentRotation = GetActorRotation();
+
+	yawRotation += currentRotation.Yaw;
+	FRotator newRotation = FRotator(0.0f, yawRotation, 0.0f);
+	SetActorRotation(newRotation);
+}
+
+void ATankPawn::RotateTurret(float DeltaTime)
+{
+	if (TankController)
+	{
+		FVector mousePosition = TankController->GetMousePosition();
+		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(TurretMesh->GetComponentLocation(), mousePosition);
+		FRotator turretRotation = TurretMesh->GetComponentRotation();
+		targetRotation.Pitch = turretRotation.Pitch;
+		targetRotation.Roll = turretRotation.Roll;
+		FRotator newTurretRotation = FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey);
+		TurretMesh->SetWorldRotation(newTurretRotation);
+	}
 }
 

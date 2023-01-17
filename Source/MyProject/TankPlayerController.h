@@ -18,9 +18,15 @@ protected:
 public:
 	ATankPlayerController();
 	virtual void SetupInputComponent() override;
+	virtual void Tick(float DeltaTime) override;
+	FVector GetMousePosition() { return MousePosition; };
 
 protected:
 	virtual void BeginPlay() override;
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
+	void RotateRight(float ZxisValue);
+	void MousePositionUpdate();
+
+	FVector MousePosition;
 };
