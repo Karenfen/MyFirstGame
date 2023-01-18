@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		ECannonType Type = ECannonType::FireProjectile;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+		int Ammo = 10;
+
 	FTimerHandle ReloadTimerHandle;
 	bool ReadyToFire = false;
 	
@@ -39,6 +42,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void Reload();
+	bool CheckAmmo();
 
 };
 
