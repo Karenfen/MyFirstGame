@@ -78,6 +78,14 @@ void ATankPawn::Fire()
 	}
 }
 
+void ATankPawn::FireSpecial()
+{
+	if (Cannon)
+	{
+		Cannon->FireSpecial();
+	}
+}
+
 void ATankPawn::Move(float DeltaTime)
 {
 	FVector currentLocation = GetActorLocation();

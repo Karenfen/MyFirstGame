@@ -28,6 +28,7 @@ protected:
 	void RotateRight(float ZxisValue);
 	void MousePositionUpdate();
 	void Fire();
+	void FireSpecial();
 
 	FVector MousePosition;
 };

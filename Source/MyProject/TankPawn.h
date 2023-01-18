@@ -57,6 +57,8 @@ public:
 		void RotateRight(float AxisValue);
 	UFUNCTION()
 		void Fire();
+	UFUNCTION()
+		void FireSpecial();
 
 	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
 
