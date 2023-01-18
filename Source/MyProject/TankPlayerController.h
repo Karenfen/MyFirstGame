@@ -27,6 +27,7 @@ protected:
 	void MoveRight(float AxisValue);
 	void RotateRight(float ZxisValue);
 	void MousePositionUpdate();
+	void Fire();
 
 	FVector MousePosition;
 };

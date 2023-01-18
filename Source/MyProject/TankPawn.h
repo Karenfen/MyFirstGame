@@ -7,6 +7,8 @@
 class UStaticMeshComponent;
 class UCameraComponent;
 class USpringArmComponent;
+class ACannon;
+class UArrowComponent;
 
 UCLASS()
 class MYPROJECT_API ATankPawn : public APawn
@@ -22,6 +24,8 @@ protected:
 		USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UCameraComponent* Camera;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UArrowComponent* CannonSetupPoint;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.0f;
@@ -30,8 +34,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Rotation")
 		float TurretRotationInterpolationKey = 0.2f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
+		TSubclassOf<ACannon> CannonClass;
+
 	UPROPERTY()
 		class ATankPlayerController* TankController;
+	UPROPERTY()
+		ACannon* Cannon;
 
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
@@ -46,6 +55,8 @@ public:
 		void MoveRight(float AxisValue);
 	UFUNCTION()
 		void RotateRight(float AxisValue);
+	UFUNCTION()
+		void Fire();
 
 	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
 
@@ -54,6 +65,7 @@ protected:
 	void Move(float DeltaTime);
 	void Rotate(float DeltaTime);
 	void RotateTurret(float DeltaTime);
+	void SetupCannon();
 
 public:
 	virtual void Tick(float DeltaTime) override;
