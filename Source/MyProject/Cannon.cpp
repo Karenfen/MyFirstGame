@@ -25,20 +25,29 @@ void ACannon::Fire()
 		return;
 	}
 
-	if (!CheckAmmo())
+	if (Ammo <= 0)
 	{
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Red, "Ammo is empty");
 		return;
 	}
 
 	ReadyToFire = false;
 
-	if (Type == ECannonType::FireProjectile)
+	switch (Type)
 	{
+	case ECannonType::FireProjectile:
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
-	}
-	else if(Type == ECannonType::FireTrace)
-	{
+		SingleShot();
+		break;
+	case ECannonType::FireTrace:
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
+		SingleShot();
+		break;
+	case ECannonType::FireBurst:
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1 / BurstRate, true);
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - burst");
+		return;
+		break;
 	}
 		
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this,	&ACannon::Reload, 1 / FireRate, false);
@@ -51,23 +60,38 @@ void ACannon::FireSpecial()
 		return;
 	}
 
-	if (!CheckAmmo())
+	if (Ammo <= 0)
 	{
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Red, "Ammo is empty");
 		return;
 	}
 
 	ReadyToFire = false;
 
-	if (Type == ECannonType::FireProjectile)
+	switch (Type)
 	{
+	case ECannonType::FireProjectile:
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile special");
-	}
-	else if (Type == ECannonType::FireTrace)
-	{
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - tracespecial");
+		SingleShot();
+		break;
+	case ECannonType::FireTrace:
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace special");
+		SingleShot();
+		break;
+	case ECannonType::FireBurst:
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - burst special");
+		GetWorld()->GetTimerManager().SetTimer(AutoShotsTimerHandle, this, &ACannon::AutoShots, 1 / BurstRate, true);
+		return;
+		break;
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
+}
+
+void ACannon::StopAutoShots()
+{
+	GetWorld()->GetTimerManager().ClearTimer(AutoShotsTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate * 2, false);
 }
 
 bool ACannon::IsReadyToFire()
@@ -86,17 +110,38 @@ void ACannon::Reload()
 	ReadyToFire = true;
 }
 
-bool ACannon::CheckAmmo()
+void ACannon::Burst()
 {
-	if (Ammo == 0)
+	if (currentShotInBurst > 0)
 	{
-		GEngine->AddOnScreenDebugMessage(5, 1, FColor::Red, "Ammo is empty");
-		return false;
+		UE_LOG(LogTemp, Warning, TEXT("current shot = %d"), currentShotInBurst);
+		GEngine->AddOnScreenDebugMessage(5, 1, FColor::Yellow, "Shot");
+		--currentShotInBurst;
 	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
+		currentShotInBurst = ShotsInBurst;
+		--Ammo;
+		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
+	}
+}
 
+void ACannon::AutoShots()
+{
+	if (Ammo > 0)
+		SingleShot();
+	else
+	{
+		StopAutoShots();
+		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
+	}
+}
+
+void ACannon::SingleShot()
+{
+	UE_LOG(LogTemp, Warning, TEXT("shot"));
 	--Ammo;
-
-	return true;
 }
 
 

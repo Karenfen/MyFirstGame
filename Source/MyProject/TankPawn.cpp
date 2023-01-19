@@ -86,6 +86,14 @@ void ATankPawn::FireSpecial()
 	}
 }
 
+void ATankPawn::StopAutoShots()
+{
+	if (Cannon)
+	{
+		Cannon->StopAutoShots();
+	}
+}
+
 void ATankPawn::Move(float DeltaTime)
 {
 	FVector currentLocation = GetActorLocation();

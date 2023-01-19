@@ -21,28 +21,39 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireRate = 1.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		float BurstRate = 10.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireRange = 1000.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireDamage = 1.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		ECannonType Type = ECannonType::FireProjectile;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		uint8 ShotsInBurst = 3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		float BurstDamage = FireDamage / ShotsInBurst;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 		int Ammo = 10;
 
 	FTimerHandle ReloadTimerHandle;
+	FTimerHandle BurstTimerHandle;
+	FTimerHandle AutoShotsTimerHandle;
 	bool ReadyToFire = false;
+	uint8 currentShotInBurst = ShotsInBurst;
 	
 public:	
 	ACannon();
 	void Fire();
 	void FireSpecial();
+	void StopAutoShots();
 	bool IsReadyToFire();
 
 protected:
 	virtual void BeginPlay() override;
 	void Reload();
-	bool CheckAmmo();
-
+	void Burst();
+	void AutoShots();
+	void SingleShot();
 };
 
