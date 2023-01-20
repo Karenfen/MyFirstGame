@@ -1,6 +1,7 @@
 #include "TankPlayerController.h"
 #include "TankPawn.h"
 #include "DrawDebugHelpers.h"
+#include <math.h>
 
 ATankPlayerController::ATankPlayerController()
 {
@@ -51,10 +52,9 @@ void ATankPlayerController::MousePositionUpdate()
 	FVector MouseDirection;
 	DeprojectMousePositionToWorld(MousePosition, MouseDirection);
 	FVector PawnPosition = TankPawn->GetActorLocation();
-	FVector TurretPosition = TankPawn->GetTurretLocation();
 	MousePosition.Z = PawnPosition.Z;
 	FVector direction = MousePosition - PawnPosition;
 	direction.Normalize();
-	MousePosition = PawnPosition + direction * 200;
-	DrawDebugLine(GetWorld(), TurretPosition, MousePosition, FColor::Red, false, 0.1f, 0, 5);
+	MousePosition = PawnPosition + direction * 1000;
+	DrawDebugLine(GetWorld(), PawnPosition, MousePosition, FColor::Red, false, 0.1f, 0, 5);
 }

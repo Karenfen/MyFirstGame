@@ -85,7 +85,7 @@ void ATankPawn::RotateTurret(float DeltaTime)
 	if (TankController)
 	{
 		FVector mousePosition = TankController->GetMousePosition();
-		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(TurretMesh->GetComponentLocation(), mousePosition);
+		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), mousePosition);
 		FRotator turretRotation = TurretMesh->GetComponentRotation();
 		targetRotation.Pitch = turretRotation.Pitch;
 		targetRotation.Roll = turretRotation.Roll;
