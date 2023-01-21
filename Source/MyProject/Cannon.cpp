@@ -37,7 +37,7 @@ void ACannon::Fire()
 	{
 	case ECannonType::FireProjectile:
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
-		SingleShot();
+		ProjectileShot();
 		break;
 	case ECannonType::FireTrace:
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
@@ -144,4 +144,17 @@ void ACannon::SingleShot()
 	--Ammo;
 }
 
+void ACannon::ProjectileShot()
+{
+	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
+		ProjectileSpawnPoint->GetComponentLocation(),
+		ProjectileSpawnPoint->GetComponentRotation());
+
+	if (projectile)
+	{
+		projectile->Start();
+		--Ammo;
+	}
+}
 

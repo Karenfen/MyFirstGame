@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameStruct.h"
+#include "Projectile.h"
 #include "Cannon.generated.h"
 
 class UArrowComponent;
@@ -32,6 +33,8 @@ protected:
 		uint8 ShotsInBurst = 3;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float BurstDamage = FireDamage / ShotsInBurst;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjectile> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 		int Ammo = 10;
@@ -55,5 +58,6 @@ protected:
 	void Burst();
 	void AutoShots();
 	void SingleShot();
+	void ProjectileShot();
 };
 
