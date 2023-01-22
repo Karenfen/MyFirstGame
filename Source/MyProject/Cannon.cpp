@@ -3,6 +3,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineTypes.h"
+#include "CollisionQueryParams.h"
 
 ACannon::ACannon()
 {
@@ -41,7 +43,6 @@ void ACannon::Fire()
 			--Ammo;
 		break;
 	case ECannonType::FireTrace:
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
 		if (TraceShot())
 			--Ammo;
 		break;
@@ -76,7 +77,8 @@ void ACannon::FireSpecial()
 		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, (1.0f / BurstRate ) * 2.0f, true);
 		break;
 	case ECannonType::FireTrace:
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace spec");
+		if (TraceShot())
+			--Ammo;
 		if (TraceShot())
 			--Ammo;
 		break;
@@ -152,6 +154,23 @@ bool ACannon::ProjectileShot()
 
 bool ACannon::TraceShot()
 {
+	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
+	FHitResult hitResult;
+	FCollisionQueryParams traceParams =	FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+	traceParams.bTraceComplex = true;
+	traceParams.bReturnPhysicalMaterial = false;
+	FVector start = ProjectileSpawnPoint->GetComponentLocation();
+	FVector end = ProjectileSpawnPoint->GetForwardVector() * FireRange + start;
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end,	ECollisionChannel::ECC_Visibility, traceParams))
+	{
+		DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Red, false, 0.5f, 0, 5);
+		if (hitResult.GetActor())
+			return true;
+	}
+	else
+	{
+		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.5f, 0, 5);
+	}
 	return false;
 }
 
