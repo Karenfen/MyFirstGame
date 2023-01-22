@@ -38,7 +38,7 @@ void ATankPawn::BeginPlay()
 
 	TankController = Cast<ATankPlayerController>( GetController());
 
-	SetupCannon();
+	SetupCannon(CannonClass);
 }
 
 void ATankPawn::Tick(float DeltaTime)
@@ -48,6 +48,11 @@ void ATankPawn::Tick(float DeltaTime)
 	Rotate(DeltaTime);
 	RotateTurret(DeltaTime);
 }
+
+//void ATankPawn::Resupply()
+//{
+//	
+//}
 
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -119,8 +124,13 @@ void ATankPawn::RotateTurret(float DeltaTime)
 	}
 }
 
-void ATankPawn::SetupCannon()
+void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 {
+	if (!newCannonClass)
+	{
+		return;
+	}
+
 	if (Cannon)
 	{
 		Cannon->Destroy();
@@ -130,7 +140,7 @@ void ATankPawn::SetupCannon()
 	params.Instigator = this;
 	params.Owner = this;
 
-	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, params);
+	Cannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, params);
 	Cannon->AttachToComponent(CannonSetupPoint,	FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
 

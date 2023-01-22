@@ -61,17 +61,16 @@ public:
 		void FireSpecial();
 
 	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
+	void SetupCannon(TSubclassOf<ACannon> newCannonClass);
 
 protected:
 	virtual void BeginPlay() override;
 	void Move(float DeltaTime);
 	void Rotate(float DeltaTime);
 	void RotateTurret(float DeltaTime);
-	void SetupCannon();
 
 public:
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	//void Resupply();
 };

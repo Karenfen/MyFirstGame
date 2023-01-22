@@ -43,8 +43,7 @@ void ACannon::Fire()
 			--Ammo;
 		break;
 	case ECannonType::FireTrace:
-		if (TraceShot())
-			--Ammo;
+		TraceShot();
 		break;
 	case ECannonType::FireBurst:
 		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true);
@@ -77,10 +76,8 @@ void ACannon::FireSpecial()
 		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, (1.0f / BurstRate ) * 2.0f, true);
 		break;
 	case ECannonType::FireTrace:
-		if (TraceShot())
-			--Ammo;
-		if (TraceShot())
-			--Ammo;
+		TraceShot();
+		TraceShot();
 		break;
 	case ECannonType::FireBurst:
 		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
@@ -101,6 +98,11 @@ bool ACannon::IsReadyToFireSpec()
 {
 	return ReadyToFireSpec;
 }
+
+//void ACannon::Resupply()
+//{
+//	
+//}
 
 void ACannon::BeginPlay()
 {
@@ -152,7 +154,7 @@ bool ACannon::ProjectileShot()
 	return false;
 }
 
-bool ACannon::TraceShot()
+void ACannon::TraceShot()
 {
 	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
 	FHitResult hitResult;
@@ -161,16 +163,18 @@ bool ACannon::TraceShot()
 	traceParams.bReturnPhysicalMaterial = false;
 	FVector start = ProjectileSpawnPoint->GetComponentLocation();
 	FVector end = ProjectileSpawnPoint->GetForwardVector() * FireRange + start;
+
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end,	ECollisionChannel::ECC_Visibility, traceParams))
 	{
 		DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Red, false, 0.5f, 0, 5);
-		if (hitResult.GetActor())
-			return true;
+
+		//if (hitResult.GetActor())
+		//{ }
 	}
 	else
 	{
 		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.5f, 0, 5);
 	}
-	return false;
+	--Ammo;
 }
 

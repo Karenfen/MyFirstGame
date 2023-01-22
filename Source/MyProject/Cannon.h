@@ -52,6 +52,7 @@ public:
 	void FireSpecial();
 	bool IsReadyToFire();
 	bool IsReadyToFireSpec();
+	//void Resupply();
 
 protected:
 	virtual void BeginPlay() override;
@@ -59,6 +60,6 @@ protected:
 	void ReloadSpec();
 	void Burst();
 	bool ProjectileShot();
-	bool TraceShot();
+	void TraceShot();
 };
 
