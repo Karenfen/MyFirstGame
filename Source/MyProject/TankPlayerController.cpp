@@ -15,7 +15,6 @@ void ATankPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("RotateRight", this, &ATankPlayerController::RotateRight);
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ATankPlayerController::Fire);
 	InputComponent->BindAction("FireSpecial", IE_Pressed, this, &ATankPlayerController::FireSpecial);
-	InputComponent->BindAction("StopAutoShots", IE_Released, this, &ATankPlayerController::StopAutoShots);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -59,7 +58,6 @@ void ATankPlayerController::MousePositionUpdate()
 	FVector dir = MousePosition - pawnPos;
 	dir.Normalize();
 	MousePosition = pawnPos + dir * 1000;
-	DrawDebugLine(GetWorld(), pawnPos, MousePosition, FColor::Green, false, 0.1f, 0, 5);
 }
 
 void ATankPlayerController::Fire()
@@ -70,9 +68,4 @@ void ATankPlayerController::Fire()
 void ATankPlayerController::FireSpecial()
 {
 	TankPawn->FireSpecial();
-}
-
-void ATankPlayerController::StopAutoShots()
-{
-	TankPawn->StopAutoShots();
 }

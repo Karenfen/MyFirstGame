@@ -29,7 +29,6 @@ protected:
 	void MousePositionUpdate();
 	void Fire();
 	void FireSpecial();
-	void StopAutoShots();
 
 	FVector MousePosition;
 };

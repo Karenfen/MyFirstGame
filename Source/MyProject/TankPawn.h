@@ -59,8 +59,6 @@ public:
 		void Fire();
 	UFUNCTION()
 		void FireSpecial();
-	UFUNCTION()
-		void StopAutoShots();
 
 	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
 

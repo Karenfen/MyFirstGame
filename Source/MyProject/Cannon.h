@@ -41,23 +41,24 @@ protected:
 
 	FTimerHandle ReloadTimerHandle;
 	FTimerHandle BurstTimerHandle;
-	FTimerHandle AutoShotsTimerHandle;
+	FTimerHandle ReloadSpecTimerHandle;
 	bool ReadyToFire = false;
+	bool ReadyToFireSpec = false;
 	uint8 currentShotInBurst = ShotsInBurst;
 	
 public:	
 	ACannon();
 	void Fire();
 	void FireSpecial();
-	void StopAutoShots();
 	bool IsReadyToFire();
+	bool IsReadyToFireSpec();
 
 protected:
 	virtual void BeginPlay() override;
 	void Reload();
+	void ReloadSpec();
 	void Burst();
-	void AutoShots();
-	void SingleShot();
-	void ProjectileShot();
+	bool ProjectileShot();
+	bool TraceShot();
 };
 

@@ -37,25 +37,26 @@ void ACannon::Fire()
 	{
 	case ECannonType::FireProjectile:
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
-		ProjectileShot();
+		if (ProjectileShot())
+			--Ammo;
 		break;
 	case ECannonType::FireTrace:
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
-		SingleShot();
+		if (TraceShot())
+			--Ammo;
 		break;
 	case ECannonType::FireBurst:
-		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1 / BurstRate, true);
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true);
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - burst");
-		return;
 		break;
 	}
 		
-	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this,	&ACannon::Reload, 1 / FireRate, false);
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this,	&ACannon::Reload, 1.0f / FireRate, false);
 }
 
 void ACannon::FireSpecial()
 {
-	if (!ReadyToFire)
+	if (!ReadyToFireSpec)
 	{
 		return;
 	}
@@ -66,32 +67,27 @@ void ACannon::FireSpecial()
 		return;
 	}
 
-	ReadyToFire = false;
+	ReadyToFireSpec = false;
 
 	switch (Type)
 	{
 	case ECannonType::FireProjectile:
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile special");
-		SingleShot();
+		currentShotInBurst = 2;
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, (1.0f / BurstRate ) * 2.0f, true);
 		break;
 	case ECannonType::FireTrace:
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace special");
-		SingleShot();
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace spec");
+		if (TraceShot())
+			--Ammo;
 		break;
 	case ECannonType::FireBurst:
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - burst special");
-		GetWorld()->GetTimerManager().SetTimer(AutoShotsTimerHandle, this, &ACannon::AutoShots, 1 / BurstRate, true);
-		return;
+		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
+		currentShotInBurst = 10;
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate / 3.0f, true);
 		break;
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
-}
-
-void ACannon::StopAutoShots()
-{
-	GetWorld()->GetTimerManager().ClearTimer(AutoShotsTimerHandle);
-	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate * 2, false);
+	GetWorld()->GetTimerManager().SetTimer(ReloadSpecTimerHandle, this, &ACannon::ReloadSpec, (1.0f / FireRate) * 3.0f, false);
 }
 
 bool ACannon::IsReadyToFire()
@@ -99,15 +95,26 @@ bool ACannon::IsReadyToFire()
 	return ReadyToFire;
 }
 
+bool ACannon::IsReadyToFireSpec()
+{
+	return ReadyToFireSpec;
+}
+
 void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
 	Reload();
+	ReloadSpec();
 }
 
 void ACannon::Reload()
 {
 	ReadyToFire = true;
+}
+
+void ACannon::ReloadSpec()
+{
+	ReadyToFireSpec = true;
 }
 
 void ACannon::Burst()
@@ -116,35 +123,18 @@ void ACannon::Burst()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("current shot = %d"), currentShotInBurst);
 		GEngine->AddOnScreenDebugMessage(5, 1, FColor::Yellow, "Shot");
-		--currentShotInBurst;
+		if(ProjectileShot())
+			--currentShotInBurst;
 	}
 	else
 	{
 		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
 		currentShotInBurst = ShotsInBurst;
 		--Ammo;
-		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
 	}
 }
 
-void ACannon::AutoShots()
-{
-	if (Ammo > 0)
-		SingleShot();
-	else
-	{
-		StopAutoShots();
-		GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
-	}
-}
-
-void ACannon::SingleShot()
-{
-	UE_LOG(LogTemp, Warning, TEXT("shot"));
-	--Ammo;
-}
-
-void ACannon::ProjectileShot()
+bool ACannon::ProjectileShot()
 {
 	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
 	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
@@ -154,7 +144,14 @@ void ACannon::ProjectileShot()
 	if (projectile)
 	{
 		projectile->Start();
-		--Ammo;
+		return true;
 	}
+
+	return false;
+}
+
+bool ACannon::TraceShot()
+{
+	return false;
 }
 
