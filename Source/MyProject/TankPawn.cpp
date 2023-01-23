@@ -49,10 +49,11 @@ void ATankPawn::Tick(float DeltaTime)
 	RotateTurret(DeltaTime);
 }
 
-//void ATankPawn::Resupply()
-//{
-//	
-//}
+void ATankPawn::Resupply(uint8 numberRounds)
+{
+	if(Cannon)
+		Cannon->Resupply(numberRounds);
+}
 
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

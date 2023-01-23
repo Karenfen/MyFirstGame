@@ -12,6 +12,13 @@ enum class ECannonType : uint8
 	FireBurst = 2 UMETA(DisplayName = "Use burst")
 };
 
+UENUM(BlueprintType)
+enum class EAmmoBoxType : uint8
+{
+	CannonBox = 0 UMETA(DisplayName = "Set Cannon"),
+	RoundsBox = 1 UMETA(DisplayName = "Set rounds")
+};
+
 UCLASS()
 class MYPROJECT_API UGameStruct : public UObject
 {

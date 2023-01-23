@@ -2,6 +2,7 @@
 
 #include "Cannon.h"
 #include "CoreMinimal.h"
+#include "GameStruct.h"
 #include "GameFramework/Actor.h"
 #include "AmmoBox.generated.h"
 
@@ -15,8 +16,10 @@ protected:
 		UStaticMeshComponent* Mesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
 		TSubclassOf<ACannon> CannonClass;
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
-	//	uint8 sizeAmmo = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
+		EAmmoBoxType Type = EAmmoBoxType::CannonBox;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
+		uint8 sizeAmmo = 10;
 
 public:	
 	AAmmoBox();

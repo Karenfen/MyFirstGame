@@ -37,7 +37,9 @@ protected:
 		TSubclassOf<AProjectile> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
-		int Ammo = 10;
+		int maxAmmo = 50;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+		int Ammo = 5;
 
 	FTimerHandle ReloadTimerHandle;
 	FTimerHandle BurstTimerHandle;
@@ -52,7 +54,7 @@ public:
 	void FireSpecial();
 	bool IsReadyToFire();
 	bool IsReadyToFireSpec();
-	//void Resupply();
+	void Resupply(uint8 numberRounds);
 	ECannonType GetType();
 
 protected:

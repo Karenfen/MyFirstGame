@@ -22,8 +22,18 @@ void AAmmoBox::OnMeshOverLapBegin(UPrimitiveComponent* OverLappedComp, AActor* O
 	ATankPawn* playerPawn =	Cast<ATankPawn>(OtherActor);
 	if (playerPawn)
 	{
-		playerPawn->SetupCannon(CannonClass);
-		//playerPawn->Resupply(sizeAmmo);
+		switch (Type)
+		{
+		case EAmmoBoxType::CannonBox:
+			playerPawn->SetupCannon(CannonClass);
+			break;
+		case EAmmoBoxType::RoundsBox:
+			playerPawn->Resupply(sizeAmmo);
+			break;
+		default:
+			return;
+		}
+		
 		Destroy();
 	}
 }

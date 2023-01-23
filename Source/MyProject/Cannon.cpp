@@ -104,10 +104,12 @@ ECannonType ACannon::GetType()
 	return Type;
 }
 
-//void ACannon::Resupply()
-//{
-//	Ammo = 10;
-//}
+void ACannon::Resupply(uint8 numberRounds)
+{
+	Ammo += numberRounds;
+	if (Ammo > maxAmmo)
+		Ammo = maxAmmo;
+}
 
 void ACannon::BeginPlay()
 {
