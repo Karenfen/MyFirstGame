@@ -53,6 +53,7 @@ public:
 	bool IsReadyToFire();
 	bool IsReadyToFireSpec();
 	//void Resupply();
+	ECannonType GetType();
 
 protected:
 	virtual void BeginPlay() override;

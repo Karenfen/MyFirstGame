@@ -41,6 +41,8 @@ protected:
 		class ATankPlayerController* TankController;
 	UPROPERTY()
 		ACannon* Cannon;
+	UPROPERTY()
+		ACannon* SecondCannon;
 
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
@@ -59,6 +61,8 @@ public:
 		void Fire();
 	UFUNCTION()
 		void FireSpecial();
+	UFUNCTION()
+		void SwitchCannon();
 
 	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
 	void SetupCannon(TSubclassOf<ACannon> newCannonClass);

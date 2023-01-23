@@ -29,6 +29,7 @@ protected:
 	void MousePositionUpdate();
 	void Fire();
 	void FireSpecial();
+	void SwitchCannon();
 
 	FVector MousePosition;
 };

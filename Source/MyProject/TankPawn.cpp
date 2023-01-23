@@ -91,6 +91,21 @@ void ATankPawn::FireSpecial()
 	}
 }
 
+void ATankPawn::SwitchCannon()
+{
+	if (!SecondCannon)
+		return;
+
+	ACannon* currentCannon = Cannon;
+	Cannon = SecondCannon;
+	SecondCannon = currentCannon;
+
+	if (Cannon)
+		Cannon->SetActorHiddenInGame(false);
+	if (SecondCannon)
+		SecondCannon->SetActorHiddenInGame(true);
+}
+
 void ATankPawn::Move(float DeltaTime)
 {
 	FVector currentLocation = GetActorLocation();
@@ -133,7 +148,10 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 
 	if (Cannon)
 	{
-		Cannon->Destroy();
+		if (SecondCannon)
+			Cannon->Destroy();
+		else
+			SecondCannon = Cannon;
 	}
 
 	FActorSpawnParameters params;
@@ -142,5 +160,7 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 
 	Cannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, params);
 	Cannon->AttachToComponent(CannonSetupPoint,	FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	if (SecondCannon)
+		SecondCannon->SetActorHiddenInGame(true);
 }
 

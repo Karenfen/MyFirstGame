@@ -99,9 +99,14 @@ bool ACannon::IsReadyToFireSpec()
 	return ReadyToFireSpec;
 }
 
+ECannonType ACannon::GetType()
+{
+	return Type;
+}
+
 //void ACannon::Resupply()
 //{
-//	
+//	Ammo = 10;
 //}
 
 void ACannon::BeginPlay()
