@@ -82,7 +82,7 @@ void ACannon::FireSpecial()
 	case ECannonType::FireBurst:
 		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
 		currentShotInBurst = 10;
-		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate / 3.0f, true);
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true);
 		break;
 	}
 
