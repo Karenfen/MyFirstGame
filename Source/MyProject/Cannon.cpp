@@ -5,6 +5,8 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineTypes.h"
 #include "CollisionQueryParams.h"
+#include "DamageTaker.h"
+#include "GameStruct.h"
 
 ACannon::ACannon()
 {
@@ -169,8 +171,15 @@ void ACannon::TraceShot()
 	{
 		DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Red, false, 0.5f, 0, 5);
 
-		//if (hitResult.GetActor())
-		//{ }
+		IDamageTaker* enemy = Cast<IDamageTaker>(hitResult.GetActor());
+		if (enemy)
+		{ 
+			FDamageData damageData;
+			damageData.DamageValue = FireDamage;
+			damageData.Instigator = this;
+			damageData.DamageMaker = nullptr;
+			enemy->TakeDamage(damageData);
+		}
 	}
 	else
 	{
