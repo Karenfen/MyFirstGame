@@ -1,17 +1,14 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "IMachinery.h"
 #include "GameFramework/Pawn.h"
 #include "TankPawn.generated.h"
 
-class UStaticMeshComponent;
 class UCameraComponent;
 class USpringArmComponent;
-class ACannon;
-class UArrowComponent;
 
 UCLASS()
-class MYPROJECT_API ATankPawn : public APawn
+class MYPROJECT_API ATankPawn : public APawn, public IIMachinery
 {
 	GENERATED_BODY()
 
@@ -58,20 +55,20 @@ public:
 	UFUNCTION()
 		void RotateRight(float AxisValue);
 	UFUNCTION()
-		void Fire();
+		virtual void Fire() override;
 	UFUNCTION()
 		void FireSpecial();
 	UFUNCTION()
 		void SwitchCannon();
 
 	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
-	void SetupCannon(TSubclassOf<ACannon> newCannonClass);
+	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
 
 protected:
 	virtual void BeginPlay() override;
 	void Move(float DeltaTime);
 	void Rotate(float DeltaTime);
-	void RotateTurret(float DeltaTime);
+	virtual void RotateTurret(float DeltaTime) override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
