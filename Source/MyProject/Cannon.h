@@ -15,31 +15,37 @@ class MYPROJECT_API ACannon : public AActor
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* Mesh;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UArrowComponent* ProjectileSpawnPoint;
+	UArrowComponent* ProjectileSpawnPoint;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		float FireRate = 1.0f;
+	float FireRate = 1.0f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		float BurstRate = 10.0f;
+	float BurstRate = 10.0f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		float FireRange = 1000.0f;
+	float FireRange = 1000.0f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		float FireDamage = 1.0f;
+	float FireDamage = 1.0f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		ECannonType Type = ECannonType::FireProjectile;
+	ECannonType Type = ECannonType::FireProjectile;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		uint8 ShotsInBurst = 3;
+	uint8 ShotsInBurst = 3;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		float BurstDamage = FireDamage / ShotsInBurst;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		TSubclassOf<AProjectile> ProjectileClass;
+	TSubclassOf<AProjectile> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
-		int maxAmmo = 50;
+	int maxAmmo = 50;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
-		int Ammo = 5;
+	int Ammo = 10;
 
 	FTimerHandle ReloadTimerHandle;
 	FTimerHandle BurstTimerHandle;

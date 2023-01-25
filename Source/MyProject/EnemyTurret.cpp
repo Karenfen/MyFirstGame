@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "HealthComponent.h"
 
 AEnemyTurret::AEnemyTurret()
 {
@@ -30,6 +31,11 @@ AEnemyTurret::AEnemyTurret()
 	UStaticMesh* bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
 	if (bodyMeshTemp)
 		BodyMesh->SetStaticMesh(bodyMeshTemp);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
+	HealthComponent->OnDie.AddUObject(this, &AEnemyTurret::Die);
+	HealthComponent->OnDamaged.AddUObject(this, &AEnemyTurret::DamageTaked);
+
 }
 
 void AEnemyTurret::Fire()
@@ -45,6 +51,21 @@ void AEnemyTurret::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 
 	Cannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+}
+
+void AEnemyTurret::TakeDamage(FDamageData DamageData)
+{
+	HealthComponent->TakeDamage(DamageData);
+}
+
+void AEnemyTurret::Die()
+{
+	Destroy();
+}
+
+void AEnemyTurret::DamageTaked(float DamageValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
 }
 
 void AEnemyTurret::BeginPlay()

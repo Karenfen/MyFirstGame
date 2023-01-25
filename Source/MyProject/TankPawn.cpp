@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 #include <Components/BoxComponent.h>
+#include "HealthComponent.h"
 
 
 ATankPawn::ATankPawn()
@@ -34,6 +35,20 @@ ATankPawn::ATankPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
+	HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
+	HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
+}
+
+void ATankPawn::Die()
+{
+	Destroy();
+}
+
+void ATankPawn::DamageTaked(float DamageValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(),	DamageValue, HealthComponent->GetHealth());
 }
 
 void ATankPawn::BeginPlay()
@@ -109,6 +124,11 @@ void ATankPawn::SwitchCannon()
 		Cannon->SetActorHiddenInGame(false);
 	if (SecondCannon)
 		SecondCannon->SetActorHiddenInGame(true);
+}
+
+void ATankPawn::TakeDamage(FDamageData DamageData)
+{
+	HealthComponent->TakeDamage(DamageData);
 }
 
 void ATankPawn::Move(float DeltaTime)

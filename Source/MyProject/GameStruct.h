@@ -4,6 +4,8 @@
 #include "UObject/NoExportTypes.h"
 #include "GameStruct.generated.h"
 
+class AActor;
+
 UENUM(BlueprintType)
 enum class ECannonType : uint8
 {
@@ -24,4 +26,19 @@ class MYPROJECT_API UGameStruct : public UObject
 {
 	GENERATED_BODY()
 	
+};
+
+USTRUCT()
+struct FDamageData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	float DamageValue;
+
+	UPROPERTY()
+	AActor* Instigator;
+
+	UPROPERTY()
+	AActor* DamageMaker;
 };

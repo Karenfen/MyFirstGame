@@ -38,7 +38,6 @@ void ACannon::Fire()
 	switch (Type)
 	{
 	case ECannonType::FireProjectile:
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
 		if (ProjectileShot())
 			--Ammo;
 		break;
@@ -47,7 +46,6 @@ void ACannon::Fire()
 		break;
 	case ECannonType::FireBurst:
 		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true);
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - burst");
 		break;
 	}
 		
@@ -132,8 +130,6 @@ void ACannon::Burst()
 {
 	if (currentShotInBurst > 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("current shot = %d"), currentShotInBurst);
-		GEngine->AddOnScreenDebugMessage(5, 1, FColor::Yellow, "Shot");
 		if(ProjectileShot())
 			--currentShotInBurst;
 	}
@@ -147,7 +143,6 @@ void ACannon::Burst()
 
 bool ACannon::ProjectileShot()
 {
-	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
 	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
 		ProjectileSpawnPoint->GetComponentLocation(),
 		ProjectileSpawnPoint->GetComponentRotation());
@@ -163,7 +158,6 @@ bool ACannon::ProjectileShot()
 
 void ACannon::TraceShot()
 {
-	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
 	FHitResult hitResult;
 	FCollisionQueryParams traceParams =	FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
 	traceParams.bTraceComplex = true;
