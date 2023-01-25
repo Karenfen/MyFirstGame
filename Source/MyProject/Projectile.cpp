@@ -1,6 +1,7 @@
 #include "Projectile.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
+#include "IMachinery.h"
 
 AProjectile::AProjectile()
 {
@@ -22,6 +23,9 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
 	this->Destroy();
+	IIMachinery* enemy = Cast<IIMachinery>(OtherActor);
+	if(enemy)
+		OtherActor->Destroy();
 }
 
 void AProjectile::Move()
