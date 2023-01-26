@@ -34,20 +34,20 @@ void ATankPlayerController::BeginPlay()
 
 void ATankPlayerController::MoveForward(float AxisValue)
 {
-	TankPawn->MoveForward(AxisValue);
+	if(TankPawn)
+		TankPawn->MoveForward(AxisValue);
 }
 
 void ATankPlayerController::MoveRight(float AxisValue)
 {
-	TankPawn->MoveRight(AxisValue);
+	if (TankPawn)
+		TankPawn->MoveRight(AxisValue);
 }
 
 void ATankPlayerController::RotateRight(float AxisValue)
 {
 	if (TankPawn)
-	{
 		TankPawn->RotateRight(AxisValue);
-	}
 }
 
 void ATankPlayerController::MousePositionUpdate()
@@ -63,15 +63,18 @@ void ATankPlayerController::MousePositionUpdate()
 
 void ATankPlayerController::Fire()
 {
-	TankPawn->Fire();
+	if (TankPawn)
+		TankPawn->Fire();
 }
 
 void ATankPlayerController::FireSpecial()
 {
-	TankPawn->FireSpecial();
+	if (TankPawn)
+		TankPawn->FireSpecial();
 }
 
 void ATankPlayerController::SwitchCannon()
 {
-	TankPawn->SwitchCannon();
+	if (TankPawn)
+		TankPawn->SwitchCannon();
 }

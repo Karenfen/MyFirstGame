@@ -32,7 +32,7 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 		{
 			FDamageData damageData;
 			damageData.DamageValue = Damage;
-			damageData.Instigator = owner;
+			damageData.Instigator = ownerByOwner;
 			damageData.DamageMaker = this;
 			damageTakerActor->TakeDamage(damageData);
 		}

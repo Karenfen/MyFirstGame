@@ -8,6 +8,7 @@
 #include "Components/ArrowComponent.h"
 #include <Components/BoxComponent.h>
 #include "HealthComponent.h"
+#include "IScorable.h"
 
 
 ATankPawn::ATankPawn()
@@ -41,8 +42,11 @@ ATankPawn::ATankPawn()
 	HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
 }
 
-void ATankPawn::Die()
+void ATankPawn::Die(AActor* killer)
 {
+	if (killer)
+		UE_LOG(LogTemp, Warning, TEXT("Tank was killed by %s"), *(killer->GetName()));
+
 	Destroy();
 }
 
@@ -58,6 +62,8 @@ void ATankPawn::BeginPlay()
 	TankController = Cast<ATankPlayerController>( GetController());
 
 	SetupCannon(CannonClass);
+
+	CurrentScores = 0;
 }
 
 void ATankPawn::Tick(float DeltaTime)
@@ -129,6 +135,20 @@ void ATankPawn::SwitchCannon()
 void ATankPawn::TakeDamage(FDamageData DamageData)
 {
 	HealthComponent->TakeDamage(DamageData);
+}
+
+void ATankPawn::EnemyDestroyed(AActor* destroyedObject)
+{
+	IIScorable* enemy = Cast<IIScorable>(destroyedObject);
+	if (!enemy)
+		return;
+
+	CurrentScores += enemy->GetScores();
+
+	if (CurrentScores > MaxScores)
+		CurrentScores = MaxScores;
+
+	UE_LOG(LogTemp, Warning, TEXT("Scores: %d"), CurrentScores);
 }
 
 void ATankPawn::Move(float DeltaTime)

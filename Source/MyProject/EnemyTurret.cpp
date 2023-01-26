@@ -7,6 +7,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "HealthComponent.h"
+#include "TankPawn.h"
 
 AEnemyTurret::AEnemyTurret()
 {
@@ -41,7 +42,16 @@ AEnemyTurret::AEnemyTurret()
 void AEnemyTurret::Fire()
 {
 	if (Cannon)
+	{
 		Cannon->Fire();
+
+		if (Cannon->IsEmpty())
+		{
+			CannonIsReady = false;
+			Cannon->Resupply(10);
+			GetWorld()->GetTimerManager().SetTimer(RechargeTimerHandle, this, &AEnemyTurret::RechargeCannon, RechargeSpeed, false);
+		}
+	}
 }
 
 void AEnemyTurret::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -58,8 +68,12 @@ void AEnemyTurret::TakeDamage(FDamageData DamageData)
 	HealthComponent->TakeDamage(DamageData);
 }
 
-void AEnemyTurret::Die()
+void AEnemyTurret::Die(AActor* killer)
 {
+	ATankPawn* player = Cast<ATankPawn>(killer);
+	if (player)
+		player->EnemyDestroyed(this);
+
 	Destroy();
 }
 
@@ -76,7 +90,6 @@ void AEnemyTurret::BeginPlay()
 
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 
-	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this,	&AEnemyTurret::Targeting, TargetingRate, true, TargetingRate);
 }
 
@@ -102,7 +115,7 @@ void AEnemyTurret::Targeting()
 	else
 		return;
 
-	if (CanFire())
+	if (CanFire() && CannonIsReady)
 		Fire();
 }
 
@@ -118,5 +131,10 @@ bool AEnemyTurret::CanFire()
 	dirToPlayer.Normalize();
 	float aimAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(targetingDir, dirToPlayer)));
 	return aimAngle <= Accurency;
+}
+
+void AEnemyTurret::RechargeCannon()
+{
+	CannonIsReady = true;
 }
 

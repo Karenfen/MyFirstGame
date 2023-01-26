@@ -47,7 +47,7 @@ void ACannon::Fire()
 		TraceShot();
 		break;
 	case ECannonType::FireBurst:
-		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true);
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true, 0.0f);
 		break;
 	}
 		
@@ -72,17 +72,15 @@ void ACannon::FireSpecial()
 	switch (Type)
 	{
 	case ECannonType::FireProjectile:
-		currentShotInBurst = 2;
-		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, (1.0f / BurstRate ) * 2.0f, true);
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true, 0.0f);
 		break;
 	case ECannonType::FireTrace:
-		TraceShot();
-		TraceShot();
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::TraceBurst, 1.0f / BurstRate, true, 0.0f);
 		break;
 	case ECannonType::FireBurst:
 		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
 		currentShotInBurst = 10;
-		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true);
+		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true, 0.0f);
 		break;
 	}
 
@@ -102,6 +100,11 @@ bool ACannon::IsReadyToFireSpec()
 ECannonType ACannon::GetType()
 {
 	return Type;
+}
+
+bool ACannon::IsEmpty()
+{
+	return Ammo <= 0;
 }
 
 void ACannon::Resupply(uint8 numberRounds)
@@ -143,6 +146,23 @@ void ACannon::Burst()
 	}
 }
 
+
+
+void ACannon::TraceBurst()
+{
+	if (currentShotInBurst > 0)
+	{
+		TraceShot();
+		--currentShotInBurst;
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
+		currentShotInBurst = ShotsInBurst;
+		--Ammo;
+	}
+}
+
 bool ACannon::ProjectileShot()
 {
 	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
@@ -151,6 +171,7 @@ bool ACannon::ProjectileShot()
 
 	if (projectile)
 	{
+		projectile->SetOwner(this);
 		projectile->Start();
 		return true;
 	}
@@ -176,8 +197,8 @@ void ACannon::TraceShot()
 		{ 
 			FDamageData damageData;
 			damageData.DamageValue = FireDamage;
-			damageData.Instigator = this;
-			damageData.DamageMaker = nullptr;
+			damageData.Instigator = GetOwner();
+			damageData.DamageMaker = this;
 			enemy->TakeDamage(damageData);
 		}
 	}

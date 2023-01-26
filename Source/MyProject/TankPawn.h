@@ -39,13 +39,13 @@ protected:
 	UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-	float MoveSpeed = 100.0f;
+	float MoveSpeed = 200.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float RotationSpeed = 100.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Rotation")
-	float TurretRotationInterpolationKey = 0.2f;
+	float TurretRotationInterpolationKey = 0.5f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 	TSubclassOf<ACannon> CannonClass;
@@ -58,6 +58,12 @@ protected:
 
 	UPROPERTY()
 	ACannon* SecondCannon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scores")
+	int CurrentScores;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scores")
+	int MaxScores = 1000000;
 
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
@@ -87,12 +93,15 @@ public:
 	UFUNCTION()
 	virtual void TakeDamage(FDamageData DamageData) override;
 
+	UFUNCTION()
+	void EnemyDestroyed(AActor* destroyedObject);
+
 	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
 
 protected:
 	UFUNCTION()
-	void Die();
+	void Die(AActor* killer);
 
 	UFUNCTION()
 	void DamageTaked(float DamageValue);

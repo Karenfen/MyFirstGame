@@ -11,14 +11,14 @@ class MYPROJECT_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	DECLARE_EVENT(UHealthComponent, FOnDie)
+	DECLARE_EVENT_OneParam(UHealthComponent, FOnDie, AActor*)
 	DECLARE_EVENT_OneParam(UHealthComponent, FOnHealthChanged, float)
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
 	float MaxHealth = 10;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
 	float CurrentHealth;
 
 public:

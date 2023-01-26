@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "IMachinery.h"
 #include "DamageTaker.h"
+#include "IScorable.h"
 #include "GameFramework/Actor.h"
 #include "GameStruct.h"
 #include "EnemyTurret.generated.h"
@@ -13,9 +14,10 @@ class UBoxComponent;
 class ACannon;
 class APawn;
 class UHealthComponent;
+struct FTimerHandle;
 
 UCLASS()
-class MYPROJECT_API AEnemyTurret : public AActor, public IIMachinery, public IDamageTaker
+class MYPROJECT_API AEnemyTurret : public AActor, public IIMachinery, public IDamageTaker, public IIScorable
 {
 	GENERATED_BODY()
 
@@ -34,6 +36,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
 	TSubclassOf<ACannon> CannonClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
+	float RechargeSpeed = 5.0f;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UHealthComponent* HealthComponent;
@@ -56,8 +61,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
 	float Accurency = 10;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Score")
+	float Scores = 50;
+
 	const FString BodyMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Tower1.SM_CSC_Tower1'";
 	const FString TurretMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Gun1.SM_CSC_Gun1'";
+
+	FTimerHandle RechargeTimerHandle;
+	FTimerHandle _targetingTimerHandle;
+	bool CannonIsReady = true;
 
 public:	
 	AEnemyTurret();
@@ -73,16 +85,20 @@ protected:
 	virtual void TakeDamage(FDamageData DamageData) override;
 
 	UFUNCTION()
-	void Die();
+	void Die(AActor* killer);
 
 	UFUNCTION()
 	void DamageTaked(float DamageValue);
 
+	UFUNCTION()
+	virtual float GetScores() override { return Scores; };
+
+private:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 	virtual void RotateTurret(float DeltaTime) override;
 	void Targeting();
 	bool IsPlayerInRange();
 	bool CanFire();
-
+	void RechargeCannon();
 };

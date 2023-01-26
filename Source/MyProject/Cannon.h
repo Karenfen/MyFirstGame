@@ -24,7 +24,7 @@ protected:
 	float FireRate = 1.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-	float BurstRate = 10.0f;
+	float BurstRate = 5.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	float FireRange = 1000.0f;
@@ -62,12 +62,14 @@ public:
 	bool IsReadyToFireSpec();
 	void Resupply(uint8 numberRounds);
 	ECannonType GetType();
+	bool IsEmpty();
 
 protected:
 	virtual void BeginPlay() override;
 	void Reload();
 	void ReloadSpec();
 	void Burst();
+	void TraceBurst();
 	bool ProjectileShot();
 	void TraceShot();
 };
