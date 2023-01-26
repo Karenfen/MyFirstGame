@@ -85,10 +85,10 @@ protected:
 	virtual void TakeDamage(FDamageData DamageData) override;
 
 	UFUNCTION()
-	void Die(AActor* killer);
+	virtual void Die(AActor* killer) override;
 
 	UFUNCTION()
-	void DamageTaked(float DamageValue);
+	virtual void DamageTaked(float DamageValue) override;
 
 	UFUNCTION()
 	virtual float GetScores() override { return Scores; };

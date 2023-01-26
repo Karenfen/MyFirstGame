@@ -10,6 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UBoxComponent;
 class UHealthComponent;
+class UArrowComponent;
 
 UCLASS()
 class MYPROJECT_API ATankPawn : public APawn, public IIMachinery, public IDamageTaker
@@ -101,10 +102,10 @@ public:
 
 protected:
 	UFUNCTION()
-	void Die(AActor* killer);
+	virtual void Die(AActor* killer) override;
 
 	UFUNCTION()
-	void DamageTaked(float DamageValue);
+	virtual void DamageTaked(float DamageValue) override;
 
 	virtual void BeginPlay() override;
 	void Move(float DeltaTime);

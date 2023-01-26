@@ -4,9 +4,8 @@
 #include "UObject/Interface.h"
 #include "IMachinery.generated.h"
 
-class UStaticMeshComponent;
-class UArrowComponent;
 class ACannon;
+class AActor;
 
 UINTERFACE(MinimalAPI)
 class UIMachinery : public UInterface
@@ -25,5 +24,12 @@ public:
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) = 0;
 
 protected:
+	UFUNCTION()
+	virtual void Die(AActor* killer) = 0;
+
+	UFUNCTION()
+	virtual void DamageTaked(float DamageValue) = 0;
+
+private:
 	virtual void RotateTurret(float DeltaTime) = 0;
 };
