@@ -118,7 +118,11 @@ public:
 	UFUNCTION()
 	void RotateTurretTo(FVector TargetPosition);
 
+	UFUNCTION()
 	virtual float GetScores() override { return 100.0f; };
+	
+	UFUNCTION()
+		TSubclassOf<ACannon> CurentCannonClass();
 
 protected:
 	UFUNCTION()

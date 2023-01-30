@@ -2,6 +2,7 @@
 #include "TankPawn.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "DrawDebugHelpers.h"
+#include "TimerManager.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -17,12 +18,19 @@ void ATankAIController::BeginPlay()
 	MovementAccurency = TankPawn->GetMovementAccurency();
 	TArray<FVector> points = TankPawn->GetPatrollingPoints();
 
-	for (FVector point : points)
+	for (const FVector& point : points)
 	{
 		PatrollingPoints.Add(point / 2 + pawnLocation);
 	}
 
 	CurrentPatrolPointIndex = 0;
+
+	 CurrentCannonClass = TankPawn->CurentCannonClass();
+
+	if (PoolCannonClasses.Num() == 0)
+		PoolCannonClasses.Add(CurrentCannonClass);
+	else if (PoolCannonClasses.Num() > 1)
+		GetWorld()->GetTimerManager().SetTimer(switchCannonTimerHandle, this, &ATankAIController::SwitchCannon, TimeToSwitchCannon, true);
 }
 
 void ATankAIController::Tick(float DeltaTime)
@@ -133,4 +141,20 @@ bool ATankAIController::IsPlayerSeen()
 	}
 
 	return false;
+}
+
+void ATankAIController::SwitchCannon()
+{
+	if (PoolCannonClasses.Num() <= 1 || !TankPawn)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(switchCannonTimerHandle);
+		return;
+	}
+
+	++currentCannonIndex;
+	if (PoolCannonClasses.Num() <= currentCannonIndex)
+		currentCannonIndex = 0;
+
+	CurrentCannonClass = PoolCannonClasses[currentCannonIndex];
+	TankPawn->SetupCannon(CurrentCannonClass);
 }

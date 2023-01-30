@@ -4,6 +4,9 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
+class ACannon;
+struct FTimerHandle;
+
 UCLASS()
 class MYPROJECT_API ATankAIController : public AAIController
 {
@@ -32,6 +35,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
 	float Accurency = 5.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
+		float TimeToSwitchCannon = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
+		TSubclassOf<ACannon> CurrentCannonClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
+		TArray<TSubclassOf<ACannon>> PoolCannonClasses;
+
+	FTimerHandle switchCannonTimerHandle;
+	int currentCannonIndex = 0;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -44,4 +59,5 @@ protected:
 	bool CanFire();
 	void Fire();
 	bool IsPlayerSeen();
+	void SwitchCannon();
 };

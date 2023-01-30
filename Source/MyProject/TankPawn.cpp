@@ -42,6 +42,11 @@ ATankPawn::ATankPawn()
 	HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
 }
 
+TSubclassOf<ACannon> ATankPawn::CurentCannonClass()
+{
+	return CannonClass;
+}
+
 void ATankPawn::Die(AActor* killer)
 {
 	if (killer)
