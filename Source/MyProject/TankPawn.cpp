@@ -47,6 +47,10 @@ void ATankPawn::Die(AActor* killer)
 	if (killer)
 		UE_LOG(LogTemp, Warning, TEXT("Tank was killed by %s"), *(killer->GetName()));
 
+	ATankPawn* player = Cast<ATankPawn>(killer);
+	if (player == GetWorld()->GetFirstPlayerController()->GetPawn() && player != nullptr)
+		player->EnemyDestroyed(this);
+
 	Destroy();
 }
 
@@ -78,6 +82,11 @@ void ATankPawn::Resupply(uint8 numberRounds)
 {
 	if(Cannon)
 		Cannon->Resupply(numberRounds);
+}
+
+FVector ATankPawn::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
 }
 
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -173,15 +182,13 @@ void ATankPawn::Rotate(float DeltaTime)
 void ATankPawn::RotateTurret(float DeltaTime)
 {
 	if (TankController)
-	{
-		FVector mousePosition = TankController->GetMousePosition();
-		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), mousePosition);
-		FRotator turretRotation = TurretMesh->GetComponentRotation();
-		targetRotation.Pitch = turretRotation.Pitch;
-		targetRotation.Roll = turretRotation.Roll;
-		FRotator newTurretRotation = FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey);
-		TurretMesh->SetWorldRotation(newTurretRotation);
-	}
+		RotateTurretTo(TankController->GetMousePosition());
+}
+
+void ATankPawn::Destroyed()
+{
+	if (Cannon)
+		Cannon->Destroy();
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -209,3 +216,17 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 		SecondCannon->SetActorHiddenInGame(true);
 }
 
+FVector ATankPawn::GetTurretForwardVector()
+{
+	return TurretMesh->GetForwardVector();
+}
+
+void ATankPawn::RotateTurretTo(FVector TargetPosition)
+{
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator turretRotation = TurretMesh->GetComponentRotation();
+	targetRotation.Pitch = turretRotation.Pitch;
+	targetRotation.Roll = turretRotation.Roll;
+	FRotator newTurretRotation = FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey);
+	TurretMesh->SetWorldRotation(newTurretRotation);
+}
