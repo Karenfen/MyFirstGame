@@ -101,4 +101,6 @@ private:
 	bool IsPlayerInRange();
 	bool CanFire();
 	void RechargeCannon();
+	bool IsPlayerSeen();
+	FVector GetEyesPosition();
 };
