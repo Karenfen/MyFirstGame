@@ -30,6 +30,9 @@ protected:
 	void Fire();
 	void FireSpecial();
 	void SwitchCannon();
+	void TurretRotateRight(float AxisValue);
+	void SetTurretDirForward(float AxisValue);
+	void SetTurretDirRight(float AxisValue);
 
 	FVector MousePosition;
 };

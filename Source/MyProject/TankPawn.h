@@ -76,6 +76,8 @@ protected:
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
 	float _targetRotateRightdAxisValue = 0.0f;
+	float _TurretDirX = 0.0f;
+	float _TurretDirY = 0.0f;
 
 public:
 	ATankPawn();
@@ -119,6 +121,15 @@ public:
 	void RotateTurretTo(FVector TargetPosition);
 
 	UFUNCTION()
+		void SetTurretDirX(float AxisValue);
+
+	UFUNCTION()
+		void SetTurretDirY(float AxisValue);
+
+	UFUNCTION()
+		void RotateTurretRight(float AxisValue);
+
+	UFUNCTION()
 	virtual float GetScores() override { return 100.0f; };
 	
 	UFUNCTION()
@@ -138,7 +149,17 @@ protected:
 	virtual void Destroyed() override;
 
 public:
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override
+	{
+		Super::Tick(DeltaTime);
+		Move(DeltaTime);
+		Rotate(DeltaTime);
+
+		if (_TurretDirX == 0.0f && _TurretDirY == 0.0f)
+			RotateTurret(DeltaTime);
+		else
+			RotateTurretTo(FVector(_TurretDirX, _TurretDirY, 0.0f) + GetActorLocation());
+	}
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Resupply(uint8 numberRounds);
 	FVector GetEyesPosition();

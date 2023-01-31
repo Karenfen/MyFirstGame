@@ -75,14 +75,6 @@ void ATankPawn::BeginPlay()
 	CurrentScores = 0;
 }
 
-void ATankPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	Move(DeltaTime);
-	Rotate(DeltaTime);
-	RotateTurret(DeltaTime);
-}
-
 void ATankPawn::Resupply(uint8 numberRounds)
 {
 	if(Cannon)
@@ -186,8 +178,8 @@ void ATankPawn::Rotate(float DeltaTime)
 
 void ATankPawn::RotateTurret(float DeltaTime)
 {
-	if (TankController)
-		RotateTurretTo(TankController->GetMousePosition());
+	/*if (TankController)
+		RotateTurretTo(TankController->GetMousePosition());*/
 }
 
 void ATankPawn::Destroyed()
@@ -234,4 +226,18 @@ void ATankPawn::RotateTurretTo(FVector TargetPosition)
 	targetRotation.Roll = turretRotation.Roll;
 	FRotator newTurretRotation = FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey);
 	TurretMesh->SetWorldRotation(newTurretRotation);
+}
+
+void ATankPawn::SetTurretDirX(float AxisValue)
+{
+	_TurretDirX = AxisValue;
+}
+
+void ATankPawn::SetTurretDirY(float AxisValue)
+{
+	_TurretDirY = AxisValue;
+}
+
+void ATankPawn::RotateTurretRight(float AxisValue)
+{
 }
