@@ -9,6 +9,7 @@
 #include <Components/BoxComponent.h>
 #include "HealthComponent.h"
 #include "IScorable.h"
+#include "Components/AudioComponent.h"
 
 
 ATankPawn::ATankPawn()
@@ -40,6 +41,18 @@ ATankPawn::ATankPawn()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
 	HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
+
+	AudioChangeCannon = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioChangeCannon"));
+	AudioChangeCannon->SetupAttachment(TurretMesh);
+	AudioChangeCannon->SetAutoActivate(false);
+
+	AudioSetupCannon = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSetupCannon"));
+	AudioSetupCannon->SetupAttachment(TurretMesh);
+	AudioSetupCannon->SetAutoActivate(false);
+
+	AudioResupply = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioResupply"));
+	AudioResupply->SetupAttachment(TurretMesh);
+	AudioResupply->SetAutoActivate(false);
 }
 
 TSubclassOf<ACannon> ATankPawn::CurentCannonClass()
@@ -77,8 +90,12 @@ void ATankPawn::BeginPlay()
 
 void ATankPawn::Resupply(uint8 numberRounds)
 {
-	if(Cannon)
+	if (Cannon)
+	{
 		Cannon->Resupply(numberRounds);
+		if (AudioResupply)
+			AudioResupply->Play();
+	}
 }
 
 FVector ATankPawn::GetEyesPosition()
@@ -136,6 +153,9 @@ void ATankPawn::SwitchCannon()
 		Cannon->SetActorHiddenInGame(false);
 	if (SecondCannon)
 		SecondCannon->SetActorHiddenInGame(true);
+
+	if (AudioChangeCannon)
+		AudioChangeCannon->Play();
 }
 
 void ATankPawn::TakeDamage(FDamageData DamageData)
@@ -190,6 +210,9 @@ void ATankPawn::Destroyed()
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 {
+	if (AudioSetupCannon)
+		AudioSetupCannon->Play();
+
 	if (!newCannonClass)
 	{
 		return;
@@ -236,8 +259,4 @@ void ATankPawn::SetTurretDirX(float AxisValue)
 void ATankPawn::SetTurretDirY(float AxisValue)
 {
 	_TurretDirY = AxisValue;
-}
-
-void ATankPawn::RotateTurretRight(float AxisValue)
-{
 }

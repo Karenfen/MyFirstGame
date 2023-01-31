@@ -12,6 +12,7 @@ class USpringArmComponent;
 class UBoxComponent;
 class UHealthComponent;
 class UArrowComponent;
+class UAudioComponent;
 
 UCLASS()
 class MYPROJECT_API ATankPawn : public APawn, public IIMachinery, public IDamageTaker, public IIScorable
@@ -39,6 +40,15 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioChangeCannon;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioSetupCannon;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioResupply;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float MoveSpeed = 200.0f;
@@ -125,9 +135,6 @@ public:
 
 	UFUNCTION()
 		void SetTurretDirY(float AxisValue);
-
-	UFUNCTION()
-		void RotateTurretRight(float AxisValue);
 
 	UFUNCTION()
 	virtual float GetScores() override { return 100.0f; };
