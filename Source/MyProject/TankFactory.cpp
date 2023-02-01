@@ -7,6 +7,7 @@
 #include "Components/SceneComponent.h"
 #include "HealthComponent.h"
 #include "TankPawn.h"
+#include "MapLoader.h"
 
 
 ATankFactory::ATankFactory()
@@ -34,6 +35,9 @@ void ATankFactory::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (LinkedMapLoader)
+		LinkedMapLoader->SetIsActivated(false);
+
 	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATankFactory::SpawnNewTank, SpawnTankRate, true, SpawnTankRate);
 }
@@ -52,6 +56,9 @@ void ATankFactory::Die(AActor* killer)
 		if (player)
 			player->EnemyDestroyed(this);
 	}
+
+	if (LinkedMapLoader)
+		LinkedMapLoader->SetIsActivated(true);
 
 	Destroy();
 }
