@@ -29,15 +29,19 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	class UHealthComponent* HealthComponent;
 
+	// визуальный эффект разрушения здания
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	class UParticleSystemComponent* DestroyEffect;
 
+	// аудио эффект разрушения здания
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	class UAudioComponent* DestroyAudio;
 
+	// указатель на загрузчик для перехода
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Linked")
 	class AMapLoader* LinkedMapLoader;
 
+	// новая модель при разрушении
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Destroyed mesh")
 	class UStaticMesh* BuildingDestroyedMesh;
 

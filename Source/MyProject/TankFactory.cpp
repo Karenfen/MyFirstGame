@@ -34,13 +34,15 @@ ATankFactory::ATankFactory()
 	HealthComponent->OnDie.AddUObject(this, &ATankFactory::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &ATankFactory::DamageTaked);
 
+	// визуальный эффект для разрушения
 	DestroyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Destroy Effect"));
 	DestroyEffect->SetupAttachment(sceneComp);
-	DestroyEffect->SetAutoActivate(false);
+	DestroyEffect->SetAutoActivate(false); // выключаем автозапуск
 
+	// аудио эффект для разрушения
 	DestroyAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("Destroy Audio"));
 	DestroyAudio->SetupAttachment(sceneComp);
-	DestroyAudio->SetAutoActivate(false);
+	DestroyAudio->SetAutoActivate(false); // выключаем автозапуск
 
 }
 
@@ -51,6 +53,7 @@ void ATankFactory::BeginPlay()
 	if (LinkedMapLoader)
 		LinkedMapLoader->SetIsActivated(false);
 
+	// запускаем таймер создания танков
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATankFactory::SpawnNewTank, SpawnTankRate, true, SpawnTankRate);
 }
 
@@ -69,27 +72,34 @@ void ATankFactory::Die(AActor* killer)
 			player->EnemyDestroyed(this);
 	}
 
+	// активируем переход, если он есть
 	if (LinkedMapLoader)
 		LinkedMapLoader->SetIsActivated(true);
 
+	// включаем звук разрушения, если он есть
 	if (DestroyAudio)
 		DestroyAudio->Play();
 
+	// если есть модель разрушенного здания...
 	if (BuildingDestroyedMesh)
 	{
+		// выключаем таймер на создание танков
 		GetWorld()->GetTimerManager().ClearTimer(_targetingTimerHandle);
+		// устанавливаем новую модельку
 		BuildingMesh->SetStaticMesh(BuildingDestroyedMesh);
 
+		// если есть визуальный эффект, включаем его 
 		if (DestroyEffect)
 			DestroyEffect->ActivateSystem();
 
+		// если есть компонент здоровья, отключаем коннекты
 		if (HealthComponent)
 		{
 			HealthComponent->OnDie.Clear();
 			HealthComponent->OnDamaged.Clear();
 		}
 	}
-	else
+	else // если нет модели разрушения, просто уничтожаем 
 		Destroy();
 }
 
