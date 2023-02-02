@@ -139,7 +139,10 @@ void ATankFactory::CheckTanks()
 		if (!activeTanks[index])
 			indexesDestroyedTanks.Add(index);
 		else if (activeTanks[index]->IsPendingKill())
+		{
 			indexesDestroyedTanks.Add(index);
+			activeTanks[index]->GetController()->Destroy();
+		}
 	}
 
 	// проходимся с конца массива для избежания неправильного доступа по индексу
