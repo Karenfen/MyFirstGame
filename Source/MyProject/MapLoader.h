@@ -31,9 +31,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level loading params")
 	bool IsActivated = false;
 
-	// пока жив босс уровень не загрузится
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level loading params")
-	class AActor* Boss;
+	//// пока жив босс уровень не загрузится
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level loading params")
+	//class AActor* Boss;
 
 public:
 

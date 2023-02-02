@@ -8,6 +8,10 @@
 #include "HealthComponent.h"
 #include "TankPawn.h"
 #include "MapLoader.h"
+#include "Engine/StaticMesh.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
+
 
 
 ATankFactory::ATankFactory()
@@ -29,6 +33,15 @@ ATankFactory::ATankFactory()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
 	HealthComponent->OnDie.AddUObject(this, &ATankFactory::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &ATankFactory::DamageTaked);
+
+	DestroyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Destroy Effect"));
+	DestroyEffect->SetupAttachment(sceneComp);
+	DestroyEffect->SetAutoActivate(false);
+
+	DestroyAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("Destroy Audio"));
+	DestroyAudio->SetupAttachment(sceneComp);
+	DestroyAudio->SetAutoActivate(false);
+
 }
 
 void ATankFactory::BeginPlay()
@@ -38,7 +51,6 @@ void ATankFactory::BeginPlay()
 	if (LinkedMapLoader)
 		LinkedMapLoader->SetIsActivated(false);
 
-	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATankFactory::SpawnNewTank, SpawnTankRate, true, SpawnTankRate);
 }
 
@@ -60,7 +72,25 @@ void ATankFactory::Die(AActor* killer)
 	if (LinkedMapLoader)
 		LinkedMapLoader->SetIsActivated(true);
 
-	Destroy();
+	if (DestroyAudio)
+		DestroyAudio->Play();
+
+	if (BuildingDestroyedMesh)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(_targetingTimerHandle);
+		BuildingMesh->SetStaticMesh(BuildingDestroyedMesh);
+
+		if (DestroyEffect)
+			DestroyEffect->ActivateSystem();
+
+		if (HealthComponent)
+		{
+			HealthComponent->OnDie.Clear();
+			HealthComponent->OnDamaged.Clear();
+		}
+	}
+	else
+		Destroy();
 }
 
 void ATankFactory::DamageTaked(float DamageValue)

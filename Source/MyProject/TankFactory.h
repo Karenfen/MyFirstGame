@@ -11,7 +11,6 @@
 class ATankPawn;
 class ATargetPoint;
 
-
 UCLASS()
 class MYPROJECT_API ATankFactory : public AActor, public IDamageTaker, public IIScorable /* для получения очков за уничтожение */
 {
@@ -30,9 +29,17 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	class UHealthComponent* HealthComponent;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystemComponent* DestroyEffect;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UAudioComponent* DestroyAudio;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Linked")
 	class AMapLoader* LinkedMapLoader;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Destroyed mesh")
+	class UStaticMesh* BuildingDestroyedMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
 	TSubclassOf<ATankPawn> SpawnTankClass;
@@ -74,4 +81,7 @@ protected:
 	
 	//указатели на активные танки
 	TArray<ATankPawn*> activeTanks{};
+	// вынесем таймер для его выключения 
+	FTimerHandle _targetingTimerHandle;
+
 };

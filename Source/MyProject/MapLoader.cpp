@@ -47,11 +47,12 @@ void AMapLoader::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp,
 	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	if (OtherActor == PlayerPawn)
 	{
-		if(!Boss)
-			UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
-		else
-			if(Boss->IsReadyForFinishDestroy())
-				UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
+		//if(!Boss)
+		//	UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
+		//else
+		//	if(Boss->IsReadyForFinishDestroy())
+		//		UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
+		UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
 	}
 }
 
