@@ -131,21 +131,22 @@ void ATankFactory::CheckTanks()
 {
 	// массив для хранения индексов невалидных указателей на танки
 	TArray<int> indexesDestroyedTanks{};
+	//indexesDestroyedTanks.SetNum(0);
 
 	for (int index = 0; index < activeTanks.Num(); ++index)
 	{
-		if (!(activeTanks[index]))
-		{
-			// если танк уничтожен, то добавляем его индекс в массив
+		// если танк невалиден или помечен на удаление, то добавляем его индекс в массив
+		if (!activeTanks[index])
 			indexesDestroyedTanks.Add(index);
-		}
+		else if (activeTanks[index]->IsPendingKill())
+			indexesDestroyedTanks.Add(index);
 	}
 
 	// проходимся с конца массива для избежания неправильного доступа по индексу
 	for (int index = indexesDestroyedTanks.Num() - 1; index >= 0; --index)
 	{
 		// удаляем невалидный танк из списка активных танков
-		activeTanks.RemoveAt(index);
+		activeTanks.RemoveAt(indexesDestroyedTanks[index]);
 	}
 }
 
