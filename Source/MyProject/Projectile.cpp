@@ -4,6 +4,7 @@
 #include "IMachinery.h"
 #include "DamageTaker.h"
 #include "GameStruct.h"
+#include "Components/PrimitiveComponent.h"
 
 AProjectile::AProjectile()
 {
@@ -36,10 +37,20 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 			damageData.DamageMaker = this;
 			damageTakerActor->TakeDamage(damageData);
 		}
-		//делаем проверку чтобы не удалить растительность
-		//UFoliageType_Actor* foliage = Cast<UFoliageType_Actor>(OtherActor);
-		//if(!foliage)
-		//	OtherActor->Destroy();
+		else
+		{
+			UPrimitiveComponent* mesh =	Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
+			if (mesh)
+			{
+				if (mesh->IsSimulatingPhysics())
+				{
+					FVector forceVector = OtherActor->GetActorLocation() - GetActorLocation();
+					forceVector.Normalize();
+					mesh->AddImpulse(forceVector * PushForce, NAME_None, true);
+				}
+			}
+		}
+
 
 		Destroy();
 	}

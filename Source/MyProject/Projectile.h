@@ -11,13 +11,20 @@ class MYPROJECT_API AProjectile : public AActor
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* Mesh;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float MoveSpeed = 500;
+	float MoveSpeed = 500;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float MoveRate = 0.005f;
+	float MoveRate = 0.005f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
-		float Damage = 1;
+	float Damage = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	float PushForce = 1000;
+
 	FTimerHandle MovementTimerHandle;
 	
 public:	
