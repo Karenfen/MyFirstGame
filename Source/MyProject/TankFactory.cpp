@@ -135,13 +135,13 @@ void ATankFactory::CheckTanks()
 
 	for (int index = 0; index < activeTanks.Num(); ++index)
 	{
-		// если танк невалиден или помечен на удаление, то добавляем его индекс в массив
-		if (!activeTanks[index])
-			indexesDestroyedTanks.Add(index);
-		else if (activeTanks[index]->IsPendingKill())
+		// если танк невалиден, то добавляем его индекс в массив
+		if(!IsValid(activeTanks[index]))
 		{
 			indexesDestroyedTanks.Add(index);
-			activeTanks[index]->GetController()->Destroy();
+			// на всякий случай провкряем указатель и удаляем его контроллер
+			if(activeTanks[index]) 
+				activeTanks[index]->GetController()->Destroy();
 		}
 	}
 
