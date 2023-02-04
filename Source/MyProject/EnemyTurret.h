@@ -74,6 +74,8 @@ protected:
 public:	
 	AEnemyTurret();
 
+	virtual void PostInitializeComponents() override;
+
 protected:
 	UFUNCTION()
 	virtual void Fire() override;

@@ -109,7 +109,7 @@ void APhysicsProjectile::Explode()
 		params
 	);
 
-	GetWorld()->DebugDrawTraceTag = "Explode Trace";
+	//GetWorld()->DebugDrawTraceTag = "Explode Trace";
 
 	if (sweepResult)
 	{
