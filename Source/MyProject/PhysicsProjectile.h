@@ -20,6 +20,14 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UParticleSystemComponent* TrailEffect;
 
+	// добавляем визуальный эффект взрыва
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystemComponent* ExplodeEffect;
+
+	// добавляем аудио эффект взрыва
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UAudioComponent* ExplodeAudio;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
 	float MoveAccurency = 10.0f;
 
@@ -44,6 +52,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
 	int32 TragectoryPointIndex;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Explode")
+	float ExplodeRadius = 100.0f;
+
 public:
 	APhysicsProjectile();
 
@@ -52,4 +63,11 @@ public:
 protected:
 	virtual void Move() override;
 
+	virtual void OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor*
+			OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool
+			bFromSweep, const FHitResult& SweepResult) override;
+
+	void Explode();
+
+	
 };
