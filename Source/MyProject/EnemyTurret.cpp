@@ -9,6 +9,8 @@
 #include "HealthComponent.h"
 #include "TankPawn.h"
 
+
+
 AEnemyTurret::AEnemyTurret()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -24,14 +26,6 @@ AEnemyTurret::AEnemyTurret()
 
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(BodyMesh);
-
-	//UStaticMesh * turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
-	//if (turretMeshTemp)
-	//	TurretMesh->SetStaticMesh(turretMeshTemp);
-
-	//UStaticMesh* bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
-	//if (bodyMeshTemp)
-	//	BodyMesh->SetStaticMesh(bodyMeshTemp);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
 	HealthComponent->OnDie.AddUObject(this, &AEnemyTurret::Die);

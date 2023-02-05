@@ -1,0 +1,29 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "EnemyTurret.h"
+#include "MortarTurret.generated.h"
+
+
+UCLASS()
+class MYPROJECT_API AMortarTurret : public AEnemyTurret
+{
+	GENERATED_BODY()
+	
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
+	float MinYawCannon = 0.0f;		/* минимальное значение наклона орудия */
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
+	float RangeYawCannon = 0.0f;		/* диапазон наклона орудия */
+
+public:
+	AMortarTurret() {};
+	virtual ~AMortarTurret() {};
+
+protected:
+	virtual void RotateTurret(float DeltaTime) override;
+	virtual void BeginPlay() override;
+
+	FVector turretLocation;
+};
