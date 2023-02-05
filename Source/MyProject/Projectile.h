@@ -25,6 +25,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 	float PushForce = 1000;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage|Explode")
+	float ExplodeRadius = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage|Explode")
+	bool ExplodeAvailable = false;
+
+	// добавляем визуальный эффект взрыва
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystemComponent* ExplodeEffect;
+
+	// добавляем аудио эффект взрыва
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UAudioComponent* ExplodeAudio;
+
 	FTimerHandle MovementTimerHandle;
 	
 public:	
@@ -38,5 +52,16 @@ protected:
 			bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	virtual void Move();
+
+	UFUNCTION()
+	virtual void Explode();
+
+	// метод на получение урона при попадании
+	UFUNCTION()
+	bool MakeDamageTo(AActor* otherActor);
+
+	// метод на отталкивание взрывам
+	UFUNCTION()
+	bool PushActor(AActor* otherActor);
 
 };
