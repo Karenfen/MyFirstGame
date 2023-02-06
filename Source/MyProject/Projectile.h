@@ -32,4 +32,13 @@ protected:
 	UFUNCTION()
 		void Move();
 
+	// методы для работы с пуллом
+	// проверака на активность обьекта
+	bool IsActive();
+
+	// устанавливаем состояние
+	void SetIsActive(bool state);
+
+	// состояние обьекта (используется или нет)
+	bool _isActive;
 };

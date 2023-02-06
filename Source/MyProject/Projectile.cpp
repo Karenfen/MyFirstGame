@@ -10,6 +10,9 @@ AProjectile::AProjectile()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnMeshOverlapBegin);
+
+	// по умолчанию устанавливпем неактивное состояние, чтобы удалялся как обычно
+	_isActive = false;
 }
 
 void AProjectile::Start()
@@ -21,12 +24,27 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 {
 
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
-	this->Destroy();
+
+	// если активен, то делаем не активным
+	if (_isActive)
+		_isActive = false;
+	else // если не активен, то удаляем
+		this->Destroy();
 }
 
 void AProjectile::Move()
 {
 	FVector nextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed	* MoveRate;
 	SetActorLocation(nextPosition);
+}
+
+bool AProjectile::IsActive()
+{
+	return _isActive;
+}
+
+void AProjectile::SetIsActive(bool state)
+{
+	_isActive = state;
 }
 
