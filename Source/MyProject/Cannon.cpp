@@ -5,6 +5,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineTypes.h"
 #include "CollisionQueryParams.h"
+#include "PoolProjectiles.h"
 
 ACannon::ACannon()
 {
@@ -18,6 +19,9 @@ ACannon::ACannon()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawnpoint"));
 	ProjectileSpawnPoint->SetupAttachment(Mesh);
+
+	// создаём пулл
+	ProjectilePool = CreateDefaultSubobject<UPoolProjectiles>(TEXT("Pool Projectiles"));
 }
 
 void ACannon::Fire()
@@ -114,8 +118,10 @@ void ACannon::Resupply(uint8 numberRounds)
 void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
+
 	Reload();
 	ReloadSpec();
+	
 }
 
 void ACannon::Reload()
@@ -148,9 +154,20 @@ void ACannon::Burst()
 bool ACannon::ProjectileShot()
 {
 	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
-	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
-		ProjectileSpawnPoint->GetComponentLocation(),
-		ProjectileSpawnPoint->GetComponentRotation());
+
+	AProjectile* projectile;
+	// если есть пулл, запрашиваем обьект
+	if (ProjectilePool)
+	{
+		projectile = ProjectilePool->GetProjectile(ProjectileSpawnPoint->GetComponentLocation());
+		if (projectile)
+			projectile->SetActorRotation(ProjectileSpawnPoint->GetComponentRotation());
+	}
+	else // усли нет пулла создаём как обычно
+	{
+		projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+	}
+	
 
 	if (projectile)
 	{
@@ -184,4 +201,3 @@ void ACannon::TraceShot()
 	}
 	--Ammo;
 }
-
