@@ -1,5 +1,5 @@
 #include "PoolProjectiles.h"
-#include "Projectile.h"
+#include "ProjectileForPool.h"
 
 UPoolProjectiles::UPoolProjectiles()
 {
@@ -36,10 +36,10 @@ void UPoolProjectiles::BeginPlay()
 }
 
 
-AProjectile* UPoolProjectiles::CreateProjectile()
+AProjectileForPool* UPoolProjectiles::CreateProjectile()
 {
 	// создаём новый обьект в нулевой координате
-	AProjectile* newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ZeroLocation, FRotator());
+	AProjectileForPool* newProjectile = GetWorld()->SpawnActor<AProjectileForPool>(ProjectileClass, ZeroLocation, FRotator());
 	if (newProjectile)
 	{
 		// скрываем
@@ -56,11 +56,11 @@ AProjectile* UPoolProjectiles::CreateProjectile()
 }
 
 
-AProjectile* UPoolProjectiles::GetProjectile(FVector toPosition)
+AProjectileForPool* UPoolProjectiles::GetProjectile(FVector toPosition)
 {
-	AProjectile* projectileToGet = nullptr;
+	AProjectileForPool* projectileToGet = nullptr;
 	// ищем в пулле свободный проджектайл
-	for (AProjectile* object : Pool)
+	for (AProjectileForPool* object : Pool)
 	{
 		if (!IsValid(object))
 		{

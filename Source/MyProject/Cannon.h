@@ -18,11 +18,6 @@ protected:
 		UStaticMeshComponent* Mesh;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UArrowComponent* ProjectileSpawnPoint;
-
-	// добавляем компонент пулл проджектайлов
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	class UPoolProjectiles* ProjectilePool;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireRate = 1.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
@@ -54,6 +49,7 @@ protected:
 	
 public:	
 	ACannon();
+	virtual ~ACannon();
 	void Fire();
 	void FireSpecial();
 	bool IsReadyToFire();
@@ -66,7 +62,7 @@ protected:
 	void Reload();
 	void ReloadSpec();
 	void Burst();
-	bool ProjectileShot();
+	virtual bool ProjectileShot();
 	void TraceShot();
 };
 

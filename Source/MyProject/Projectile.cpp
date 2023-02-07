@@ -10,9 +10,11 @@ AProjectile::AProjectile()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnMeshOverlapBegin);
+}
 
-	// по умолчанию устанавливпем неактивное состояние, чтобы удалялся как обычно
-	_isActiveInPool = false;
+AProjectile::~AProjectile()
+{
+
 }
 
 void AProjectile::Start()
@@ -25,24 +27,7 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
 
-	// если активен, то делаем не активным
-	if (_isActiveInPool)
-	{
-		// останавливаем таймер движения
-		GetWorld()->GetTimerManager().ClearTimer(MovementTimerHandle);
-		// делаем неактивным
-		_isActiveInPool = false;
-		// скрываем
-		SetActorHiddenInGame(true);
-		// выключаем коллизию
-		SetActorEnableCollision(false);
-		// отправляем в место хранения пулла
-		SetActorLocation(_poolLocation);
-	}
-	else // если не активен, то удаляем
-	{
-		this->Destroy();
-	}
+	this->Destroy();
 }
 
 void AProjectile::Move()
@@ -50,19 +35,3 @@ void AProjectile::Move()
 	FVector nextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed	* MoveRate;
 	SetActorLocation(nextPosition);
 }
-
-bool AProjectile::IsActive()
-{
-	return _isActiveInPool;
-}
-
-void AProjectile::SetIsActive(bool state)
-{
-	_isActiveInPool = state;
-}
-
-void AProjectile::SetZeroLocation(FVector zeroLocation)
-{
-	_poolLocation = zeroLocation;
-}
-

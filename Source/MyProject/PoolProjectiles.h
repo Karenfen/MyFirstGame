@@ -4,7 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "PoolProjectiles.generated.h"
 
-class AProjectile;
+class AProjectileForPool;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -19,24 +19,24 @@ protected:
 
 	// для установки класса проджектайлов через блупринты
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Type")
-	TSubclassOf<AProjectile> ProjectileClass;
+	TSubclassOf<AProjectileForPool> ProjectileClass;
 
 	// нулевая координата для проджектайлов
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zero point")
 	FVector ZeroLocation;
 
 	// массив проджектайлов
-	TArray<AProjectile*> Pool;
+	TArray<AProjectileForPool*> Pool;
 
 public:	
 	UPoolProjectiles();
 	~UPoolProjectiles();
 
 	// получение проджуктайла
-	AProjectile* GetProjectile(FVector toPosition);
+	AProjectileForPool* GetProjectile(FVector toPosition);
 
 protected:
 	virtual void BeginPlay() override;
-	AProjectile* CreateProjectile(); // метод создания обьекта
+	AProjectileForPool* CreateProjectile(); // метод создания обьекта
 	
 };
