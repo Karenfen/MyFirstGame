@@ -67,6 +67,7 @@ protected:
 	
 public:	
 	ACannon();
+	virtual ~ACannon();
 	void Fire();
 	void FireSpecial();
 	bool IsReadyToFire();

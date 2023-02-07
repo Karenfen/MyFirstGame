@@ -36,6 +36,11 @@ ACannon::ACannon()
 	ShootForceEffect = CreateDefaultSubobject<UForceFeedbackEffect>(TEXT("ShootForceEffect"));
 }
 
+ACannon::~ACannon()
+{
+
+}
+
 void ACannon::Fire()
 {
 	if (!ReadyToFire)
@@ -131,8 +136,10 @@ void ACannon::Resupply(uint8 numberRounds)
 void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
+
 	Reload();
 	ReloadSpec();
+	
 }
 
 void ACannon::Reload()
@@ -182,6 +189,8 @@ bool ACannon::ProjectileShot()
 	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
 		ProjectileSpawnPoint->GetComponentLocation(),
 		ProjectileSpawnPoint->GetComponentRotation());
+
+	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 
 	if (projectile)
 	{

@@ -15,6 +15,11 @@ AProjectile::AProjectile()
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnMeshOverlapBegin);
 }
 
+AProjectile::~AProjectile()
+{
+
+}
+
 void AProjectile::Start()
 {
 	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjectile::Move, MoveRate, true, 0.0f);
@@ -36,7 +41,7 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 			damageData.DamageMaker = this;
 			damageTakerActor->TakeDamage(damageData);
 		}
-		//делаем проверку чтобы не удалить растительность
+		//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		//UFoliageType_Actor* foliage = Cast<UFoliageType_Actor>(OtherActor);
 		//if(!foliage)
 		//	OtherActor->Destroy();
@@ -51,4 +56,3 @@ void AProjectile::Move()
 	FVector nextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed	* MoveRate;
 	SetActorLocation(nextPosition);
 }
-
