@@ -2,6 +2,9 @@
 #include "PoolProjectiles.h"
 #include "Components/ArrowComponent.h"
 #include "ProjectileForPool.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
+#include "GameFramework/ForceFeedbackEffect.h"
 
 
 ACannonWhithPool::ACannonWhithPool()
@@ -35,6 +38,14 @@ bool ACannonWhithPool::ProjectileShot()
 
 	if (projectile)
 	{
+		if (ShootEffect)
+			ShootEffect->ActivateSystem();
+
+		if (ShootAudio)
+			ShootAudio->Play();
+
+		FeedBack();
+
 		projectile->Start();
 		return true;
 	}

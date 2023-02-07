@@ -190,8 +190,6 @@ bool ACannon::ProjectileShot()
 		ProjectileSpawnPoint->GetComponentLocation(),
 		ProjectileSpawnPoint->GetComponentRotation());
 
-	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
-
 	if (projectile)
 	{
 		projectile->SetOwner(this);

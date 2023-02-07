@@ -82,7 +82,7 @@ protected:
 	void ReloadSpec();
 	void Burst();
 	void TraceBurst();
-	bool ProjectileShot();
+	virtual bool ProjectileShot();
 	void TraceShot();
 	void FeedBack();
 };

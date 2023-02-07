@@ -2,6 +2,8 @@
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "Engine/EngineTypes.h"
+#include "DamageTaker.h"
+#include "GameStruct.h"
 
 AProjectileForPool::AProjectileForPool()
 {
@@ -32,24 +34,38 @@ void AProjectileForPool::SetIsActive(bool state)
 
 void AProjectileForPool::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
+	AActor* owner = GetOwner();
+	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
 
-	// если активен, то делаем не активным
-	if (_isActiveInPool)
+	if (OtherActor != owner && OtherActor != ownerByOwner)
 	{
-		// останавливаем таймер движения
-		GetWorld()->GetTimerManager().ClearTimer(MovementTimerHandle);
-		// делаем неактивным
-		_isActiveInPool = false;
-		// скрываем
-		SetActorHiddenInGame(true);
-		// выключаем коллизию
-		SetActorEnableCollision(false);
-		// отправляем в место хранения пулла
-		SetActorLocation(_poolLocation);
-	}
-	else // если не активен, то удаляем
-	{
-		this->Destroy();
+		IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
+		if (damageTakerActor)
+		{
+			FDamageData damageData;
+			damageData.DamageValue = Damage;
+			damageData.Instigator = ownerByOwner;
+			damageData.DamageMaker = this;
+			damageTakerActor->TakeDamage(damageData);
+		}
+
+		// если активен, то делаем не активным
+		if (_isActiveInPool)
+		{
+			// останавливаем таймер движения
+			GetWorld()->GetTimerManager().ClearTimer(MovementTimerHandle);
+			// делаем неактивным
+			_isActiveInPool = false;
+			// скрываем
+			SetActorHiddenInGame(true);
+			// выключаем коллизию
+			SetActorEnableCollision(false);
+			// отправляем в место хранения пулла
+			SetActorLocation(_poolLocation);
+		}
+		else // если не активен, то удаляем
+		{
+			this->Destroy();
+		}
 	}
 }
