@@ -16,6 +16,8 @@ void ATankPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ATankPlayerController::Fire);
 	InputComponent->BindAction("FireSpecial", IE_Pressed, this, &ATankPlayerController::FireSpecial);
 	InputComponent->BindAction("SwitchCannon", IE_Pressed, this, &ATankPlayerController::SwitchCannon);
+	InputComponent->BindAxis("TurretDirX", this, &ATankPlayerController::SetTurretDirForward);
+	InputComponent->BindAxis("TurretDirY", this, &ATankPlayerController::SetTurretDirRight);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -77,4 +79,21 @@ void ATankPlayerController::SwitchCannon()
 {
 	if (TankPawn)
 		TankPawn->SwitchCannon();
+}
+
+void ATankPlayerController::TurretRotateRight(float AxisValue)
+{
+	
+}
+
+void ATankPlayerController::SetTurretDirForward(float AxisValue)
+{
+	if (TankPawn)
+		TankPawn->SetTurretDirX(AxisValue);
+}
+
+void ATankPlayerController::SetTurretDirRight(float AxisValue)
+{
+	if (TankPawn)
+		TankPawn->SetTurretDirY(AxisValue);
 }

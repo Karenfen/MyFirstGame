@@ -6,6 +6,7 @@
 #include "Projectile.h"
 #include "Cannon.generated.h"
 
+
 class UArrowComponent;
 
 UCLASS()
@@ -19,6 +20,16 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UArrowComponent* ProjectileSpawnPoint;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystemComponent* ShootEffect;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UAudioComponent* ShootAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	class UForceFeedbackEffect* ShootForceEffect;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	float FireRate = 1.0f;
@@ -72,5 +83,6 @@ protected:
 	void TraceBurst();
 	bool ProjectileShot();
 	void TraceShot();
+	void FeedBack();
 };
 

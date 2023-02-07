@@ -9,6 +9,7 @@
 #include <Components/BoxComponent.h>
 #include "HealthComponent.h"
 #include "IScorable.h"
+#include "Components/AudioComponent.h"
 
 
 ATankPawn::ATankPawn()
@@ -40,12 +41,33 @@ ATankPawn::ATankPawn()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
 	HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
+
+	AudioChangeCannon = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioChangeCannon"));
+	AudioChangeCannon->SetupAttachment(TurretMesh);
+	AudioChangeCannon->SetAutoActivate(false);
+
+	AudioSetupCannon = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSetupCannon"));
+	AudioSetupCannon->SetupAttachment(TurretMesh);
+	AudioSetupCannon->SetAutoActivate(false);
+
+	AudioResupply = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioResupply"));
+	AudioResupply->SetupAttachment(TurretMesh);
+	AudioResupply->SetAutoActivate(false);
+}
+
+TSubclassOf<ACannon> ATankPawn::CurentCannonClass()
+{
+	return CannonClass;
 }
 
 void ATankPawn::Die(AActor* killer)
 {
 	if (killer)
 		UE_LOG(LogTemp, Warning, TEXT("Tank was killed by %s"), *(killer->GetName()));
+
+	ATankPawn* player = Cast<ATankPawn>(killer);
+	if (player == GetWorld()->GetFirstPlayerController()->GetPawn() && player != nullptr)
+		player->EnemyDestroyed(this);
 
 	Destroy();
 }
@@ -66,18 +88,19 @@ void ATankPawn::BeginPlay()
 	CurrentScores = 0;
 }
 
-void ATankPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	Move(DeltaTime);
-	Rotate(DeltaTime);
-	RotateTurret(DeltaTime);
-}
-
 void ATankPawn::Resupply(uint8 numberRounds)
 {
-	if(Cannon)
+	if (Cannon)
+	{
 		Cannon->Resupply(numberRounds);
+		if (AudioResupply)
+			AudioResupply->Play();
+	}
+}
+
+FVector ATankPawn::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
 }
 
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -130,6 +153,9 @@ void ATankPawn::SwitchCannon()
 		Cannon->SetActorHiddenInGame(false);
 	if (SecondCannon)
 		SecondCannon->SetActorHiddenInGame(true);
+
+	if (AudioChangeCannon)
+		AudioChangeCannon->Play();
 }
 
 void ATankPawn::TakeDamage(FDamageData DamageData)
@@ -172,20 +198,21 @@ void ATankPawn::Rotate(float DeltaTime)
 
 void ATankPawn::RotateTurret(float DeltaTime)
 {
-	if (TankController)
-	{
-		FVector mousePosition = TankController->GetMousePosition();
-		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), mousePosition);
-		FRotator turretRotation = TurretMesh->GetComponentRotation();
-		targetRotation.Pitch = turretRotation.Pitch;
-		targetRotation.Roll = turretRotation.Roll;
-		FRotator newTurretRotation = FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey);
-		TurretMesh->SetWorldRotation(newTurretRotation);
-	}
+	/*if (TankController)
+		RotateTurretTo(TankController->GetMousePosition());*/
+}
+
+void ATankPawn::Destroyed()
+{
+	if (Cannon)
+		Cannon->Destroy();
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 {
+	if (AudioSetupCannon)
+		AudioSetupCannon->Play();
+
 	if (!newCannonClass)
 	{
 		return;
@@ -209,3 +236,27 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 		SecondCannon->SetActorHiddenInGame(true);
 }
 
+FVector ATankPawn::GetTurretForwardVector()
+{
+	return TurretMesh->GetForwardVector();
+}
+
+void ATankPawn::RotateTurretTo(FVector TargetPosition)
+{
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator turretRotation = TurretMesh->GetComponentRotation();
+	targetRotation.Pitch = turretRotation.Pitch;
+	targetRotation.Roll = turretRotation.Roll;
+	FRotator newTurretRotation = FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey);
+	TurretMesh->SetWorldRotation(newTurretRotation);
+}
+
+void ATankPawn::SetTurretDirX(float AxisValue)
+{
+	_TurretDirX = AxisValue;
+}
+
+void ATankPawn::SetTurretDirY(float AxisValue)
+{
+	_TurretDirY = AxisValue;
+}

@@ -4,6 +4,7 @@
 #include "GameFramework/Pawn.h"
 #include "DamageTaker.h"
 #include "GameStruct.h"
+#include "IScorable.h"
 #include "TankPawn.generated.h"
 
 class UCameraComponent;
@@ -11,9 +12,10 @@ class USpringArmComponent;
 class UBoxComponent;
 class UHealthComponent;
 class UArrowComponent;
+class UAudioComponent;
 
 UCLASS()
-class MYPROJECT_API ATankPawn : public APawn, public IIMachinery, public IDamageTaker
+class MYPROJECT_API ATankPawn : public APawn, public IIMachinery, public IDamageTaker, public IIScorable
 {
 	GENERATED_BODY()
 
@@ -39,6 +41,15 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UHealthComponent* HealthComponent;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioChangeCannon;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioSetupCannon;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioResupply;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float MoveSpeed = 200.0f;
 
@@ -50,6 +61,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 	TSubclassOf<ACannon> CannonClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points" , Meta = (MakeEditWidget = true))
+	TArray<FVector> PatrollingPoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move	params | Accurency")
+	float MovementAccurency = 50;
 
 	UPROPERTY()
 	class ATankPlayerController* TankController;
@@ -69,6 +86,8 @@ protected:
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
 	float _targetRotateRightdAxisValue = 0.0f;
+	float _TurretDirX = 0.0f;
+	float _TurretDirY = 0.0f;
 
 public:
 	ATankPawn();
@@ -97,8 +116,31 @@ public:
 	UFUNCTION()
 	void EnemyDestroyed(AActor* destroyedObject);
 
-	FVector GetTurretLocation() { return TurretMesh->GetComponentLocation(); };
+	UFUNCTION()
+	TArray<FVector> GetPatrollingPoints() { return PatrollingPoints; };
+
+	UFUNCTION()
+	float GetMovementAccurency() { return MovementAccurency; };
+
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
+
+	UFUNCTION()
+	FVector GetTurretForwardVector();
+
+	UFUNCTION()
+	void RotateTurretTo(FVector TargetPosition);
+
+	UFUNCTION()
+		void SetTurretDirX(float AxisValue);
+
+	UFUNCTION()
+		void SetTurretDirY(float AxisValue);
+
+	UFUNCTION()
+	virtual float GetScores() override { return 100.0f; };
+	
+	UFUNCTION()
+		TSubclassOf<ACannon> CurentCannonClass();
 
 protected:
 	UFUNCTION()
@@ -111,9 +153,22 @@ protected:
 	void Move(float DeltaTime);
 	void Rotate(float DeltaTime);
 	virtual void RotateTurret(float DeltaTime) override;
+	virtual void Destroyed() override;
 
 public:
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override
+	{
+		Super::Tick(DeltaTime);
+		Move(DeltaTime);
+		Rotate(DeltaTime);
+
+		if (_TurretDirX == 0.0f && _TurretDirY == 0.0f)
+			RotateTurret(DeltaTime);
+		else
+			RotateTurretTo(FVector(_TurretDirX, _TurretDirY, 0.0f) + GetActorLocation());
+	}
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Resupply(uint8 numberRounds);
+	FVector GetEyesPosition();
+
 };

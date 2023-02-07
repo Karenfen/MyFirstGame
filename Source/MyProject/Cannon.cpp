@@ -7,6 +7,10 @@
 #include "CollisionQueryParams.h"
 #include "DamageTaker.h"
 #include "GameStruct.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
+#include "GameFramework/ForceFeedbackEffect.h"
+
 
 ACannon::ACannon()
 {
@@ -20,6 +24,16 @@ ACannon::ACannon()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawnpoint"));
 	ProjectileSpawnPoint->SetupAttachment(Mesh);
+
+	ShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShootEffect"));
+	ShootEffect->SetupAttachment(ProjectileSpawnPoint);
+	ShootEffect->SetAutoActivate(false);
+
+	ShootAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioEffect"));
+	ShootAudio->SetupAttachment(ProjectileSpawnPoint);
+	ShootAudio->SetAutoActivate(false);
+
+	ShootForceEffect = CreateDefaultSubobject<UForceFeedbackEffect>(TEXT("ShootForceEffect"));
 }
 
 void ACannon::Fire()
@@ -173,6 +187,15 @@ bool ACannon::ProjectileShot()
 	{
 		projectile->SetOwner(this);
 		projectile->Start();
+
+		if(ShootEffect)
+			ShootEffect->ActivateSystem();
+
+		if(ShootAudio)
+			ShootAudio->Play();
+
+		FeedBack();
+
 		return true;
 	}
 
@@ -206,6 +229,29 @@ void ACannon::TraceShot()
 	{
 		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.5f, 0, 5);
 	}
+
+	if (ShootEffect)
+		ShootEffect->ActivateSystem();
+
+	if (ShootAudio)
+		ShootAudio->Play();
+
+	FeedBack();
+
 	--Ammo;
+}
+
+void ACannon::FeedBack()
+{
+	if (GetOwner() != GetWorld()->GetFirstPlayerController()->GetPawn())
+		return;
+
+	if (ShootForceEffect)
+	{
+		FForceFeedbackParameters shootForceEffectParams;
+		shootForceEffectParams.bLooping = false;
+		shootForceEffectParams.Tag = "shootForceEffectParams";
+		GetWorld()->GetFirstPlayerController()->ClientPlayForceFeedback(ShootForceEffect, shootForceEffectParams);
+	}
 }
 

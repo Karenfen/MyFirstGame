@@ -110,6 +110,9 @@ void AEnemyTurret::RotateTurret(float DeltaTime)
 
 void AEnemyTurret::Targeting()
 {
+	if (!IsPlayerSeen())
+		return;
+
 	if (IsPlayerInRange())
 		RotateTurret(0.0f);
 	else
@@ -136,5 +139,34 @@ bool AEnemyTurret::CanFire()
 void AEnemyTurret::RechargeCannon()
 {
 	CannonIsReady = true;
+}
+
+bool AEnemyTurret::IsPlayerSeen()
+{
+	if (PlayerPawn == nullptr)
+		return false;
+
+	FVector playerPos = PlayerPawn->GetActorLocation();
+	FVector eyesPos = GetEyesPosition();
+	FHitResult hitResult;
+
+	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+	traceParams.bTraceComplex = true;
+	traceParams.AddIgnoredActor(this);
+	traceParams.bReturnPhysicalMaterial = false;
+
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos, ECollisionChannel::ECC_Visibility, traceParams))
+	{
+		AActor* target = hitResult.GetActor();
+		if (target)
+			return target == PlayerPawn;
+	}
+
+	return false;
+}
+
+FVector AEnemyTurret::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
 }
 
