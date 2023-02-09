@@ -87,6 +87,8 @@ void ATankPawn::BeginPlay()
 	SetupCannon(CannonClass);
 
 	CurrentScores = 0;
+
+	
 }
 
 void ATankPawn::Resupply(uint8 numberRounds)
@@ -210,6 +212,19 @@ void ATankPawn::SetPatrollingPoints(TArray<ATargetPoint*> NewPatrollingPoints)
 
 void ATankPawn::Move(float DeltaTime)
 {
+	if (_targetForwardAxisValue == 0.0f)
+		return;
+
+	if (RootComponent->IsSimulatingPhysics())
+	{
+		UPrimitiveComponent* mesh = Cast<UPrimitiveComponent>(RootComponent);
+		if (mesh)
+		{
+			mesh->AddForce(GetActorForwardVector() * EnginePower * DeltaTime * _targetForwardAxisValue, NAME_None, true);
+			return;
+		}
+	}
+
 	FVector currentLocation = GetActorLocation();
 	FVector forwardVector = GetActorForwardVector();
 	FVector rightVector = GetActorRightVector();
@@ -222,9 +237,8 @@ void ATankPawn::Rotate(float DeltaTime)
 	float yawRotation = RotationSpeed * _targetRotateRightdAxisValue * DeltaTime;
 	FRotator currentRotation = GetActorRotation();
 
-	yawRotation += currentRotation.Yaw;
-	FRotator newRotation = FRotator(0.0f, yawRotation, 0.0f);
-	SetActorRotation(newRotation);
+	currentRotation.Yaw += yawRotation;
+	SetActorRotation(currentRotation);
 }
 
 void ATankPawn::RotateTurret(float DeltaTime)
