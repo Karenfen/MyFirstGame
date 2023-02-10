@@ -8,34 +8,18 @@ void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TankPawn = Cast<ATankPawn>(GetPawn());
-	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-
-	if (!TankPawn)
-		return;
-
-	FVector pawnLocation = TankPawn->GetActorLocation();
-	MovementAccurency = TankPawn->GetMovementAccurency();
-	TArray<FVector> points = TankPawn->GetPatrollingPoints();
-
-	for (const FVector& point : points)
-	{
-		PatrollingPoints.Add(point / 2 + pawnLocation);
-	}
-
-	CurrentPatrolPointIndex = 0;
-
-	 CurrentCannonClass = TankPawn->CurentCannonClass();
-
-	if (PoolCannonClasses.Num() == 0)
-		PoolCannonClasses.Add(CurrentCannonClass);
-	else if (PoolCannonClasses.Num() > 1)
-		GetWorld()->GetTimerManager().SetTimer(switchCannonTimerHandle, this, &ATankAIController::SwitchCannon, TimeToSwitchCannon, true);
+	Initialize();
 }
 
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!TankPawn)
+		Initialize();
+
+	if (!TankPawn)
+		return;
 
 	Move();
 
@@ -69,8 +53,6 @@ float ATankAIController::GetRotationgValue()
 	FVector forwardDirection = TankPawn->GetActorForwardVector();
 	FVector rightDirection = TankPawn->GetActorRightVector();
 	
-	DrawDebugLine(GetWorld(), pawnLocation, currentPoint, FColor::Green, false, 0.1f, 0, 5);
-
 	float forwardAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(forwardDirection, moveDirection)));
 	float rightAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(rightDirection, moveDirection)));
 	float rotationValue = 0.0f;
@@ -121,6 +103,9 @@ void ATankAIController::Fire()
 
 bool ATankAIController::IsPlayerSeen()
 {
+	if (!PlayerPawn)
+		Initialize();
+
 	if (PlayerPawn == nullptr || TankPawn == nullptr)
 		return false;
 
@@ -157,4 +142,31 @@ void ATankAIController::SwitchCannon()
 
 	CurrentCannonClass = PoolCannonClasses[currentCannonIndex];
 	TankPawn->SetupCannon(CurrentCannonClass);
+}
+
+void ATankAIController::Initialize()
+{
+	TankPawn = Cast<ATankPawn>(GetPawn());
+	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+	if (!TankPawn)
+		return;
+
+	FVector pawnLocation = TankPawn->GetActorLocation();
+	MovementAccurency = TankPawn->GetMovementAccurency();
+	TArray<FVector> points = TankPawn->GetPatrollingPoints();
+
+	for (const FVector& point : points)
+	{
+		PatrollingPoints.Add(point);
+	}
+
+	CurrentPatrolPointIndex = 0;
+
+	CurrentCannonClass = TankPawn->CurentCannonClass();
+
+	if (PoolCannonClasses.Num() == 0)
+		PoolCannonClasses.Add(CurrentCannonClass);
+	else if (PoolCannonClasses.Num() > 1)
+		GetWorld()->GetTimerManager().SetTimer(switchCannonTimerHandle, this, &ATankAIController::SwitchCannon, TimeToSwitchCannon, true);
 }

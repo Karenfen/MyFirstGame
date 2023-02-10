@@ -10,6 +10,7 @@
 #include "HealthComponent.h"
 #include "IScorable.h"
 #include "Components/AudioComponent.h"
+#include "Engine/TargetPoint.h"
 
 
 ATankPawn::ATankPawn()
@@ -103,6 +104,19 @@ FVector ATankPawn::GetEyesPosition()
 	return CannonSetupPoint->GetComponentLocation();
 }
 
+void ATankPawn::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	Move(DeltaTime);
+	Rotate(DeltaTime);
+
+	//if (_TurretDirX == 0.0f && _TurretDirY == 0.0f)
+		RotateTurret(DeltaTime);
+	//else
+		//RotateTurretTo(FVector(_TurretDirX, _TurretDirY, 0.0f) + GetActorLocation());
+}
+
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -177,6 +191,23 @@ void ATankPawn::EnemyDestroyed(AActor* destroyedObject)
 	UE_LOG(LogTemp, Warning, TEXT("Scores: %d"), CurrentScores);
 }
 
+TArray<FVector> ATankPawn::GetPatrollingPoints()
+{
+	TArray<FVector> points;
+
+	for (ATargetPoint* point : PatrollingPoints)
+	{
+		points.Add(point->GetActorLocation());
+	}
+
+	return points;
+}
+
+void ATankPawn::SetPatrollingPoints(TArray<ATargetPoint*> NewPatrollingPoints)
+{
+	PatrollingPoints = NewPatrollingPoints;
+}
+
 void ATankPawn::Move(float DeltaTime)
 {
 	FVector currentLocation = GetActorLocation();
@@ -198,8 +229,8 @@ void ATankPawn::Rotate(float DeltaTime)
 
 void ATankPawn::RotateTurret(float DeltaTime)
 {
-	/*if (TankController)
-		RotateTurretTo(TankController->GetMousePosition());*/
+	if (TankController)
+		RotateTurretTo(TankController->GetMousePosition());
 }
 
 void ATankPawn::Destroyed()

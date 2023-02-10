@@ -13,6 +13,7 @@ class UBoxComponent;
 class UHealthComponent;
 class UArrowComponent;
 class UAudioComponent;
+class ATargetPoint;
 
 UCLASS()
 class MYPROJECT_API ATankPawn : public APawn, public IIMachinery, public IDamageTaker, public IIScorable
@@ -63,7 +64,7 @@ protected:
 	TSubclassOf<ACannon> CannonClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points" , Meta = (MakeEditWidget = true))
-	TArray<FVector> PatrollingPoints;
+	TArray<ATargetPoint*> PatrollingPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move	params | Accurency")
 	float MovementAccurency = 50;
@@ -82,6 +83,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scores")
 	int MaxScores = 1000000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Scores")
+	float Scores = 100.0f;
 
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
@@ -117,9 +121,6 @@ public:
 	void EnemyDestroyed(AActor* destroyedObject);
 
 	UFUNCTION()
-	TArray<FVector> GetPatrollingPoints() { return PatrollingPoints; };
-
-	UFUNCTION()
 	float GetMovementAccurency() { return MovementAccurency; };
 
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
@@ -137,7 +138,7 @@ public:
 		void SetTurretDirY(float AxisValue);
 
 	UFUNCTION()
-	virtual float GetScores() override { return 100.0f; };
+	virtual float GetScores() override { return Scores; };
 	
 	UFUNCTION()
 		TSubclassOf<ACannon> CurentCannonClass();
@@ -156,19 +157,10 @@ protected:
 	virtual void Destroyed() override;
 
 public:
-	virtual void Tick(float DeltaTime) override
-	{
-		Super::Tick(DeltaTime);
-		Move(DeltaTime);
-		Rotate(DeltaTime);
-
-		if (_TurretDirX == 0.0f && _TurretDirY == 0.0f)
-			RotateTurret(DeltaTime);
-		else
-			RotateTurretTo(FVector(_TurretDirX, _TurretDirY, 0.0f) + GetActorLocation());
-	}
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Resupply(uint8 numberRounds);
 	FVector GetEyesPosition();
-
+	TArray<FVector> GetPatrollingPoints();
+	void  SetPatrollingPoints(TArray<ATargetPoint*> NewPatrollingPoints);
 };
