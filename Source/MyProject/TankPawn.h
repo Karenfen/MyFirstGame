@@ -28,9 +28,6 @@ protected:
 	UStaticMeshComponent* TurretMesh;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UBoxComponent* HitCollider;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -53,6 +50,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float MoveSpeed = 200.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+	float EnginePower = 1000.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float RotationSpeed = 100.0f;

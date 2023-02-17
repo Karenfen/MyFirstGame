@@ -11,25 +11,58 @@ class MYPROJECT_API AProjectile : public AActor
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* Mesh;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float MoveSpeed = 500;
+	float MoveSpeed = 500;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float MoveRate = 0.005f;
+	float MoveRate = 0.005f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
-		float Damage = 1;
+	float Damage = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	float PushForce = 1000;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage|Explode")
+	float ExplodeRadius = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage|Explode")
+	bool ExplodeAvailable = false;
+
+	// ��������� ���������� ������ ������
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystemComponent* ExplodeEffect;
+
+	// ��������� ����� ������ ������
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	class UAudioComponent* ExplodeAudio;
+
 	FTimerHandle MovementTimerHandle;
 	
 public:	
 	AProjectile();
 	virtual ~AProjectile();
-	void Start();
+	virtual void Start();
 
 protected:
 	UFUNCTION()
-		virtual void OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor*
+	virtual void OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor*
 			OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool
 			bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
-		void Move();
+	virtual void Move();
+
+	UFUNCTION()
+	virtual void Explode();
+
+	// ����� �� ��������� ����� ��� ���������
+	UFUNCTION()
+	bool MakeDamageTo(AActor* otherActor);
+
+	// ����� �� ������������ �������
+	UFUNCTION()
+	bool PushActor(AActor* otherActor);
+
 };

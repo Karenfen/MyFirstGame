@@ -73,6 +73,9 @@ protected:
 
 public:	
 	AEnemyTurret();
+	virtual ~AEnemyTurret() {};
+
+	virtual void PostInitializeComponents() override;
 
 protected:
 	UFUNCTION()
@@ -93,7 +96,7 @@ protected:
 	UFUNCTION()
 	virtual float GetScores() override { return Scores; };
 
-private:
+protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 	virtual void RotateTurret(float DeltaTime) override;
