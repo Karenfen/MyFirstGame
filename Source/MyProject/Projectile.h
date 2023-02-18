@@ -31,6 +31,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage|Explode")
 	bool ExplodeAvailable = false;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Live")
+	float TimeToDestroyAfterHit = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Live")
+	float TimeToLive = 5.0f;
+
 	// ��������� ���������� ������ ������
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	class UParticleSystemComponent* ExplodeEffect;
@@ -40,6 +46,7 @@ protected:
 	class UAudioComponent* ExplodeAudio;
 
 	FTimerHandle MovementTimerHandle;
+	FTimerHandle DestroyTimerHandle;
 	
 public:	
 	AProjectile();
@@ -64,5 +71,11 @@ protected:
 	// ����� �� ������������ �������
 	UFUNCTION()
 	bool PushActor(AActor* otherActor);
+
+	UFUNCTION()
+	virtual void Die();
+
+private:
+	virtual void Destroy_() { Destroy(); };
 
 };

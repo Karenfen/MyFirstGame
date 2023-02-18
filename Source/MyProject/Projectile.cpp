@@ -40,6 +40,7 @@ AProjectile::~AProjectile()
 void AProjectile::Start()
 {
 	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjectile::Move, MoveRate, true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AProjectile::Destroy_, TimeToLive, false);
 }
 
 void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -49,6 +50,9 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 
 	if (OtherActor != owner && OtherActor != ownerByOwner)
 	{
+		// stop timer to destroy
+		GetWorld()->GetTimerManager().ClearTimer(DestroyTimerHandle);
+
 		if (!MakeDamageTo(OtherActor))
 			PushActor(OtherActor);
 
@@ -59,7 +63,7 @@ void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 			Explode();
 		}
 
-		Destroy();
+		Die();
 	}
 
 }
@@ -155,5 +159,23 @@ bool AProjectile::PushActor(AActor* otherActor)
 	mesh->AddImpulse(forceVector * PushForce, NAME_None, true);
 
 	return true;
+}
+
+void AProjectile::Die()
+{
+	if (ExplodeAvailable)
+	{	// останавливаем таймер движения
+		GetWorld()->GetTimerManager().ClearTimer(MovementTimerHandle);
+		// скрываем
+		Mesh->SetHiddenInGame(true);
+		// выключаем коллизию
+		SetActorEnableCollision(false);
+		// to destroy after explosion
+		GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AProjectile::Destroy_, TimeToDestroyAfterHit, false);
+	}
+	else
+	{
+		Destroy_();
+	}
 }
 

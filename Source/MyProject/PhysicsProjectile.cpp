@@ -19,6 +19,11 @@ APhysicsProjectile::APhysicsProjectile()
 	TrailEffect->SetAutoActivate(false);
 }
 
+APhysicsProjectile::~APhysicsProjectile()
+{
+
+}
+
 void APhysicsProjectile::Start()
 {
 	MoveVector = GetActorForwardVector() * TrajectorySimulationSpeed;
@@ -42,6 +47,11 @@ void APhysicsProjectile::Start()
 
 void APhysicsProjectile::Move()
 {
+	if (TragectoryPointIndex >= CurrentTrajectory.Num())
+	{
+		return;
+	}
+
 	FVector currentMoveVector = CurrentTrajectory[TragectoryPointIndex] - GetActorLocation();
 	currentMoveVector.Normalize();
 
@@ -58,7 +68,7 @@ void APhysicsProjectile::Move()
 			if (ExplodeAvailable)
 				Explode();
 			
-			Destroy();
+			Die();
 		}
 		else
 		{

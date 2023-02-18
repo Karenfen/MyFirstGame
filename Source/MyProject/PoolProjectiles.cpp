@@ -42,9 +42,6 @@ AProjectileForPool* UPoolProjectiles::CreateProjectile()
 	AProjectileForPool* newProjectile = GetWorld()->SpawnActor<AProjectileForPool>(ProjectileClass, ZeroLocation, FRotator());
 	if (newProjectile)
 	{
-		// скрываем
-		newProjectile->SetActorHiddenInGame(true);
-
 		// выключаем коллизию
 		newProjectile->SetActorEnableCollision(false);
 
@@ -87,10 +84,6 @@ AProjectileForPool* UPoolProjectiles::GetProjectile(FVector toPosition)
 	projectileToGet->SetIsActive(true);
 	// задаём позицию
 	projectileToGet->SetActorLocation(toPosition);
-	// включаем коллизию
-	projectileToGet->SetActorEnableCollision(true);
-	// делаем видимым
-	projectileToGet->SetActorHiddenInGame(false);
 
 	return projectileToGet;
 }

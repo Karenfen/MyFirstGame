@@ -32,40 +32,32 @@ void AProjectileForPool::SetIsActive(bool state)
 	_isActiveInPool = state;
 }
 
-void AProjectileForPool::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AProjectileForPool::Start()
 {
-	AActor* owner = GetOwner();
-	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
+	Super::Start();
 
-	if (OtherActor != owner && OtherActor != ownerByOwner)
+	Mesh->SetHiddenInGame(false);
+	SetActorEnableCollision(true);
+}
+
+void AProjectileForPool::Destroy_()
+{
+	// если активен, то делаем не активным
+	if (_isActiveInPool)
 	{
-		IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
-		if (damageTakerActor)
-		{
-			FDamageData damageData;
-			damageData.DamageValue = Damage;
-			damageData.Instigator = ownerByOwner;
-			damageData.DamageMaker = this;
-			damageTakerActor->TakeDamage(damageData);
-		}
-
-		// если активен, то делаем не активным
-		if (_isActiveInPool)
-		{
-			// останавливаем таймер движения
-			GetWorld()->GetTimerManager().ClearTimer(MovementTimerHandle);
-			// делаем неактивным
-			_isActiveInPool = false;
-			// скрываем
-			SetActorHiddenInGame(true);
-			// выключаем коллизию
-			SetActorEnableCollision(false);
-			// отправляем в место хранения пулла
-			SetActorLocation(_poolLocation);
-		}
-		else // если не активен, то удаляем
-		{
-			this->Destroy();
-		}
+		// останавливаем таймер движения
+		GetWorld()->GetTimerManager().ClearTimer(MovementTimerHandle);
+		// делаем неактивным
+		_isActiveInPool = false;
+		// скрываем
+		Mesh->SetHiddenInGame(true);
+		// выключаем коллизию
+		SetActorEnableCollision(false);
+		// отправляем в место хранения пулла
+		SetActorLocation(_poolLocation);
+	}
+	else // если не активен, то удаляем
+	{
+		Destroy();
 	}
 }
