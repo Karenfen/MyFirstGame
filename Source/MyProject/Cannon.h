@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameStruct.h"
-#include "Projectile.h"
 #include "Cannon.generated.h"
 
 
@@ -30,6 +29,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	class UForceFeedbackEffect* ShootForceEffect;
 
+	// добавляем компонент пулл проджектайлов
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	class UPoolProjectiles* ProjectilePool;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	float FireRate = 1.0f;
@@ -50,7 +53,7 @@ protected:
 	uint8 ShotsInBurst = 3;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-	TSubclassOf<AProjectile> ProjectileClass;
+	TSubclassOf<class ABaseAmmoClass> AmmoClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 	int maxAmmo = 50;
@@ -83,7 +86,7 @@ protected:
 	void Burst();
 	void TraceBurst();
 	virtual bool ProjectileShot();
-	void TraceShot();
+	virtual void TraceShot();
 	void FeedBack();
 };
 

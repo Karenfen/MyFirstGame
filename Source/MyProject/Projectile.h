@@ -2,25 +2,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BaseAmmoClass.h"
 #include "Projectile.generated.h"
 
 UCLASS()
-class MYPROJECT_API AProjectile : public AActor
+class MYPROJECT_API AProjectile : public ABaseAmmoClass
 {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UStaticMeshComponent* Mesh;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float MoveSpeed = 500;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float MoveRate = 0.005f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
-	float Damage = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 	float PushForce = 1000;
@@ -31,12 +26,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage|Explode")
 	bool ExplodeAvailable = false;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Live")
-	float TimeToDestroyAfterHit = 1.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Live")
-	float TimeToLive = 5.0f;
-
 	// ��������� ���������� ������ ������
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	class UParticleSystemComponent* ExplodeEffect;
@@ -45,13 +34,15 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	class UAudioComponent* ExplodeAudio;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Live")
+	float TimeToDestroyAfterHit = 1.0f;
+
 	FTimerHandle MovementTimerHandle;
-	FTimerHandle DestroyTimerHandle;
 	
 public:	
 	AProjectile();
 	virtual ~AProjectile();
-	virtual void Start();
+	virtual void Start() override;
 
 protected:
 	UFUNCTION()
@@ -64,10 +55,6 @@ protected:
 	UFUNCTION()
 	virtual void Explode();
 
-	// ����� �� ��������� ����� ��� ���������
-	UFUNCTION()
-	bool MakeDamageTo(AActor* otherActor);
-
 	// ����� �� ������������ �������
 	UFUNCTION()
 	bool PushActor(AActor* otherActor);
@@ -75,7 +62,9 @@ protected:
 	UFUNCTION()
 	virtual void Die();
 
-private:
-	virtual void Destroy_() { Destroy(); };
+	UFUNCTION()
+	bool MakeDamageTo(AActor* otherActor);
+
+	virtual void Destroy_() override;
 
 };

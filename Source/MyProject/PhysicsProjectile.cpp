@@ -26,6 +26,8 @@ APhysicsProjectile::~APhysicsProjectile()
 
 void APhysicsProjectile::Start()
 {
+	Super::Start();
+
 	MoveVector = GetActorForwardVector() * TrajectorySimulationSpeed;
 	CurrentTrajectory = PhysicsComponent->GenerateTrajectory(GetActorLocation(), MoveVector, TrajectorySimulationMaxTime, TrajectorySimulationTimeStep, 0);
 	
@@ -42,7 +44,6 @@ void APhysicsProjectile::Start()
 	if (TrailEffect)
 		TrailEffect->ActivateSystem();
 
-	Super::Start();
 }
 
 void APhysicsProjectile::Move()

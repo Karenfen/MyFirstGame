@@ -1,5 +1,4 @@
 #include "Projectile.h"
-#include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "IMachinery.h"
 #include "DamageTaker.h"
@@ -14,11 +13,6 @@ AProjectile::AProjectile()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	USceneComponent* sceeneCpm = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = sceeneCpm;
-
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(RootComponent);
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnMeshOverlapBegin);
 
 	// �������������� ���������� ������ ������
@@ -39,8 +33,12 @@ AProjectile::~AProjectile()
 
 void AProjectile::Start()
 {
+	Super::Start();
+
 	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjectile::Move, MoveRate, true, 0.0f);
-	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AProjectile::Destroy_, TimeToLive, false);
+
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
 }
 
 void AProjectile::OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -124,22 +122,6 @@ void AProjectile::Explode()
 	}
 }
 
-bool AProjectile::MakeDamageTo(AActor* otherActor)
-{
-	IDamageTaker* damageTakerActor = Cast<IDamageTaker>(otherActor);
-
-	if (!damageTakerActor)
-		return false;
-
-	FDamageData damageData;
-	damageData.DamageValue = Damage;
-	damageData.Instigator = GetOwner();
-	damageData.DamageMaker = this;
-	damageTakerActor->TakeDamage(damageData);
-
-	return true;
-}
-
 bool AProjectile::PushActor(AActor* otherActor)
 {
 	if (!otherActor)
@@ -176,6 +158,44 @@ void AProjectile::Die()
 	else
 	{
 		Destroy_();
+	}
+}
+
+bool AProjectile::MakeDamageTo(AActor* otherActor)
+{
+	IDamageTaker* damageTakerActor = Cast<IDamageTaker>(otherActor);
+
+	if (!damageTakerActor)
+		return false;
+
+	FDamageData damageData;
+	damageData.DamageValue = Damage;
+	damageData.Instigator = GetOwner();
+	damageData.DamageMaker = this;
+	damageTakerActor->TakeDamage(damageData);
+
+	return true;
+}
+
+void AProjectile::Destroy_()
+{
+	// если активен, то делаем не активным
+	if (_isActiveInPool)
+	{
+		// останавливаем таймер движения
+		GetWorld()->GetTimerManager().ClearTimer(MovementTimerHandle);
+		// делаем неактивным
+		_isActiveInPool = false;
+		// скрываем
+		SetActorHiddenInGame(true);
+		// выключаем коллизию
+		SetActorEnableCollision(false);
+		// отправляем в место хранения пулла
+		SetActorLocation(_poolLocation);
+	}
+	else // если не активен, то удаляем
+	{
+		Destroy();
 	}
 }
 

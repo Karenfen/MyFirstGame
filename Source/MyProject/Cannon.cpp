@@ -10,6 +10,9 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/ForceFeedbackEffect.h"
+#include "BaseAmmoClass.h"
+#include "Laser.h"
+#include "PoolProjectiles.h"
 
 
 ACannon::ACannon()
@@ -34,6 +37,9 @@ ACannon::ACannon()
 	ShootAudio->SetAutoActivate(false);
 
 	ShootForceEffect = CreateDefaultSubobject<UForceFeedbackEffect>(TEXT("ShootForceEffect"));
+
+	// создаём пулл
+	ProjectilePool = CreateDefaultSubobject<UPoolProjectiles>(TEXT("Pool Projectiles"));
 }
 
 ACannon::~ACannon()
@@ -186,23 +192,31 @@ void ACannon::TraceBurst()
 
 bool ACannon::ProjectileShot()
 {
-	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
-		ProjectileSpawnPoint->GetComponentLocation(),
-		ProjectileSpawnPoint->GetComponentRotation());
+	ABaseAmmoClass* projectile;
+	// если есть пулл, запрашиваем обьект
+	if (ProjectilePool)
+	{
+		projectile = ProjectilePool->GetProjectile(ProjectileSpawnPoint->GetComponentLocation());
+		if (projectile)
+			projectile->SetActorRotation(ProjectileSpawnPoint->GetComponentRotation());
+	}
+	else
+	{
+		projectile = GetWorld()->SpawnActor<ABaseAmmoClass>(AmmoClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+	}
+
 
 	if (projectile)
 	{
-		projectile->SetOwner(this);
-		projectile->Start();
-
-		if(ShootEffect)
+		if (ShootEffect)
 			ShootEffect->ActivateSystem();
 
-		if(ShootAudio)
+		if (ShootAudio)
 			ShootAudio->Play();
 
 		FeedBack();
 
+		projectile->Start();
 		return true;
 	}
 
@@ -211,20 +225,37 @@ bool ACannon::ProjectileShot()
 
 void ACannon::TraceShot()
 {
+	ABaseAmmoClass* laser;
+	// если есть пулл, запрашиваем обьект
+	if (ProjectilePool)
+	{
+		laser = ProjectilePool->GetProjectile(ProjectileSpawnPoint->GetComponentLocation());
+		if (laser)
+			laser->SetActorRotation(ProjectileSpawnPoint->GetComponentRotation());
+	}
+	else
+	{
+		laser = GetWorld()->SpawnActor<ABaseAmmoClass>(AmmoClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+	}
+
 	FHitResult hitResult;
-	FCollisionQueryParams traceParams =	FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
 	traceParams.bTraceComplex = true;
 	traceParams.bReturnPhysicalMaterial = false;
 	FVector start = ProjectileSpawnPoint->GetComponentLocation();
 	FVector end = ProjectileSpawnPoint->GetForwardVector() * FireRange + start;
 
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end,	ECollisionChannel::ECC_Visibility, traceParams))
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
 	{
-		DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Red, false, 0.5f, 0, 5);
-
+		ALaser* laser_ = Cast<ALaser>(laser);
+		if (laser_)
+		{
+			laser_->SetLenght(FVector::Distance(start, hitResult.Location));
+		}
+		
 		IDamageTaker* enemy = Cast<IDamageTaker>(hitResult.GetActor());
 		if (enemy)
-		{ 
+		{
 			FDamageData damageData;
 			damageData.DamageValue = FireDamage;
 			damageData.Instigator = GetOwner();
@@ -234,8 +265,14 @@ void ACannon::TraceShot()
 	}
 	else
 	{
-		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.5f, 0, 5);
+		ALaser* laser_ = Cast<ALaser>(laser);
+		if (laser_)
+		{
+			laser_->SetLenght(FVector::Distance(start, hitResult.Location));
+		}
 	}
+
+	laser->Start();
 
 	if (ShootEffect)
 		ShootEffect->ActivateSystem();

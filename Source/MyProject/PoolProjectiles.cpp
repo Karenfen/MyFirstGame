@@ -1,5 +1,5 @@
 #include "PoolProjectiles.h"
-#include "ProjectileForPool.h"
+#include "BaseAmmoClass.h"
 
 UPoolProjectiles::UPoolProjectiles()
 {
@@ -36,10 +36,10 @@ void UPoolProjectiles::BeginPlay()
 }
 
 
-AProjectileForPool* UPoolProjectiles::CreateProjectile()
+ABaseAmmoClass* UPoolProjectiles::CreateProjectile()
 {
 	// создаём новый обьект в нулевой координате
-	AProjectileForPool* newProjectile = GetWorld()->SpawnActor<AProjectileForPool>(ProjectileClass, ZeroLocation, FRotator());
+	ABaseAmmoClass* newProjectile = GetWorld()->SpawnActor<ABaseAmmoClass>(ProjectileClass, ZeroLocation, FRotator());
 	if (newProjectile)
 	{
 		// выключаем коллизию
@@ -53,11 +53,11 @@ AProjectileForPool* UPoolProjectiles::CreateProjectile()
 }
 
 
-AProjectileForPool* UPoolProjectiles::GetProjectile(FVector toPosition)
+ABaseAmmoClass* UPoolProjectiles::GetProjectile(FVector toPosition)
 {
-	AProjectileForPool* projectileToGet = nullptr;
+	ABaseAmmoClass* projectileToGet = nullptr;
 	// ищем в пулле свободный проджектайл
-	for (AProjectileForPool* object : Pool)
+	for (ABaseAmmoClass* object : Pool)
 	{
 		if (!IsValid(object))
 		{

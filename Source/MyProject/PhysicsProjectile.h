@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ProjectileForPool.h"
+#include "Projectile.h"
 #include "PhysicsProjectile.generated.h"
 
 
@@ -9,7 +9,7 @@ class UPhysicsComponent;
 
 
 UCLASS()
-class MYPROJECT_API APhysicsProjectile : public AProjectileForPool
+class MYPROJECT_API APhysicsProjectile : public AProjectile
 {
 	GENERATED_BODY()
 	
