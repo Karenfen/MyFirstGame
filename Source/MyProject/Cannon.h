@@ -66,7 +66,7 @@ protected:
 	FTimerHandle ReloadSpecTimerHandle;
 	bool ReadyToFire = false;
 	bool ReadyToFireSpec = false;
-	uint8 currentShotInBurst = ShotsInBurst;
+	uint8 currentShotInBurst = 0;
 	
 public:	
 	ACannon();

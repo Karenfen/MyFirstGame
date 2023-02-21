@@ -145,7 +145,7 @@ void ACannon::BeginPlay()
 
 	Reload();
 	ReloadSpec();
-	
+	currentShotInBurst = ShotsInBurst;
 }
 
 void ACannon::Reload()
