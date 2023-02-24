@@ -1,8 +1,8 @@
 #include "AmmoBox.h"
-#include "TankPawn.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
+#include "PlayerTankPawn.h"
 
 AAmmoBox::AAmmoBox()
 {
@@ -19,7 +19,7 @@ AAmmoBox::AAmmoBox()
 
 void AAmmoBox::OnMeshOverLapBegin(UPrimitiveComponent* OverLappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweetResult)
 {
-	ATankPawn* playerPawn =	Cast<ATankPawn>(OtherActor);
+	APlayerTankPawn* playerPawn =	Cast<APlayerTankPawn>(OtherActor);
 	if (playerPawn)
 	{
 		switch (Type)

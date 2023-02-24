@@ -1,8 +1,9 @@
 #include "TankAIController.h"
-#include "TankPawn.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
+#include "EnemyTankPawn.h"
+#include "PlayerTankPawn.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -33,11 +34,16 @@ void ATankAIController::Move()
 		return;
 
 	TankPawn->MoveForward(1.0f);
-	TankPawn->RotateRight(GetRotationgValue());
+	TankPawn->RotateRight(GetRotationValue());
 }
 
-float ATankAIController::GetRotationgValue()
+float ATankAIController::GetRotationValue()
 {
+	if (CurrentPatrolPointIndex >= PatrollingPoints.Num())
+	{
+		return 0.0f;
+	}
+
 	FVector currentPoint = PatrollingPoints[CurrentPatrolPointIndex];
 	FVector pawnLocation = TankPawn->GetActorLocation();
 
@@ -146,8 +152,8 @@ void ATankAIController::SwitchCannon()
 
 void ATankAIController::Initialize()
 {
-	TankPawn = Cast<ATankPawn>(GetPawn());
-	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	TankPawn = Cast<AEnemyTankPawn>(GetPawn());
+	PlayerPawn = Cast<APlayerTankPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
 	if (!TankPawn)
 		return;

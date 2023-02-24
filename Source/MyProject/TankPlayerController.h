@@ -4,7 +4,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
-class ATankPawn;
+class APlayerTankPawn;
 
 UCLASS()
 class MYPROJECT_API ATankPlayerController : public APlayerController
@@ -13,7 +13,7 @@ class MYPROJECT_API ATankPlayerController : public APlayerController
 
 protected:
 	UPROPERTY()
-		ATankPawn* TankPawn;
+		APlayerTankPawn* TankPawn;
 
 public:
 	ATankPlayerController();
@@ -30,7 +30,6 @@ protected:
 	void Fire();
 	void FireSpecial();
 	void SwitchCannon();
-	void TurretRotateRight(float AxisValue);
 	void SetTurretDirForward(float AxisValue);
 	void SetTurretDirRight(float AxisValue);
 

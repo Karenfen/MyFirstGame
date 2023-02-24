@@ -17,5 +17,5 @@ class MYPROJECT_API IDamageTaker
 	GENERATED_BODY()
 
 public:
-	virtual void TakeDamage(FDamageData DamageData) = 0;
+	virtual void TakeDamage_(FDamageData DamageData) = 0;
 };

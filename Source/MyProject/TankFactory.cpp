@@ -6,11 +6,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SceneComponent.h"
 #include "HealthComponent.h"
-#include "TankPawn.h"
 #include "MapLoader.h"
 #include "Engine/StaticMesh.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AudioComponent.h"
+#include "PlayerTankPawn.h"
+#include "EnemyTankPawn.h"
 
 
 
@@ -57,7 +58,7 @@ void ATankFactory::BeginPlay()
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATankFactory::SpawnNewTank, SpawnTankRate, true, SpawnTankRate);
 }
 
-void ATankFactory::TakeDamage(FDamageData DamageData)
+void ATankFactory::TakeDamage_(FDamageData DamageData)
 {
 	HealthComponent->TakeDamage(DamageData);
 }
@@ -67,7 +68,7 @@ void ATankFactory::Die(AActor* killer)
 	// если наш убийца - это игрок, засчитываем ему очки
 	if (killer == GetWorld()->GetFirstPlayerController()->GetPawn())
 	{
-		ATankPawn* player = Cast<ATankPawn>(killer);
+		APlayerTankPawn* player = Cast<APlayerTankPawn>(killer);
 		if (player)
 			player->EnemyDestroyed(this);
 	}
@@ -118,7 +119,7 @@ void ATankFactory::SpawnNewTank()
 		return;
 
 	FTransform spawnTransform(TankSpawnPoint->GetComponentRotation(), TankSpawnPoint->GetComponentLocation(), FVector(1));
-	ATankPawn* newTank = GetWorld()->SpawnActorDeferred<ATankPawn>(SpawnTankClass, spawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	AEnemyTankPawn* newTank = GetWorld()->SpawnActorDeferred<AEnemyTankPawn>(SpawnTankClass, spawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	newTank->SetPatrollingPoints(TankWayPoints);
 	
 	UGameplayStatics::FinishSpawningActor(newTank, spawnTransform);

@@ -1,60 +1,21 @@
 #include "EnemyTurret.h"
-#include "TankPlayerController.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Cannon.h"
 #include "TimerManager.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/ArrowComponent.h"
-#include "Components/BoxComponent.h"
-#include "HealthComponent.h"
-#include "TankPawn.h"
-
+#include "PlayerTankPawn.h"
+#include "Cannon.h"
 
 
 AEnemyTurret::AEnemyTurret()
 {
-	PrimaryActorTick.bCanEverTick = false;
-
-	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret body"));
-	RootComponent = BodyMesh;
-
-	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret turret"));
-	TurretMesh->AttachToComponent(BodyMesh, FAttachmentTransformRules::KeepRelativeTransform, "ADD_Parts_Here_Socket");
-
-	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
-	CannonSetupPoint->AttachToComponent(TurretMesh,	FAttachmentTransformRules::KeepRelativeTransform, "Cannon_Setup_Socket");
-
-	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
-	HitCollider->SetupAttachment(BodyMesh);
-
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
-	HealthComponent->OnDie.AddUObject(this, &AEnemyTurret::Die);
-	HealthComponent->OnDamaged.AddUObject(this, &AEnemyTurret::DamageTaked);
 
 }
 
-void AEnemyTurret::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	UStaticMesh* turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
-
-	if (turretMeshTemp)
-		TurretMesh->SetStaticMesh(turretMeshTemp);
-
-	UStaticMesh * bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
-
-	if (bodyMeshTemp)
-		BodyMesh->SetStaticMesh(bodyMeshTemp);
-
-}
 
 void AEnemyTurret::Fire()
 {
-	if (Cannon)
-	{
-		Cannon->Fire();
+	Super::Fire();
 
+	if (IsValid(Cannon))
+	{
 		if (Cannon->IsEmpty())
 		{
 			CannonIsReady = false;
@@ -64,58 +25,21 @@ void AEnemyTurret::Fire()
 	}
 }
 
-void AEnemyTurret::SetupCannon(TSubclassOf<ACannon> newCannonClass)
-{
-	FActorSpawnParameters params;
-	params.Owner = this;
-
-	Cannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, params);
-	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-}
-
-void AEnemyTurret::TakeDamage(FDamageData DamageData)
-{
-	HealthComponent->TakeDamage(DamageData);
-}
-
 void AEnemyTurret::Die(AActor* killer)
 {
-	ATankPawn* player = Cast<ATankPawn>(killer);
+	APlayerTankPawn* player = Cast<APlayerTankPawn>(killer);
 	if (player)
 		player->EnemyDestroyed(this);
 
-	Destroy();
-}
-
-void AEnemyTurret::DamageTaked(float DamageValue)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+	Super::Die(killer);
 }
 
 void AEnemyTurret::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetupCannon(CannonClass);
-
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this,	&AEnemyTurret::Targeting, TargetingRate, true, TargetingRate);
-}
-
-void AEnemyTurret::Destroyed()
-{
-	if (Cannon)
-		Cannon->Destroy();
-}
-
-void AEnemyTurret::RotateTurret(float DeltaTime)
-{
-	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PlayerPawn->GetActorLocation());
-	FRotator currRotation = TurretMesh->GetComponentRotation();
-	targetRotation.Pitch = currRotation.Pitch;
-	targetRotation.Roll = currRotation.Roll;
-	TurretMesh->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, TargetingSpeed));
 }
 
 void AEnemyTurret::Targeting()
@@ -124,7 +48,7 @@ void AEnemyTurret::Targeting()
 		return;
 
 	if (IsPlayerInRange())
-		RotateTurret(0.0f);
+		RotateTurretTo(PlayerPawn->GetActorLocation());
 	else
 		return;
 
@@ -143,6 +67,7 @@ bool AEnemyTurret::CanFire()
 	FVector dirToPlayer = PlayerPawn->GetActorLocation() - GetActorLocation();
 	dirToPlayer.Normalize();
 	float aimAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(targetingDir, dirToPlayer)));
+	
 	return aimAngle <= Accurency;
 }
 
@@ -174,9 +99,3 @@ bool AEnemyTurret::IsPlayerSeen()
 
 	return false;
 }
-
-FVector AEnemyTurret::GetEyesPosition()
-{
-	return CannonSetupPoint->GetComponentLocation();
-}
-

@@ -15,5 +15,5 @@ class MYPROJECT_API IIScorable
 	GENERATED_BODY()
 
 public:
-	virtual float GetScores() = 0;
+	virtual int GetScores() = 0;
 };

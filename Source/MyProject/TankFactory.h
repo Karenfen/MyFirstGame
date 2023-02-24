@@ -60,16 +60,14 @@ protected:
 
 	//очки за уничтожение
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Scores")
-	float Scores = 150.0f;
+	int Scores = 150;
 
 public:	
 	ATankFactory();
+	virtual void TakeDamage_(FDamageData DamageData) override;
 
 	UFUNCTION()
-	void TakeDamage(FDamageData DamageData);
-
-	UFUNCTION()
-	virtual float GetScores() override { return Scores; };
+	virtual int GetScores() override { return Scores; };
 
 protected:
 	virtual void BeginPlay() override;

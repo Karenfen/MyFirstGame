@@ -1,6 +1,5 @@
 #include "Projectile.h"
 #include "TimerManager.h"
-#include "IMachinery.h"
 #include "DamageTaker.h"
 #include "GameStruct.h"
 #include "Components/PrimitiveComponent.h"
@@ -172,7 +171,7 @@ bool AProjectile::MakeDamageTo(AActor* otherActor)
 	damageData.DamageValue = Damage;
 	damageData.Instigator = GetOwner();
 	damageData.DamageMaker = this;
-	damageTakerActor->TakeDamage(damageData);
+	damageTakerActor->TakeDamage_(damageData);
 
 	return true;
 }

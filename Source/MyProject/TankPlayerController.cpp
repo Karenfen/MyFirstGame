@@ -1,7 +1,7 @@
 #include "TankPlayerController.h"
-#include "TankPawn.h"
 #include "DrawDebugHelpers.h"
 #include "math.h"
+#include "PlayerTankPawn.h"
 
 ATankPlayerController::ATankPlayerController()
 {
@@ -31,7 +31,7 @@ void ATankPlayerController::BeginPlay()
 	Super::BeginPlay();
 	bShowMouseCursor = true;
 
-	TankPawn = Cast<ATankPawn>(GetPawn());
+	TankPawn = Cast<APlayerTankPawn>(GetPawn());
 }
 
 void ATankPlayerController::MoveForward(float AxisValue)
@@ -56,7 +56,7 @@ void ATankPlayerController::MousePositionUpdate()
 {
 	FVector mouseDirection;
 	DeprojectMousePositionToWorld(MousePosition, mouseDirection);
-	FVector pawnPos = TankPawn->GetActorLocation();
+	FVector pawnPos = TankPawn->APawn::GetActorLocation();
 	MousePosition.Z = pawnPos.Z;
 	FVector dir = MousePosition - pawnPos;
 	dir.Normalize();
@@ -79,11 +79,6 @@ void ATankPlayerController::SwitchCannon()
 {
 	if (TankPawn)
 		TankPawn->SwitchCannon();
-}
-
-void ATankPlayerController::TurretRotateRight(float AxisValue)
-{
-	
 }
 
 void ATankPlayerController::SetTurretDirForward(float AxisValue)

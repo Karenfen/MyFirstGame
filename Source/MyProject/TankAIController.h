@@ -14,10 +14,10 @@ class MYPROJECT_API ATankAIController : public AAIController
 	
 protected:
 	UPROPERTY()
-	class ATankPawn* TankPawn;
+	class AEnemyTankPawn* TankPawn;
 
 	UPROPERTY()
-	class APawn* PlayerPawn;
+	class APlayerTankPawn* PlayerPawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points" , Meta = (MakeEditWidget = true))
 	TArray<FVector> PatrollingPoints;
@@ -52,7 +52,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	void Move();
-	float GetRotationgValue();
+	float GetRotationValue();
 	void Targeting();
 	void RotateToPlayer();
 	bool IsPlayerInRange();

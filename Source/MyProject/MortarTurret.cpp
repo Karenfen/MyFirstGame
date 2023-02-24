@@ -2,13 +2,13 @@
 #include "Components/ArrowComponent.h"
 
 
-void AMortarTurret::RotateTurret(float DeltaTime)
+void AMortarTurret::RotateTurretTo(FVector TargetPosition)
 {
-	Super::RotateTurret(DeltaTime);
-
 	// на всякий случай делаем проверку указателей
 	if (!PlayerPawn || !CannonSetupPoint)
 		return;
+
+	Super::RotateTurretTo(TargetPosition);
 
 	// изменение наклона орудия
 	float distanceToPlayer = FVector::Distance(PlayerPawn->GetActorLocation(), turretLocation);		/* находим расстояние до игрока */

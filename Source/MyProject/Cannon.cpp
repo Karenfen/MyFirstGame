@@ -260,7 +260,7 @@ void ACannon::TraceShot()
 			damageData.DamageValue = FireDamage;
 			damageData.Instigator = GetOwner();
 			damageData.DamageMaker = this;
-			enemy->TakeDamage(damageData);
+			enemy->TakeDamage_(damageData);
 		}
 	}
 	else

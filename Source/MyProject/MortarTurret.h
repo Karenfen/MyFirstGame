@@ -19,10 +19,10 @@ protected:
 
 public:
 	AMortarTurret() {};
-	virtual ~AMortarTurret() {};
+	//virtual ~AMortarTurret() {};
 
 protected:
-	virtual void RotateTurret(float DeltaTime) override;
+	virtual void RotateTurretTo(FVector TargetPosition) override;
 	virtual void BeginPlay() override;
 
 	FVector turretLocation;
