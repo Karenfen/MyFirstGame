@@ -82,17 +82,27 @@ void ATankAIController::Targeting()
 
 void ATankAIController::RotateToPlayer()
 {
-	if (IsPlayerInRange() && TankPawn)
+	if (IsPlayerInRange() && TankPawn && PlayerPawn)
 		TankPawn->RotateTurretTo(PlayerPawn->GetActorLocation());
 }
 
 bool ATankAIController::IsPlayerInRange()
 {
-	return FVector::Distance(TankPawn->GetActorLocation(), PlayerPawn->GetActorLocation()) <= TargetingRange;
+	if (TankPawn && PlayerPawn)
+	{
+		return FVector::Distance(TankPawn->GetActorLocation(), PlayerPawn->GetActorLocation()) <= TargetingRange;
+	}
+
+	return false;
 }
 
 bool ATankAIController::CanFire()
 {
+	if (!TankPawn || !PlayerPawn)
+	{
+		return false;
+	}
+
 	FVector targetingDir = TankPawn->GetTurretForwardVector();
 	FVector dirToPlayer = PlayerPawn->GetActorLocation() - TankPawn->GetActorLocation();
 	dirToPlayer.Normalize();
@@ -174,5 +184,5 @@ void ATankAIController::Initialize()
 	if (PoolCannonClasses.Num() == 0)
 		PoolCannonClasses.Add(CurrentCannonClass);
 	else if (PoolCannonClasses.Num() > 1)
-		GetWorld()->GetTimerManager().SetTimer(switchCannonTimerHandle, this, &ATankAIController::SwitchCannon, TimeToSwitchCannon, true);
+		GetWorld()->GetTimerManager().SetTimer(switchCannonTimerHandle, this, &ATankAIController::SwitchCannon, TimeToSwitchCannon, true, TimeToSwitchCannon);
 }
