@@ -30,9 +30,6 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UArrowComponent* CannonSetupPoint;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UBoxComponent* HitCollider;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UHealthComponent* HealthComponent;
@@ -52,7 +49,7 @@ protected:
 public:	
 	// Sets default values for this actor's properties
 	AMachineryActor();
-	//virtual ~AMachineryActor() {};
+	virtual ~AMachineryActor() {};
 
 	virtual void Fire();
 	void Resupply(uint8 numberRounds);

@@ -30,11 +30,11 @@ protected:
 
 public:
 	ATankPawn();
-	//virtual ~ATankPawn() {};
+	virtual ~ATankPawn() {};
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-
+	virtual void RotateTurretTo(FVector TargetPosition)  override;
 	UFUNCTION()
 	void MoveForward(float AxisValue);
 	UFUNCTION()

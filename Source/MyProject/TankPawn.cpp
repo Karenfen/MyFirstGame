@@ -1,8 +1,11 @@
 #include "TankPawn.h"
 #include "TankPlayerController.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Engine/TargetPoint.h"
+#include "Kismet/KismetMathLibrary.h"
+
+
+
 
 
 ATankPawn::ATankPawn()
@@ -22,6 +25,23 @@ void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ATankPawn::RotateTurretTo(FVector TargetPosition)
+{
+	if (!IsValid(TurretMesh))
+	{
+		return;
+	}
+
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator turretRotation = TurretMesh->GetComponentRotation();
+	FRotator bodyRotation = GetActorRotation();
+	float angleTurretYawRad = UKismetMathLibrary::DegreesToRadians(targetRotation.Yaw - bodyRotation.Yaw);
+	targetRotation.Pitch = bodyRotation.Pitch * UKismetMathLibrary::Cos(angleTurretYawRad) - bodyRotation.Roll * UKismetMathLibrary::Sin(angleTurretYawRad);
+	targetRotation.Roll = bodyRotation.Roll * UKismetMathLibrary::Cos(angleTurretYawRad) + bodyRotation.Pitch * UKismetMathLibrary::Sin(angleTurretYawRad);
+
+	TurretMesh->SetWorldRotation(FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey));
 }
 
 void ATankPawn::MoveForward(float AxisValue)

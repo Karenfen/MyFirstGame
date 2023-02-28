@@ -43,7 +43,7 @@ protected:
 
 public:	
 	AEnemyTurret();
-	//virtual ~AEnemyTurret() {};
+	virtual ~AEnemyTurret() {};
 
 protected:
 	virtual void Fire() override;

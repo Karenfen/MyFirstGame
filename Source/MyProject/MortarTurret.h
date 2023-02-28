@@ -19,7 +19,7 @@ protected:
 
 public:
 	AMortarTurret() {};
-	//virtual ~AMortarTurret() {};
+	virtual ~AMortarTurret() {};
 
 protected:
 	virtual void RotateTurretTo(FVector TargetPosition) override;

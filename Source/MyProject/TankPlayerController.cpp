@@ -56,7 +56,7 @@ void ATankPlayerController::MousePositionUpdate()
 {
 	FVector mouseDirection;
 	DeprojectMousePositionToWorld(MousePosition, mouseDirection);
-	FVector pawnPos = TankPawn->APawn::GetActorLocation();
+	FVector pawnPos = TankPawn->GetActorLocation();
 	MousePosition.Z = pawnPos.Z;
 	FVector dir = MousePosition - pawnPos;
 	dir.Normalize();

@@ -27,7 +27,7 @@ protected:
 
 public:
 	AEnemyTankPawn();
-	//virtual ~AEnemyTankPawn() {};
+	virtual ~AEnemyTankPawn() {};
 
 	FORCEINLINE virtual int GetScores() override { return Scores; };
 	TArray<FVector> GetPatrollingPoints();

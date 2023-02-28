@@ -26,9 +26,6 @@ AMachineryActor::AMachineryActor()
 	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
 	CannonSetupPoint->AttachToComponent(TurretMesh, FAttachmentTransformRules::KeepRelativeTransform, "Cannon_Setup_Socket");
 
-	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
-	HitCollider->SetupAttachment(BodyMesh);
-
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health	component"));
 	HealthComponent->OnDie.AddUObject(this, &AMachineryActor::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &AMachineryActor::DamageTaked);
@@ -105,9 +102,8 @@ void AMachineryActor::RotateTurretTo(FVector TargetPosition)
 
 	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
 	FRotator turretRotation = TurretMesh->GetComponentRotation();
-	FRotator bodyRotation = BodyMesh->GetComponentRotation();
-	targetRotation.Pitch = bodyRotation.Pitch;
-	targetRotation.Roll = bodyRotation.Roll;
+	targetRotation.Pitch = turretRotation.Pitch;
+	targetRotation.Roll = turretRotation.Roll;
 	TurretMesh->SetWorldRotation(FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey));
 }
 

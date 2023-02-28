@@ -45,7 +45,7 @@ protected:
 
 public:
 	APlayerTankPawn();
-	//virtual ~APlayerTankPawn() {};
+	virtual ~APlayerTankPawn() {};
 
 	virtual void Tick(float DeltaTime) override;
 	void FireSpecial();
