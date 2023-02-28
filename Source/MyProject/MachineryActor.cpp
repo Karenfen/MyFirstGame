@@ -55,7 +55,7 @@ void AMachineryActor::Resupply(uint8 numberRounds)
 {
 	if (IsValid(Cannon))
 	{
-		if (AudioResupply)
+		if (IsValid(AudioResupply))
 			AudioResupply->Play();
 
 		Cannon->Resupply(numberRounds);

@@ -11,6 +11,20 @@
 ATankPawn::ATankPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	AudioSetupCannon = APawn::CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSetupCannon"));
+	AudioSetupCannon->SetupAttachment(TurretMesh);
+	AudioSetupCannon->SetAutoActivate(false);
+}
+
+void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
+{
+	Super::SetupCannon(newCannonClass);
+
+	if (AudioSetupCannon)
+	{
+		AudioSetupCannon->Play();
+	}
 }
 
 void ATankPawn::Tick(float DeltaTime)
@@ -37,9 +51,10 @@ void ATankPawn::RotateTurretTo(FVector TargetPosition)
 	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
 	FRotator turretRotation = TurretMesh->GetComponentRotation();
 	FRotator bodyRotation = GetActorRotation();
-	float angleTurretYawRad = UKismetMathLibrary::DegreesToRadians(targetRotation.Yaw - bodyRotation.Yaw);
-	targetRotation.Pitch = bodyRotation.Pitch * UKismetMathLibrary::Cos(angleTurretYawRad) - bodyRotation.Roll * UKismetMathLibrary::Sin(angleTurretYawRad);
-	targetRotation.Roll = bodyRotation.Roll * UKismetMathLibrary::Cos(angleTurretYawRad) + bodyRotation.Pitch * UKismetMathLibrary::Sin(angleTurretYawRad);
+	float angleTurretYawRelativeBody = UKismetMathLibrary::DegreesToRadians(targetRotation.Yaw - bodyRotation.Yaw);
+
+	targetRotation.Pitch = bodyRotation.Pitch * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) - bodyRotation.Roll * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);
+	targetRotation.Roll = bodyRotation.Roll * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) + bodyRotation.Pitch * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);
 
 	TurretMesh->SetWorldRotation(FMath::Lerp(turretRotation, targetRotation, TurretRotationInterpolationKey));
 }

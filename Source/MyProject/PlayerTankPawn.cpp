@@ -25,10 +25,6 @@ APlayerTankPawn::APlayerTankPawn()
 	AudioChangeCannon = APawn::CreateDefaultSubobject<UAudioComponent>(TEXT("AudioChangeCannon"));
 	AudioChangeCannon->SetupAttachment(TurretMesh);
 	AudioChangeCannon->SetAutoActivate(false);
-
-	AudioSetupCannon = APawn::CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSetupCannon"));
-	AudioSetupCannon->SetupAttachment(TurretMesh);
-	AudioSetupCannon->SetAutoActivate(false);
 }
 
 void APlayerTankPawn::SwitchCannon()

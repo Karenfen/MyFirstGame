@@ -4,6 +4,9 @@
 #include "EnemyTankPawn.h"
 #include <Engine/TargetPoint.h>
 #include "PlayerTankPawn.h"
+#include "Cannon.h"
+
+
 
 AEnemyTankPawn::AEnemyTankPawn()
 {
@@ -29,4 +32,29 @@ void AEnemyTankPawn::Die(AActor* killer)
 		player->EnemyDestroyed(this);
 
 	Super::Die(killer);
+}
+
+void AEnemyTankPawn::Fire()
+{
+	if (!CannonIsReady)
+	{
+		return;
+	}
+
+	Super::Fire();
+
+	if (IsValid(Cannon))
+	{
+		if (Cannon->IsEmpty())
+		{
+			CannonIsReady = false;
+			GetWorld()->GetTimerManager().SetTimer(ReloadCannonTimerHandle, this, &AEnemyTankPawn::Reload, TimeToReloadCannon, false);
+		}
+	}
+}
+
+void AEnemyTankPawn::Reload()
+{
+	Resupply(10);
+	CannonIsReady = true;
 }

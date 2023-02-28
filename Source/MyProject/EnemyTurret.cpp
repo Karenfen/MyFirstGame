@@ -2,6 +2,7 @@
 #include "TimerManager.h"
 #include "PlayerTankPawn.h"
 #include "Cannon.h"
+#include <Components/AudioComponent.h>
 
 
 AEnemyTurret::AEnemyTurret()
@@ -9,9 +10,13 @@ AEnemyTurret::AEnemyTurret()
 
 }
 
-
 void AEnemyTurret::Fire()
 {
+	if (!CannonIsReady)
+	{
+		return;
+	}
+
 	Super::Fire();
 
 	if (IsValid(Cannon))
@@ -19,7 +24,6 @@ void AEnemyTurret::Fire()
 		if (Cannon->IsEmpty())
 		{
 			CannonIsReady = false;
-			Cannon->Resupply(10);
 			GetWorld()->GetTimerManager().SetTimer(RechargeTimerHandle, this, &AEnemyTurret::RechargeCannon, RechargeSpeed, false);
 		}
 	}
@@ -52,7 +56,7 @@ void AEnemyTurret::Targeting()
 	else
 		return;
 
-	if (CanFire() && CannonIsReady)
+	if (CanFire())
 		Fire();
 }
 
@@ -73,6 +77,7 @@ bool AEnemyTurret::CanFire()
 
 void AEnemyTurret::RechargeCannon()
 {
+	Resupply(10);
 	CannonIsReady = true;
 }
 

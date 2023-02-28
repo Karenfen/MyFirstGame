@@ -37,13 +37,13 @@ protected:
 	float Accurency = 5.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		float TimeToSwitchCannon = 10.0f;
+	float TimeToSwitchCannon = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		TSubclassOf<ACannon> CurrentCannonClass;
+	TSubclassOf<ACannon> CurrentCannonClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		TArray<TSubclassOf<ACannon>> PoolCannonClasses;
+	TArray<TSubclassOf<ACannon>> PoolCannonClasses;
 
 	FTimerHandle switchCannonTimerHandle;
 	int currentCannonIndex = 0;

@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float RotationSpeed = 100.0f;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioSetupCannon;
+
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
 	float _targetRotateRightdAxisValue = 0.0f;
@@ -31,7 +34,7 @@ protected:
 public:
 	ATankPawn();
 	virtual ~ATankPawn() {};
-
+	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void RotateTurretTo(FVector TargetPosition)  override;

@@ -24,9 +24,6 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	UAudioComponent* AudioChangeCannon;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
-	UAudioComponent* AudioSetupCannon;
 	
 	UPROPERTY()
 	class ATankPlayerController* TankController;

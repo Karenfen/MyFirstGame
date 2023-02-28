@@ -25,10 +25,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Scores")
 	int Scores = 100;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
+	float TimeToReloadCannon = 5.0f;
+
+	FTimerHandle ReloadCannonTimerHandle;
+	bool CannonIsReady = true;
+
 public:
 	AEnemyTankPawn();
 	virtual ~AEnemyTankPawn() {};
-
+	virtual void Fire() override;
 	FORCEINLINE virtual int GetScores() override { return Scores; };
 	TArray<FVector> GetPatrollingPoints();
 	FORCEINLINE void  SetPatrollingPoints(TArray<ATargetPoint*> NewPatrollingPoints) { PatrollingPoints = NewPatrollingPoints; };
@@ -36,4 +42,5 @@ public:
 
 protected:
 	virtual void Die(AActor* killer) override;
+	void Reload();
 };
