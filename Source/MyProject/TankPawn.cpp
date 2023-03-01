@@ -23,6 +23,10 @@ ATankPawn::ATankPawn()
 	AudioHalt = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioHalt"));
 	AudioHalt->SetupAttachment(BodyMesh);
 	AudioHalt->SetAutoActivate(false);
+
+	AudioHit = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioHit"));
+	AudioHit->SetupAttachment(BodyMesh);
+	AudioHit->SetAutoActivate(false);
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -134,4 +138,15 @@ void ATankPawn::Rotate(float DeltaTime)
 
 	currentRotation.Yaw += yawRotation;
 	SetActorRotation(currentRotation);
+}
+
+void ATankPawn::TakeDamage_(FDamageData DamageData)
+{
+	Super::TakeDamage_(DamageData);
+
+	if (IsValid(AudioHit))
+	{
+		if(!AudioHit->IsActive())
+			AudioHit->Play();
+	}
 }

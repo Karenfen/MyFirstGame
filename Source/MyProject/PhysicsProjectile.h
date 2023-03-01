@@ -36,13 +36,13 @@ protected:
 	bool ShowTrajectory = false;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
-	FVector MoveVector;
+	FVector MoveVector = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
-	TArray<FVector> CurrentTrajectory;
+	TArray<FVector> CurrentTrajectory{};
 
 	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
-	int32 TragectoryPointIndex;
+	int32 TragectoryPointIndex {};
 
 public:
 	APhysicsProjectile();

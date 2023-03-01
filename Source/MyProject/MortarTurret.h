@@ -24,5 +24,5 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	FVector turretLocation;
+	FVector turretLocation = FVector::ZeroVector;
 };

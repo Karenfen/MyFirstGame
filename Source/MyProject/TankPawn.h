@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	UAudioComponent* AudioHalt;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioHit;
+
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
 	float _targetRotateRightdAxisValue = 0.0f;
@@ -54,5 +57,5 @@ public:
 protected:
 	void Move(float DeltaTime);
 	void Rotate(float DeltaTime);
-
+	virtual void TakeDamage_(FDamageData DamageData) override;
 };

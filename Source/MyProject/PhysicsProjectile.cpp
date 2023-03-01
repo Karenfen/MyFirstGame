@@ -33,7 +33,7 @@ void APhysicsProjectile::Start()
 	
 	if (ShowTrajectory)
 	{
-		for (FVector position : CurrentTrajectory)
+		for (const FVector& position : CurrentTrajectory)
 		{
 			DrawDebugSphere(GetWorld(), position, 5.0f, 8, FColor::Purple, false, 5.0f, 0,	2.0f);
 		}
