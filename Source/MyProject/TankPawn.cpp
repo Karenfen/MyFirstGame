@@ -12,9 +12,17 @@ ATankPawn::ATankPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	AudioSetupCannon = APawn::CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSetupCannon"));
+	AudioSetupCannon = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSetupCannon"));
 	AudioSetupCannon->SetupAttachment(TurretMesh);
 	AudioSetupCannon->SetAutoActivate(false);
+
+	AudioMoving = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioMoving"));
+	AudioMoving->SetupAttachment(BodyMesh);
+	AudioMoving->SetAutoActivate(false);
+
+	AudioHalt = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioHalt"));
+	AudioHalt->SetupAttachment(BodyMesh);
+	AudioHalt->SetAutoActivate(false);
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -77,7 +85,30 @@ void ATankPawn::RotateRight(float AxisValue)
 void ATankPawn::Move(float DeltaTime)
 {
 	if (_targetForwardAxisValue == 0.0f)
+	{
+		if (IsValid(AudioHalt))
+		{
+			if (!AudioHalt->IsActive())
+				AudioHalt->Play();
+		}
+		if (IsValid(AudioMoving))
+		{
+			if (AudioMoving->IsActive())
+				AudioMoving->Stop();
+		}
 		return;
+	}
+
+	if (IsValid(AudioMoving))
+	{
+		if(!AudioMoving->IsActive())
+			AudioMoving->Play();
+	}
+	if (IsValid(AudioHalt))
+	{
+		if (AudioHalt->IsActive())
+			AudioHalt->Stop();
+	}
 
 	if (RootComponent->IsSimulatingPhysics())
 	{

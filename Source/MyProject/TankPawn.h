@@ -27,6 +27,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	UAudioComponent* AudioSetupCannon;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioMoving;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	UAudioComponent* AudioHalt;
+
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
 	float _targetRotateRightdAxisValue = 0.0f;
