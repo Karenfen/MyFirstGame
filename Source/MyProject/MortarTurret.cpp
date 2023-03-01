@@ -4,30 +4,30 @@
 
 void AMortarTurret::RotateTurretTo(FVector TargetPosition)
 {
-	// на всякий случай делаем проверку указателей
+	// пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!PlayerPawn || !CannonSetupPoint)
 		return;
 
 	Super::RotateTurretTo(TargetPosition);
 
-	// изменение наклона орудия
-	float distanceToPlayer = FVector::Distance(PlayerPawn->GetActorLocation(), turretLocation);		/* находим расстояние до игрока */
-	float slopeFactor = TargetingRange / distanceToPlayer;		/* находим коэфициент для наклона */
-	FRotator cannonRotation = CannonSetupPoint->GetRelativeRotation();		/* получаем текущее значение поворота орудия */
-	cannonRotation.Yaw = MinYawCannon - (RangeYawCannon / slopeFactor);		/* от отрицательного максимального наклона отнимаем диапазон наклона пропорциональный расстоянию до игррока */
-	CannonSetupPoint->SetRelativeRotation(cannonRotation);		/* и устанавливаем полученный наклон орудию */
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	float distanceToPlayer = FVector::Distance(TargetPosition, turretLocation);		/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
+	float slopeFactor = TargetingRange / distanceToPlayer;		/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
+	FRotator cannonRotation = CannonSetupPoint->GetRelativeRotation();		/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
+	cannonRotation.Yaw = MinYawCannon - (RangeYawCannon / slopeFactor);		/* пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
+	CannonSetupPoint->SetRelativeRotation(cannonRotation);		/* пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
 }
 
 void AMortarTurret::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// определяем максимальный отрицательный наклон орудия
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	MinYawCannon =  0.0f - CannonSetupPoint->GetRelativeRotation().Yaw;
 
-	// устанавливаем диапазон наклона орудия
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	RangeYawCannon = MinYawCannon * 2.0f;
 
-	// находим нашу позицию для дальнейших расчетов
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	turretLocation = GetActorLocation();
 }

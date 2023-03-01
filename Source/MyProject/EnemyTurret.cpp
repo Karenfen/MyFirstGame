@@ -51,7 +51,7 @@ void AEnemyTurret::Targeting()
 	if (!IsPlayerSeen())
 		return;
 
-	if (IsPlayerInRange())
+	if (IsPlayerInRange() && IsValid(PlayerPawn))
 		RotateTurretTo(PlayerPawn->GetActorLocation());
 	else
 		return;
@@ -95,9 +95,11 @@ bool AEnemyTurret::IsPlayerSeen()
 	traceParams.AddIgnoredActor(this);
 	traceParams.bReturnPhysicalMaterial = false;
 
+	DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Red, false, 0.5f, 0, 5);
+
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos, ECollisionChannel::ECC_Visibility, traceParams))
 	{
-		AActor* target = hitResult.GetActor();
+		APlayerTankPawn* target = Cast<APlayerTankPawn>(hitResult.GetActor());
 		if (target)
 			return target == PlayerPawn;
 	}
