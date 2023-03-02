@@ -78,7 +78,11 @@ ABaseAmmoClass* UPoolProjectiles::GetProjectile(FVector toPosition)
 	if (projectileToGet == nullptr)
 	{
 		projectileToGet = CreateProjectile();
-		Pool.Add(projectileToGet);
+		//Pool.Add(projectileToGet);
+		// задаём позицию
+		projectileToGet->SetActorLocation(toPosition);
+
+		return projectileToGet;
 	}
 	// делаем его активным
 	projectileToGet->SetIsActive(true);
