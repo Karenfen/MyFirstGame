@@ -16,10 +16,10 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!TankPawn)
+	if (!IsValid(TankPawn))
 		Initialize();
 
-	if (!TankPawn)
+	if (!IsValid(TankPawn))
 		return;
 
 	Move();
@@ -30,7 +30,7 @@ void ATankAIController::Tick(float DeltaTime)
 
 void ATankAIController::Move()
 {
-	if (!TankPawn)
+	if (!IsValid(TankPawn))
 		return;
 
 	TankPawn->MoveForward(1.0f);
@@ -74,21 +74,30 @@ float ATankAIController::GetRotationValue()
 
 void ATankAIController::Targeting()
 {
+	if (!IsPlayerInRange())
+	{
+		return;
+	}
+
 	if (CanFire())
+	{
 		Fire();
+	}
 	else
+	{
 		RotateToPlayer();
+	}
 }
 
 void ATankAIController::RotateToPlayer()
 {
-	if (IsPlayerInRange() && TankPawn && PlayerPawn)
+	if (IsValid(TankPawn) && IsValid(PlayerPawn))
 		TankPawn->RotateTurretTo(PlayerPawn->GetActorLocation());
 }
 
 bool ATankAIController::IsPlayerInRange()
 {
-	if (TankPawn && PlayerPawn)
+	if (IsValid(TankPawn) && IsValid(PlayerPawn))
 	{
 		return FVector::Distance(TankPawn->GetActorLocation(), PlayerPawn->GetActorLocation()) <= TargetingRange;
 	}
@@ -98,7 +107,7 @@ bool ATankAIController::IsPlayerInRange()
 
 bool ATankAIController::CanFire()
 {
-	if (!TankPawn || !PlayerPawn)
+	if (!IsValid(TankPawn) || !IsValid(PlayerPawn))
 	{
 		return false;
 	}
