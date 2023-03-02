@@ -74,6 +74,11 @@ void ATankPawn::RotateTurretTo(FVector TargetPosition)
 void ATankPawn::MoveForward(float AxisValue)
 {
 	_targetForwardAxisValue = AxisValue;
+
+	if (_targetForwardAxisValue < 0.0f)
+	{
+		_targetForwardAxisValue *= 0.7f;
+	}
 }
 
 void ATankPawn::MoveRight(float AxisValue)
