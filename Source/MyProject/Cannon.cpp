@@ -243,7 +243,7 @@ void ACannon::TraceShot()
 	traceParams.bTraceComplex = true;
 	traceParams.bReturnPhysicalMaterial = false;
 	FVector start = ProjectileSpawnPoint->GetComponentLocation();
-	FVector end = ProjectileSpawnPoint->GetForwardVector() * FireRange + start;
+	FVector end = start + ProjectileSpawnPoint->GetForwardVector() * FireRange;
 
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
 	{
@@ -268,7 +268,7 @@ void ACannon::TraceShot()
 		ALaser* laser_ = Cast<ALaser>(laser);
 		if (laser_)
 		{
-			laser_->SetLenght(FVector::Distance(start, hitResult.Location));
+			laser_->SetLenght(FireRange);
 		}
 	}
 

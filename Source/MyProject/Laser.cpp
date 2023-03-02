@@ -24,7 +24,7 @@ void ALaser::Start()
 FORCEINLINE void ALaser::SetLenght(float lenght)
 {
 	FVector newScale = Mesh->GetRelativeScale3D();
-	newScale.X = lenght;
+	newScale.Z = lenght;
 	
 	Mesh->SetRelativeScale3D(newScale);
 }
