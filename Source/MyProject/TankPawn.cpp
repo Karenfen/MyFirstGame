@@ -146,7 +146,6 @@ void ATankPawn::TakeDamage_(FDamageData DamageData)
 
 	if (IsValid(AudioHit))
 	{
-		if(!AudioHit->IsActive())
-			AudioHit->Play();
+		AudioHit->Play();
 	}
 }
