@@ -11,12 +11,12 @@ class MYPROJECT_API UPhysicsComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity params")
-	float Gravity = -9.8f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Moving params")
+	float DistanceImterval = 10.0f;
 
 public:	
 	UPhysicsComponent();
 
-	TArray<FVector> GenerateTrajectory(FVector StartPos, FVector Velocity, float MaxTime, float TimeStep, float MinZValue = 0);
+	TArray<FVector> GenerateTrajectory(FVector StartPos, FVector EndPos);
 
 };

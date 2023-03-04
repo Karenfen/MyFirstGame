@@ -24,19 +24,7 @@ protected:
 	float MoveAccurency = 10.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
-	float TrajectorySimulationMaxTime = 50.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
-	float TrajectorySimulationTimeStep = 1.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
-	float TrajectorySimulationSpeed = 20.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
 	bool ShowTrajectory = false;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
-	FVector MoveVector = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
 	TArray<FVector> CurrentTrajectory{};
@@ -49,8 +37,11 @@ public:
 	virtual ~APhysicsProjectile();
 
 	virtual void Start() override;
+	void SetDestinationPoint(const FVector& endPos);
 
 protected:
 	virtual void Move() override;
 
+private:
+	FVector DestinationPosition = FVector::ZeroVector;
 };

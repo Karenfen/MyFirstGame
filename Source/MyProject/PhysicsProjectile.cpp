@@ -28,8 +28,7 @@ void APhysicsProjectile::Start()
 {
 	Super::Start();
 
-	MoveVector = GetActorForwardVector() * TrajectorySimulationSpeed;
-	CurrentTrajectory = PhysicsComponent->GenerateTrajectory(GetActorLocation(), MoveVector, TrajectorySimulationMaxTime, TrajectorySimulationTimeStep, 0);
+	CurrentTrajectory = PhysicsComponent->GenerateTrajectory(GetActorLocation(), DestinationPosition);
 	
 	if (ShowTrajectory)
 	{
@@ -44,6 +43,11 @@ void APhysicsProjectile::Start()
 	if (TrailEffect)
 		TrailEffect->ActivateSystem();
 
+}
+
+void APhysicsProjectile::SetDestinationPoint(const FVector& endPos)
+{
+	DestinationPosition = endPos;
 }
 
 void APhysicsProjectile::Move()
