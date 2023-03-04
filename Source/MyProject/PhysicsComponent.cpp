@@ -1,4 +1,5 @@
 #include "PhysicsComponent.h"
+#include "GameStruct.h"
 
 
 UPhysicsComponent::UPhysicsComponent()
@@ -8,19 +9,18 @@ UPhysicsComponent::UPhysicsComponent()
 
 }
 
-TArray<FVector> UPhysicsComponent::GenerateTrajectory(FVector StartPos, FVector	Velocity, float MaxTime, float TimeStep, float MinZValue)
+TArray<FVector> UPhysicsComponent::GenerateTrajectory(FVector StartPos, FVector EndPos)
 {
-	TArray<FVector> trajectory;
-	FVector gravityVector(0.0f, 0.0f, Gravity);
+	TArray<FVector> trajectory{};
+	float distance = FVector::Distance(StartPos, EndPos);
+	float maxHeight = distance / 2.0f;
+	FVector UpVector = (StartPos + EndPos) / 2.0f;
+	UpVector.Z += maxHeight;
+	float step = 1.0f / (distance / DistanceImterval);
 
-	for (float time = 0.0f; time < MaxTime; time = time + TimeStep)
+	for (float intervalPassed = 0.0f; intervalPassed <= 1.0f; intervalPassed += step)
 	{
-		FVector position = StartPos + Velocity * time + gravityVector * time * time / 2;
-
-		if (position.Z <= MinZValue)
-			break;
-
-		trajectory.Add(position);
+		trajectory.Add(CalculateBezierPoint(intervalPassed, StartPos, UpVector, EndPos));
 	}
 
 	return trajectory;

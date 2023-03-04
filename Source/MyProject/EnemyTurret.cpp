@@ -12,6 +12,11 @@ AEnemyTurret::AEnemyTurret()
 
 void AEnemyTurret::Fire()
 {
+	if (!IsValid(Cannon))
+	{
+		return;
+	}
+
 	if (!CannonIsReady)
 	{
 		return;
@@ -19,13 +24,10 @@ void AEnemyTurret::Fire()
 
 	Super::Fire();
 
-	if (IsValid(Cannon))
+	if (Cannon->IsEmpty())
 	{
-		if (Cannon->IsEmpty())
-		{
-			CannonIsReady = false;
-			GetWorld()->GetTimerManager().SetTimer(RechargeTimerHandle, this, &AEnemyTurret::RechargeCannon, RechargeSpeed, false);
-		}
+		CannonIsReady = false;
+		GetWorld()->GetTimerManager().SetTimer(RechargeTimerHandle, this, &AEnemyTurret::RechargeCannon, RechargeSpeed, false);
 	}
 }
 

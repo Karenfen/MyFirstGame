@@ -23,6 +23,7 @@ public:
 	virtual void RotateTurretTo(FVector TargetPosition) override;
 protected:
 	virtual void BeginPlay() override;
+	virtual void Fire() override;
 
 	FVector turretLocation = FVector::ZeroVector;
 };

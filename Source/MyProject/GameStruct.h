@@ -42,3 +42,5 @@ struct FDamageData
 	UPROPERTY()
 	AActor* DamageMaker;
 };
+
+FVector CalculateBezierPoint(float t, const FVector& P0, const FVector& P1, const FVector& P2);

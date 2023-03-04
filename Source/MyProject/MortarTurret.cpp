@@ -1,5 +1,6 @@
 #include "MortarTurret.h"
 #include "Components/ArrowComponent.h"
+#include "MortarCannon.h"
 
 
 void AMortarTurret::RotateTurretTo(FVector TargetPosition)
@@ -30,4 +31,16 @@ void AMortarTurret::BeginPlay()
 
 	// ������� ���� ������� ��� ���������� ��������
 	turretLocation = GetActorLocation();
+}
+
+void AMortarTurret::Fire()
+{
+	AMortarCannon* MCannon = Cast<AMortarCannon>(Cannon);
+
+	if (MCannon)
+	{
+		MCannon->SetAimingPoint(PlayerPawn->GetActorLocation());
+	}
+
+	Super::Fire();
 }
