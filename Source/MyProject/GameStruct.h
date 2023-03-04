@@ -44,3 +44,9 @@ struct FDamageData
 };
 
 FVector CalculateBezierPoint(float t, const FVector& P0, const FVector& P1, const FVector& P2);
+
+namespace Bezier
+{
+	const float t_star = 0.0f;
+	const float t_end = 1.0f;
+};

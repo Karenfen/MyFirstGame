@@ -16,12 +16,14 @@ TArray<FVector> UPhysicsComponent::GenerateTrajectory(FVector StartPos, FVector 
 	float maxHeight = distance / 2.0f;
 	FVector UpVector = (StartPos + EndPos) / 2.0f;
 	UpVector.Z += maxHeight;
-	float step = 1.0f / (distance / DistanceImterval);
+	float step = Bezier::t_end / (distance / DistanceImterval);
 
-	for (float intervalPassed = 0.0f; intervalPassed <= 1.0f; intervalPassed += step)
+	for (float intervalPassed = Bezier::t_star; intervalPassed < Bezier::t_end; intervalPassed += step)
 	{
 		trajectory.Add(CalculateBezierPoint(intervalPassed, StartPos, UpVector, EndPos));
 	}
+
+	trajectory.Add(CalculateBezierPoint(Bezier::t_end, StartPos, UpVector, EndPos));
 
 	return trajectory;
 }
