@@ -12,7 +12,7 @@ class MYPROJECT_API UPhysicsComponent : public UActorComponent
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Moving params")
-	float DistanceImterval = 10.0f;
+	float DistanceInterval = 10.0f;
 
 public:	
 	UPhysicsComponent();

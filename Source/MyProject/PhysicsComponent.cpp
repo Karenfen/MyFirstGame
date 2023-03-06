@@ -16,7 +16,7 @@ TArray<FVector> UPhysicsComponent::GenerateTrajectory(FVector StartPos, FVector 
 	float maxHeight = distance / 2.0f;
 	FVector UpVector = (StartPos + EndPos) / 2.0f;
 	UpVector.Z += maxHeight;
-	float step = Bezier::t_end / (distance / DistanceImterval);
+	float step = Bezier::t_end / (distance / DistanceInterval);
 
 	for (float intervalPassed = Bezier::t_star; intervalPassed < Bezier::t_end; intervalPassed += step)
 	{
