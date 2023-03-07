@@ -12,14 +12,14 @@ class MYPROJECT_API UHealthComponent : public UActorComponent
 	GENERATED_BODY()
 
 	DECLARE_EVENT_OneParam(UHealthComponent, FOnDie, AActor*)
-	DECLARE_EVENT_OneParam(UHealthComponent, FOnHealthChanged, float)
+	DECLARE_EVENT_OneParam(UHealthComponent, FOnHealthChanged, int)
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
-	float MaxHealth = 10;
+	int MaxHealth = 10;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
-	float CurrentHealth;
+	int CurrentHealth = 0;
 
 public:
 	FOnDie OnDie;
@@ -29,7 +29,9 @@ public:
 	UHealthComponent();
 
 	void TakeDamage(FDamageData DamageData);
-	float GetHealth() const;
+	int GetHealth() const;
 	float GetHealthState() const;
-	void AddHealth(float AddiditionalHealthValue);	
+	void AddHealth(int AddiditionalHealthValue);	
+	FORCEINLINE int GetCurrentHealth() const { return CurrentHealth; };
+	FORCEINLINE int GetMaxHealth() const { return MaxHealth; };
 };

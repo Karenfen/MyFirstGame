@@ -104,7 +104,7 @@ void ATankFactory::Die(AActor* killer)
 		Destroy();
 }
 
-void ATankFactory::DamageTaked(float DamageValue)
+void ATankFactory::DamageTaked(int DamageValue)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Factory %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
 }

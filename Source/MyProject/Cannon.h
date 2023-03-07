@@ -61,6 +61,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 	int Ammo = 10;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Name")
+	FString Name;
+
 	FTimerHandle ReloadTimerHandle;
 	FTimerHandle BurstTimerHandle;
 	FTimerHandle ReloadSpecTimerHandle;
@@ -78,6 +81,9 @@ public:
 	void Resupply(uint8 numberRounds);
 	ECannonType GetType();
 	bool IsEmpty();
+	FORCEINLINE int GetAmmo() const { return Ammo; };
+	FORCEINLINE int GetMaxAmmo() const { return maxAmmo; };
+	FORCEINLINE FString GetName() const { return Name; };
 
 protected:
 	virtual void BeginPlay() override;

@@ -5,6 +5,7 @@
 #include "GameStruct.generated.h"
 
 class AActor;
+class ACannon;
 
 UENUM(BlueprintType)
 enum class ECannonType : uint8
@@ -34,13 +35,47 @@ struct FDamageData
 	GENERATED_BODY()
 
 	UPROPERTY()
-	float DamageValue;
+	uint16 DamageValue;
 
 	UPROPERTY()
 	AActor* Instigator;
 
 	UPROPERTY()
 	AActor* DamageMaker;
+};
+
+USTRUCT()
+struct FPlayerStatus
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString FirstCannon {};
+
+	UPROPERTY()
+	int FCAmmo = -1;
+
+	UPROPERTY()
+	int FCMaxAmmo = -1;
+
+	UPROPERTY()
+	FString SecondCannon {};
+
+	UPROPERTY()
+	int SCAmmo = -1;
+
+	UPROPERTY()
+	int SCMaxAmmo = -1;
+
+	UPROPERTY()
+	int MaxHealth = -1;
+
+	UPROPERTY()
+	int CurrentHealth = -1;
+
+	UPROPERTY()
+	int Scores = -1;
+
 };
 
 FVector CalculateBezierPoint(float t, const FVector& P0, const FVector& P1, const FVector& P2);

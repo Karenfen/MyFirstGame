@@ -51,6 +51,8 @@ public:
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
 	FORCEINLINE void SetTurretDirX(float AxisValue) { _TurretDirX = AxisValue; };
 	FORCEINLINE void SetTurretDirY(float AxisValue) { _TurretDirY = AxisValue; };
+	UFUNCTION()
+	FPlayerStatus GetStatus() const;
 
 protected:
 	virtual void BeginPlay() override;

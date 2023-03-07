@@ -8,6 +8,7 @@
 #include "Cannon.h"
 #include "IScorable.h"
 #include "TankPlayerController.h"
+#include "HealthComponent.h"
 
 
 APlayerTankPawn::APlayerTankPawn()
@@ -69,6 +70,32 @@ void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 		SecondCannon->SetActorHiddenInGame(true);
 
 	Super::SetupCannon(newCannonClass);
+}
+
+FPlayerStatus APlayerTankPawn::GetStatus() const
+{
+	FPlayerStatus status;
+
+	if (IsValid(HealthComponent))
+	{
+		status.CurrentHealth = HealthComponent->GetCurrentHealth();
+		status.MaxHealth = HealthComponent->GetMaxHealth();
+	}
+	if (IsValid(Cannon))
+	{
+		status.FirstCannon = Cannon->GetName();
+		status.FCAmmo = Cannon->GetAmmo();
+		status.FCMaxAmmo = Cannon->GetMaxAmmo();
+	}
+	if (IsValid(SecondCannon))
+	{
+		status.SecondCannon = SecondCannon->GetName();
+		status.SCAmmo = SecondCannon->GetAmmo();
+		status.SCMaxAmmo = SecondCannon->GetMaxAmmo();
+	}
+	status.Scores = CurrentScores;
+
+	return status;
 }
 
 void APlayerTankPawn::Tick(float DeltaTime)

@@ -66,7 +66,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	virtual void DamageTaked(float DamageValue);
+	virtual void DamageTaked(int DamageValue);
 	UFUNCTION()
 	virtual void TakeDamage_(FDamageData DamageData) override;
 	UFUNCTION()
