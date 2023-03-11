@@ -8,6 +8,8 @@
 #include "Cannon.h"
 #include "IScorable.h"
 #include "TankPlayerController.h"
+#include "HealthComponent.h"
+#include "Main_HUD_Widget.h"
 
 
 APlayerTankPawn::APlayerTankPawn()
@@ -27,9 +29,23 @@ APlayerTankPawn::APlayerTankPawn()
 	AudioChangeCannon->SetAutoActivate(false);
 }
 
+void APlayerTankPawn::Fire()
+{
+	Super::Fire();
+
+	UpdateCCAmmoHUD();
+}
+
+void APlayerTankPawn::Resupply(uint8 numberRounds)
+{
+	Super::Resupply(numberRounds);
+
+	UpdateCCAmmoHUD();
+}
+
 void APlayerTankPawn::SwitchCannon()
 {
-	if (!SecondCannon)
+	if (!IsValid(SecondCannon))
 		return;
 
 	ACannon* currentCannon = Cannon;
@@ -40,10 +56,17 @@ void APlayerTankPawn::SwitchCannon()
 		AudioChangeCannon->Play();
 
 	if (Cannon)
+	{
 		Cannon->SetActorHiddenInGame(false);
+		UpdateCCAmmoHUD();
+		UpdateCCIconHUD();
+	}
 	if (SecondCannon)
+	{
 		SecondCannon->SetActorHiddenInGame(true);
-
+		UpdateSCAmmoHUD();
+		UpdateSCIconHUD();
+	}
 }
 
 void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -66,9 +89,16 @@ void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 	}
 
 	if (SecondCannon)
+	{
 		SecondCannon->SetActorHiddenInGame(true);
+		UpdateSCAmmoHUD();
+		UpdateSCIconHUD();
+	}
 
 	Super::SetupCannon(newCannonClass);
+
+	UpdateCCAmmoHUD();
+	UpdateCCIconHUD();
 }
 
 void APlayerTankPawn::Tick(float DeltaTime)
@@ -87,6 +117,7 @@ void APlayerTankPawn::FireSpecial()
 	if (IsValid(Cannon))
 	{
 		Cannon->FireSpecial();
+		UpdateCCAmmoHUD();
 	}
 }
 
@@ -101,7 +132,7 @@ void APlayerTankPawn::EnemyDestroyed(AActor* destroyedObject)
 	if (CurrentScores > MaxScores)
 		CurrentScores = MaxScores;
 
-	UE_LOG(LogTemp, Warning, TEXT("Scores: %d"), CurrentScores);
+	UpdateScoresHUD();
 }
 
 void APlayerTankPawn::BeginPlay()
@@ -109,6 +140,11 @@ void APlayerTankPawn::BeginPlay()
 	Super::BeginPlay();
 
 	TankController = Cast<ATankPlayerController>(GetController());
+
+	HUD = CreateWidget<UMain_HUD_Widget>(TankController, HUD_widget);
+	HUD->AddToViewport();
+
+	UpdateHUD();
 }
 
 void APlayerTankPawn::Die(AActor* killer)
@@ -116,4 +152,70 @@ void APlayerTankPawn::Die(AActor* killer)
 	Super::Die(killer);
 	//
 	//
+}
+
+void APlayerTankPawn::DamageTaked(int DamageValue)
+{
+	Super::DamageTaked(DamageValue);
+
+	UpdateHealteHUD();
+}
+
+void APlayerTankPawn::UpdateHUD()
+{
+	UpdateHealteHUD();
+	UpdateScoresHUD();
+	UpdateCCAmmoHUD();
+	UpdateSCAmmoHUD();
+	UpdateCCIconHUD();
+	UpdateSCIconHUD();
+}
+
+void APlayerTankPawn::UpdateHealteHUD()
+{
+	if (IsValid(HUD) && IsValid(HealthComponent))
+	{
+		HUD->SetHealthStatus(HealthComponent->GetHealthState());
+		HUD->SetCurrentHealthText(HealthComponent->GetCurrentHealth());
+	}
+}
+
+void APlayerTankPawn::UpdateScoresHUD()
+{
+	if (IsValid(HUD))
+	{
+		HUD->SetScores(CurrentScores);
+	}
+}
+
+void APlayerTankPawn::UpdateCCAmmoHUD()
+{
+	if (IsValid(Cannon) && IsValid(HUD))
+	{
+		HUD->SetCurGunAmmo(Cannon->GetAmmo(), Cannon->GetMaxAmmo());
+	}
+}
+
+void APlayerTankPawn::UpdateSCAmmoHUD()
+{
+	if (IsValid(SecondCannon) && IsValid(HUD))
+	{
+		HUD->SetSecGunAmmo(SecondCannon->GetAmmo(), SecondCannon->GetMaxAmmo());
+	}
+}
+
+void APlayerTankPawn::UpdateCCIconHUD()
+{
+	if (IsValid(HUD) && IsValid(Cannon))
+	{
+		HUD->SetCurGunIcon(Cannon->GetIconBrush());
+	}
+}
+
+void APlayerTankPawn::UpdateSCIconHUD()
+{
+	if (IsValid(HUD) && IsValid(SecondCannon))
+	{
+		HUD->SetSecGunIcon(SecondCannon->GetIconBrush());
+	}
 }

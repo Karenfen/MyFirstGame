@@ -37,13 +37,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scores")
 	int MaxScores = 1000000;
 
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Component")
+	class UMain_HUD_Widget* HUD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UMain_HUD_Widget> HUD_widget;
+
 	float _TurretDirX = 0.0f;
 	float _TurretDirY = 0.0f;
 
 public:
 	APlayerTankPawn();
 	virtual ~APlayerTankPawn() {};
-
+	virtual void Fire() override;
+	virtual void Resupply(uint8 numberRounds) override;
 	virtual void Tick(float DeltaTime) override;
 	void FireSpecial();
 	void EnemyDestroyed(AActor* destroyedObject);
@@ -55,5 +63,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Die(AActor* killer) override;
+	virtual void DamageTaked(int DamageValue) override;
 
+	void UpdateHUD();
+	void UpdateHealteHUD();
+	void UpdateScoresHUD();
+	void UpdateCCAmmoHUD();
+	void UpdateSCAmmoHUD();
+	void UpdateCCIconHUD();
+	void UpdateSCIconHUD();
 };

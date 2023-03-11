@@ -79,7 +79,7 @@ protected:
 	void Die(AActor* killer);
 
 	UFUNCTION()
-	void DamageTaked(float DamageValue);
+	void DamageTaked(int DamageValue);
 	
 	//указатели на активные танки
 	TArray<ATankPawn*> activeTanks{};

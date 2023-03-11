@@ -22,17 +22,17 @@ void UHealthComponent::TakeDamage(FDamageData DamageData)
 	}
 }
 
-float UHealthComponent::GetHealth() const
+int UHealthComponent::GetHealth() const
 {
 	return CurrentHealth;
 }
 
 float UHealthComponent::GetHealthState() const
 {
-	return CurrentHealth / MaxHealth;
+	return (float)CurrentHealth / (float)MaxHealth;
 }
 
-void UHealthComponent::AddHealth(float AddiditionalHealthValue)
+void UHealthComponent::AddHealth(int AddiditionalHealthValue)
 {
 	CurrentHealth += AddiditionalHealthValue;
 	if (CurrentHealth > MaxHealth)

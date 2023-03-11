@@ -5,6 +5,7 @@
 #include "GameStruct.generated.h"
 
 class AActor;
+class ACannon;
 
 UENUM(BlueprintType)
 enum class ECannonType : uint8
@@ -34,7 +35,7 @@ struct FDamageData
 	GENERATED_BODY()
 
 	UPROPERTY()
-	float DamageValue;
+	uint16 DamageValue;
 
 	UPROPERTY()
 	AActor* Instigator;

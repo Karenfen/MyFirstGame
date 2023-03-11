@@ -1,0 +1,112 @@
+{
+  "frames": {
+    "NoGunIcon.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 178,
+        "h": 170
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 29,
+        "y": 36,
+        "w": 178,
+        "h": 170
+      },
+      "sourceSize": {
+        "w": 240,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "LaserIcon.png": {
+      "frame": {
+        "x": 178,
+        "y": 0,
+        "w": 158,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 1,
+        "w": 158,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 159,
+        "h": 143
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "RocketIcon.png": {
+      "frame": {
+        "x": 336,
+        "y": 0,
+        "w": 129,
+        "h": 131
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 20,
+        "y": 7,
+        "w": 129,
+        "h": 131
+      },
+      "sourceSize": {
+        "w": 159,
+        "h": 143
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BurstIcon.png": {
+      "frame": {
+        "x": 467,
+        "y": 0,
+        "w": 87,
+        "h": 100
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 33,
+        "w": 87,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 159,
+        "h": 143
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "GunIcons.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 567,
+      "h": 170
+    },
+    "scale": 1,
+    "target": "paper2d"
+  }
+}
