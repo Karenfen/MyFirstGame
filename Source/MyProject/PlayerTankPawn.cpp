@@ -9,6 +9,7 @@
 #include "IScorable.h"
 #include "TankPlayerController.h"
 #include "HealthComponent.h"
+#include "Main_HUD_Widget.h"
 
 
 APlayerTankPawn::APlayerTankPawn()
@@ -28,9 +29,29 @@ APlayerTankPawn::APlayerTankPawn()
 	AudioChangeCannon->SetAutoActivate(false);
 }
 
+void APlayerTankPawn::Fire()
+{
+	Super::Fire();
+
+	if (IsValid(HUD))
+	{
+		HUD->SetCurGunAmmo(Cannon->GetAmmo(), Cannon->GetMaxAmmo());
+	}
+}
+
+void APlayerTankPawn::Resupply(uint8 numberRounds)
+{
+	Super::Resupply(numberRounds);
+
+	if (IsValid(HUD))
+	{
+		HUD->SetCurGunAmmo(Cannon->GetAmmo(), Cannon->GetMaxAmmo());
+	}
+}
+
 void APlayerTankPawn::SwitchCannon()
 {
-	if (!SecondCannon)
+	if (!IsValid(SecondCannon))
 		return;
 
 	ACannon* currentCannon = Cannon;
@@ -41,10 +62,21 @@ void APlayerTankPawn::SwitchCannon()
 		AudioChangeCannon->Play();
 
 	if (Cannon)
+	{
 		Cannon->SetActorHiddenInGame(false);
+		if (IsValid(HUD))
+		{
+			HUD->SetCurGunAmmo(Cannon->GetAmmo(), Cannon->GetMaxAmmo());
+		}
+	}
 	if (SecondCannon)
+	{
 		SecondCannon->SetActorHiddenInGame(true);
-
+		if (IsValid(HUD))
+		{
+			HUD->SetSecGunAmmo(SecondCannon->GetAmmo(), SecondCannon->GetMaxAmmo());
+		}
+	}
 }
 
 void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -67,35 +99,20 @@ void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 	}
 
 	if (SecondCannon)
+	{
 		SecondCannon->SetActorHiddenInGame(true);
+		if (IsValid(HUD))
+		{
+			HUD->SetSecGunAmmo(SecondCannon->GetAmmo(), SecondCannon->GetMaxAmmo());
+		}
+	}
 
 	Super::SetupCannon(newCannonClass);
-}
 
-FPlayerStatus APlayerTankPawn::GetStatus() const
-{
-	FPlayerStatus status;
-
-	if (IsValid(HealthComponent))
+	if (IsValid(HUD))
 	{
-		status.CurrentHealth = HealthComponent->GetCurrentHealth();
-		status.MaxHealth = HealthComponent->GetMaxHealth();
+		HUD->SetCurGunAmmo(Cannon->GetAmmo(), Cannon->GetMaxAmmo());
 	}
-	if (IsValid(Cannon))
-	{
-		status.FirstCannon = Cannon->GetName();
-		status.FCAmmo = Cannon->GetAmmo();
-		status.FCMaxAmmo = Cannon->GetMaxAmmo();
-	}
-	if (IsValid(SecondCannon))
-	{
-		status.SecondCannon = SecondCannon->GetName();
-		status.SCAmmo = SecondCannon->GetAmmo();
-		status.SCMaxAmmo = SecondCannon->GetMaxAmmo();
-	}
-	status.Scores = CurrentScores;
-
-	return status;
 }
 
 void APlayerTankPawn::Tick(float DeltaTime)
@@ -114,6 +131,11 @@ void APlayerTankPawn::FireSpecial()
 	if (IsValid(Cannon))
 	{
 		Cannon->FireSpecial();
+
+		if (IsValid(HUD))
+		{
+			HUD->SetCurGunAmmo(Cannon->GetAmmo(), Cannon->GetMaxAmmo());
+		}
 	}
 }
 
@@ -128,7 +150,10 @@ void APlayerTankPawn::EnemyDestroyed(AActor* destroyedObject)
 	if (CurrentScores > MaxScores)
 		CurrentScores = MaxScores;
 
-	UE_LOG(LogTemp, Warning, TEXT("Scores: %d"), CurrentScores);
+	if (IsValid(HUD))
+	{
+		HUD->SetScores(CurrentScores);
+	}
 }
 
 void APlayerTankPawn::BeginPlay()
@@ -136,6 +161,31 @@ void APlayerTankPawn::BeginPlay()
 	Super::BeginPlay();
 
 	TankController = Cast<ATankPlayerController>(GetController());
+
+	HUD = CreateWidget<UMain_HUD_Widget>(TankController, HUD_widget);
+	HUD->AddToViewport();
+
+	if (!IsValid(HUD))
+	{
+		return;
+	}
+
+	if (IsValid(HealthComponent))
+	{
+		HUD->SetHealthStatus(HealthComponent->GetHealthState());
+		HUD->SetCurrentHealthText(HealthComponent->GetCurrentHealth());
+	}
+
+	HUD->SetScores(CurrentScores);
+
+	if (IsValid(Cannon))
+	{
+		HUD->SetCurGunAmmo(Cannon->GetAmmo(), Cannon->GetMaxAmmo());
+	}
+	if (IsValid(SecondCannon))
+	{
+		HUD->SetSecGunAmmo(SecondCannon->GetAmmo(), SecondCannon->GetMaxAmmo());
+	}
 }
 
 void APlayerTankPawn::Die(AActor* killer)
@@ -143,4 +193,12 @@ void APlayerTankPawn::Die(AActor* killer)
 	Super::Die(killer);
 	//
 	//
+}
+
+void APlayerTankPawn::DamageTaked(int DamageValue)
+{
+	Super::DamageTaked(DamageValue);
+
+	HUD->SetHealthStatus(HealthComponent->GetHealthState());
+	HUD->SetCurrentHealthText(HealthComponent->GetCurrentHealth());
 }

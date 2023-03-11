@@ -4,7 +4,6 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
-class APlayerTankPawn;
 
 UCLASS()
 class MYPROJECT_API ATankPlayerController : public APlayerController
@@ -13,7 +12,7 @@ class MYPROJECT_API ATankPlayerController : public APlayerController
 
 protected:
 	UPROPERTY()
-		APlayerTankPawn* TankPawn;
+	class APlayerTankPawn* TankPawn {nullptr};
 
 public:
 	ATankPlayerController();

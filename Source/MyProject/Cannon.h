@@ -3,7 +3,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameStruct.h"
+#include "Components/Image.h"
 #include "Cannon.generated.h"
+
+
 
 
 class UArrowComponent;
@@ -61,8 +64,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 	int Ammo = 10;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Name")
-	FString Name;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UImage* Icon;
 
 	FTimerHandle ReloadTimerHandle;
 	FTimerHandle BurstTimerHandle;
@@ -83,7 +86,6 @@ public:
 	bool IsEmpty();
 	FORCEINLINE int GetAmmo() const { return Ammo; };
 	FORCEINLINE int GetMaxAmmo() const { return maxAmmo; };
-	FORCEINLINE FString GetName() const { return Name; };
 
 protected:
 	virtual void BeginPlay() override;

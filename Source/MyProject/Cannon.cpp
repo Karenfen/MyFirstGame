@@ -15,6 +15,7 @@
 #include "PoolProjectiles.h"
 
 
+
 ACannon::ACannon()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,6 +41,7 @@ ACannon::ACannon()
 
 	// создаём пулл
 	ProjectilePool = CreateDefaultSubobject<UPoolProjectiles>(TEXT("Pool Projectiles"));
+
 }
 
 ACannon::~ACannon()
@@ -56,7 +58,6 @@ void ACannon::Fire()
 
 	if (Ammo <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Red, "Ammo is empty");
 		return;
 	}
 
@@ -65,8 +66,7 @@ void ACannon::Fire()
 	switch (Type)
 	{
 	case ECannonType::FireProjectile:
-		if (ProjectileShot())
-			--Ammo;
+		ProjectileShot();
 		break;
 	case ECannonType::FireTrace:
 		TraceShot();
@@ -75,7 +75,7 @@ void ACannon::Fire()
 		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true, 0.0f);
 		break;
 	}
-		
+	--Ammo;
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this,	&ACannon::Reload, 1.0f / FireRate, false);
 }
 
@@ -88,7 +88,6 @@ void ACannon::FireSpecial()
 
 	if (Ammo <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Red, "Ammo is empty");
 		return;
 	}
 
@@ -108,7 +107,8 @@ void ACannon::FireSpecial()
 		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true, 0.0f);
 		break;
 	}
-
+	--Ammo;
+	--Ammo;
 	GetWorld()->GetTimerManager().SetTimer(ReloadSpecTimerHandle, this, &ACannon::ReloadSpec, (1.0f / FireRate) * 3.0f, false);
 }
 
@@ -169,7 +169,6 @@ void ACannon::Burst()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
 		currentShotInBurst = ShotsInBurst;
-		--Ammo;
 	}
 }
 
@@ -186,7 +185,6 @@ void ACannon::TraceBurst()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(BurstTimerHandle);
 		currentShotInBurst = ShotsInBurst;
-		--Ammo;
 	}
 }
 
@@ -281,8 +279,6 @@ void ACannon::TraceShot()
 		ShootAudio->Play();
 
 	FeedBack();
-
-	--Ammo;
 }
 
 void ACannon::FeedBack()

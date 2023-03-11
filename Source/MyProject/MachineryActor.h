@@ -52,7 +52,7 @@ public:
 	virtual ~AMachineryActor() {};
 
 	virtual void Fire();
-	void Resupply(uint8 numberRounds);
+	virtual void Resupply(uint8 numberRounds);
 	UFUNCTION()
 	virtual void RotateTurretTo(FVector TargetPosition);
 	FORCEINLINE FVector GetTurretForwardVector() { return TurretMesh->GetForwardVector(); };

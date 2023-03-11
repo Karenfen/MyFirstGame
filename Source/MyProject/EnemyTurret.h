@@ -35,7 +35,7 @@ protected:
 	float Accurency = 10;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Score")
-	float Scores = 50;
+	int Scores = 50;
 
 	FTimerHandle RechargeTimerHandle;
 	FTimerHandle _targetingTimerHandle;
