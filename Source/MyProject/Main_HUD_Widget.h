@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Slate/SlateTextureAtlasInterface.h"
 #include "Main_HUD_Widget.generated.h"
 
 class UTextBlock;
@@ -20,6 +21,8 @@ public:
 	void SetScores(int scores);
 	void SetCurGunAmmo(int CAmmo, int MaxAmmo);
 	void SetSecGunAmmo(int CAmmo, int MaxAmmo);
+	void SetCurGunIcon(const TScriptInterface<ISlateTextureAtlasInterface> &AtlasRegion);
+	void SetSecGunIcon(const TScriptInterface<ISlateTextureAtlasInterface> &AtlasRegion);
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UProgressBar* HealtheBar;

@@ -3,7 +3,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameStruct.h"
-#include "Components/Image.h"
+#include "Blueprint/UserWidget.h"
+#include "Slate/SlateTextureAtlasInterface.h"
 #include "Cannon.generated.h"
 
 
@@ -64,8 +65,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 	int Ammo = 10;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UImage* Icon;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Icon")
+	TScriptInterface<ISlateTextureAtlasInterface> AtlasRegion;
 
 	FTimerHandle ReloadTimerHandle;
 	FTimerHandle BurstTimerHandle;
@@ -86,6 +87,7 @@ public:
 	bool IsEmpty();
 	FORCEINLINE int GetAmmo() const { return Ammo; };
 	FORCEINLINE int GetMaxAmmo() const { return maxAmmo; };
+	TScriptInterface<ISlateTextureAtlasInterface> GetIconBrush() { return AtlasRegion; };
 
 protected:
 	virtual void BeginPlay() override;

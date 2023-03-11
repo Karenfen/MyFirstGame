@@ -6,6 +6,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 #include "Kismet/KismetTextLibrary.h"
+#include <Kismet/KismetSystemLibrary.h>
 
 
 
@@ -54,5 +55,21 @@ void UMain_HUD_Widget::SetSecGunAmmo(int CAmmo, int MaxAmmo)
 	if (IsValid(SC_MaxAmmo))
 	{
 		SC_MaxAmmo->SetText(UKismetTextLibrary::Conv_IntToText(MaxAmmo));
+	}
+}
+
+void UMain_HUD_Widget::SetCurGunIcon(const TScriptInterface<ISlateTextureAtlasInterface>& AtlasRegion)
+{
+	if (IsValid(CC_Icon))
+	{
+		CC_Icon->SetBrushFromAtlasInterface(AtlasRegion);
+	}
+}
+
+void UMain_HUD_Widget::SetSecGunIcon(const TScriptInterface<ISlateTextureAtlasInterface>& AtlasRegion)
+{
+	if (IsValid(SC_Icon))
+	{
+		SC_Icon->SetBrushFromAtlasInterface(AtlasRegion);
 	}
 }

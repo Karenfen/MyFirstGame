@@ -65,4 +65,11 @@ protected:
 	virtual void Die(AActor* killer) override;
 	virtual void DamageTaked(int DamageValue) override;
 
+	void UpdateHUD();
+	void UpdateHealteHUD();
+	void UpdateScoresHUD();
+	void UpdateCCAmmoHUD();
+	void UpdateSCAmmoHUD();
+	void UpdateCCIconHUD();
+	void UpdateSCIconHUD();
 };
