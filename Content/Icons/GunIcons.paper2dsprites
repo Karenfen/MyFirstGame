@@ -1,9 +1,81 @@
 {
   "frames": {
-    "NoGunIcon.png": {
+    "burstIcon.png": {
       "frame": {
         "x": 0,
         "y": 0,
+        "w": 840,
+        "h": 771
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 840,
+        "h": 771
+      },
+      "sourceSize": {
+        "w": 840,
+        "h": 771
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "rocketIcon.png": {
+      "frame": {
+        "x": 840,
+        "y": 0,
+        "w": 837,
+        "h": 653
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 837,
+        "h": 653
+      },
+      "sourceSize": {
+        "w": 837,
+        "h": 653
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "laserIcon.png": {
+      "frame": {
+        "x": 1677,
+        "y": 0,
+        "w": 339,
+        "h": 264
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 339,
+        "h": 264
+      },
+      "sourceSize": {
+        "w": 339,
+        "h": 264
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "NoGunIcon.png": {
+      "frame": {
+        "x": 1677,
+        "y": 264,
         "w": 178,
         "h": 170
       },
@@ -23,78 +95,6 @@
         "x": 0.5,
         "y": 0.5
       }
-    },
-    "LaserIcon.png": {
-      "frame": {
-        "x": 178,
-        "y": 0,
-        "w": 158,
-        "h": 142
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 1,
-        "w": 158,
-        "h": 142
-      },
-      "sourceSize": {
-        "w": 159,
-        "h": 143
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "RocketIcon.png": {
-      "frame": {
-        "x": 336,
-        "y": 0,
-        "w": 129,
-        "h": 131
-      },
-      "rotated": true,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 20,
-        "y": 7,
-        "w": 129,
-        "h": 131
-      },
-      "sourceSize": {
-        "w": 159,
-        "h": 143
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "BurstIcon.png": {
-      "frame": {
-        "x": 467,
-        "y": 0,
-        "w": 87,
-        "h": 100
-      },
-      "rotated": true,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 15,
-        "y": 33,
-        "w": 87,
-        "h": 100
-      },
-      "sourceSize": {
-        "w": 159,
-        "h": 143
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
     }
   },
   "meta": {
@@ -103,8 +103,8 @@
     "image": "GunIcons.png",
     "format": "RGBA8888",
     "size": {
-      "w": 567,
-      "h": 170
+      "w": 2016,
+      "h": 771
     },
     "scale": 1,
     "target": "paper2d"
