@@ -2,6 +2,7 @@
 #include "TimerManager.h"
 #include "DamageTaker.h"
 #include "GameStruct.h"
+#include "Cannon.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/AudioComponent.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -169,7 +170,14 @@ bool AProjectile::MakeDamageTo(AActor* otherActor)
 
 	FDamageData damageData;
 	damageData.DamageValue = Damage;
-	damageData.Instigator = GetOwner();
+	if (Cast<ACannon>(GetOwner()))
+	{
+		damageData.Instigator = GetOwner()->GetOwner();
+	}
+	else
+	{
+		damageData.Instigator = GetOwner();
+	}
 	damageData.DamageMaker = this;
 	damageTakerActor->TakeDamage_(damageData);
 

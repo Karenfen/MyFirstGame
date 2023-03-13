@@ -150,8 +150,11 @@ void APlayerTankPawn::BeginPlay()
 void APlayerTankPawn::Die(AActor* killer)
 {
 	Super::Die(killer);
-	//
-	//
+
+	if (IsValid(SecondCannon))
+	{
+		SecondCannon->Destroy();
+	}
 }
 
 void APlayerTankPawn::DamageTaked(int DamageValue)

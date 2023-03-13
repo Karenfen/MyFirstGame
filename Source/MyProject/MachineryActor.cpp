@@ -79,6 +79,11 @@ void AMachineryActor::TakeDamage_(FDamageData DamageData)
 
 void AMachineryActor::Die(AActor* killer)
 {
+	if (IsValid(Cannon))
+	{
+		Cannon->Destroy();
+	}
+
 	Destroy();
 }
 
