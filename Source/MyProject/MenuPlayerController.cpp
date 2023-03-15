@@ -9,4 +9,5 @@ void AMenuPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	bShowMouseCursor = true;
+	SetInputMode(FInputModeUIOnly());
 }

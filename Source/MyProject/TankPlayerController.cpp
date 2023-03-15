@@ -32,7 +32,9 @@ void ATankPlayerController::Tick(float DeltaTime)
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
 	bShowMouseCursor = true;
+	SetInputMode(FInputModeGameAndUI());
 
 	TankPawn = Cast<APlayerTankPawn>(GetPawn());
 }

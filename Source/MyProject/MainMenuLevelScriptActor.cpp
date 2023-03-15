@@ -29,6 +29,7 @@ void AMainMenuLevelScriptActor::BeginPlay()
 void AMainMenuLevelScriptActor::StartClicked()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
+	
 }
 
 void AMainMenuLevelScriptActor::QuitClicked()

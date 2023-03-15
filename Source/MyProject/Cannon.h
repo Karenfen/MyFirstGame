@@ -82,7 +82,7 @@ public:
 	void FireSpecial();
 	bool IsReadyToFire();
 	bool IsReadyToFireSpec();
-	void Resupply(uint8 numberRounds);
+	void Resupply(uint8 numberRounds = 10);
 	ECannonType GetType();
 	bool IsEmpty();
 	FORCEINLINE int GetAmmo() const { return Ammo; };

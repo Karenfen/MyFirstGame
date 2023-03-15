@@ -52,6 +52,10 @@ void APlayerTankPawn::SwitchCannon()
 	Cannon = SecondCannon;
 	SecondCannon = currentCannon;
 
+	TSubclassOf<ACannon> currentCannonClass = CannonClass;
+	CannonClass = SecondCannonClass;
+	SecondCannonClass = currentCannonClass;
+
 	if (AudioChangeCannon)
 		AudioChangeCannon->Play();
 
@@ -76,23 +80,37 @@ void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 		return;
 	}
 
-	if (Cannon)
+	if (IsValid(Cannon))
 	{
-		if (SecondCannon)
+		if(CannonClass == newCannonClass)
 		{
+			Resupply();
+			return;
+		}
+
+		if (IsValid(SecondCannon))
+		{
+			if (SecondCannonClass == newCannonClass)
+			{
+				if (IsValid(AudioResupply))
+					AudioResupply->Play();
+
+				SecondCannon->Resupply();
+				UpdateSCAmmoHUD();
+
+				return;
+			}
+
 			Cannon->Destroy();
 		}
 		else
 		{
 			SecondCannon = Cannon;
+			SecondCannonClass = CannonClass;
+			SecondCannon->SetActorHiddenInGame(true);
+			UpdateSCAmmoHUD();
+			UpdateSCIconHUD();
 		}
-	}
-
-	if (SecondCannon)
-	{
-		SecondCannon->SetActorHiddenInGame(true);
-		UpdateSCAmmoHUD();
-		UpdateSCIconHUD();
 	}
 
 	Super::SetupCannon(newCannonClass);
@@ -138,6 +156,8 @@ void APlayerTankPawn::EnemyDestroyed(AActor* destroyedObject)
 void APlayerTankPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetupCannon(SecondCannonClass);
 
 	TankController = Cast<ATankPlayerController>(GetController());
 

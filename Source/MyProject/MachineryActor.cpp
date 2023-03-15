@@ -70,6 +70,8 @@ void AMachineryActor::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 
 	Cannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+	CannonClass = newCannonClass;
 }
 
 void AMachineryActor::TakeDamage_(FDamageData DamageData)

@@ -30,6 +30,9 @@ protected:
 	
 	UPROPERTY()
 	ACannon* SecondCannon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
+	TSubclassOf<ACannon> SecondCannonClass;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scores")
 	int CurrentScores = 0;
@@ -51,7 +54,7 @@ public:
 	APlayerTankPawn();
 	virtual ~APlayerTankPawn() {};
 	virtual void Fire() override;
-	virtual void Resupply(uint8 numberRounds) override;
+	virtual void Resupply(uint8 numberRounds = 10) override;
 	virtual void Tick(float DeltaTime) override;
 	void FireSpecial();
 	void EnemyDestroyed(AActor* destroyedObject);
