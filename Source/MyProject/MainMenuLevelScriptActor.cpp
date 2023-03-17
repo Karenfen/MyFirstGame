@@ -3,7 +3,7 @@
 
 #include "MainMenuLevelScriptActor.h"
 #include "MenuPlayerController.h"
-#include "MainMenuWidget.h"
+#include "HUD/MainMenuWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "Kismet/KismetSystemLibrary.h"
 
