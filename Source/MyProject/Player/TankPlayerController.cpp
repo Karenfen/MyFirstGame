@@ -2,6 +2,8 @@
 #include "DrawDebugHelpers.h"
 #include "math.h"
 #include "PlayerTankPawn.h"
+#include "../HUD/PauseMenuWidget.h"
+#include <Kismet/GameplayStatics.h>
 
 
 
@@ -30,6 +32,35 @@ void ATankPlayerController::Tick(float DeltaTime)
 	MousePositionUpdate();
 }
 
+void ATankPlayerController::Unpause()
+{
+	SetPause(false);
+	SetInputMode(FInputModeGameAndUI());
+
+	if(IsValid(PauseMenu))
+	{
+		PauseMenu->RemoveFromViewport();
+	}
+}
+
+void ATankPlayerController::Pause()
+{
+	if (!IsValid(PauseMenu))
+	{
+		return;
+	}
+			
+	Super::Pause();
+
+	SetInputMode(FInputModeUIOnly());
+	PauseMenu->AddToViewport();
+}
+
+void ATankPlayerController::Quit()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), mainMenuLevelName);
+}
+
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -38,6 +69,12 @@ void ATankPlayerController::BeginPlay()
 	SetInputMode(FInputModeGameAndUI());
 
 	TankPawn = Cast<APlayerTankPawn>(GetPawn());
+
+	PauseMenu = CreateWidget<UPauseMenuWidget>(this, PauseMenuClass);
+	if (IsValid(PauseMenu))
+	{
+		PauseMenu->SetButtonClickeHandler(this);
+	}
 }
 
 void ATankPlayerController::MoveForward(float AxisValue)
@@ -97,12 +134,4 @@ void ATankPlayerController::SetTurretDirRight(float AxisValue)
 {
 	if (TankPawn)
 		TankPawn->SetTurretDirY(AxisValue);
-}
-
-void ATankPlayerController::Pause()
-{
-	if (SetPause(true))
-	{
-		SetInputMode(FInputModeUIOnly());
-	}
 }
