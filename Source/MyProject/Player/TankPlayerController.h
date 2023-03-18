@@ -27,12 +27,14 @@ public:
 	ATankPlayerController();
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaTime) override;
-	FVector GetMousePosition() { return MousePosition; };
+	FVector GetTurretTarget();
 	UFUNCTION()
 	void Unpause();
 	UFUNCTION()
 	void Quit();
 	virtual void Pause() override;
+	UFUNCTION()
+	void SetGamePadControll(bool isGamePad) { GamepadControll = isGamePad; };
 
 protected:
 	virtual void BeginPlay() override;
@@ -47,4 +49,7 @@ protected:
 	void SetTurretDirRight(float AxisValue);
 
 	FVector MousePosition;
+	float TurretForwardAxisValue;
+	float TurretRightAxisValue;
+	bool GamepadControll = false;
 };

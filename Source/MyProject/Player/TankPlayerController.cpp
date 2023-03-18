@@ -28,7 +28,21 @@ void ATankPlayerController::SetupInputComponent()
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	MousePositionUpdate();
+
+	if (!GamepadControll && IsValid(TankPawn))
+	{
+		MousePositionUpdate();
+	}
+}
+
+FVector ATankPlayerController::GetTurretTarget()
+{
+	if (GamepadControll && IsValid(TankPawn))
+	{
+		return (FVector(TurretForwardAxisValue, TurretRightAxisValue, 0.0f) + TankPawn->GetActorLocation());
+	}
+
+	return MousePosition;
 }
 
 void ATankPlayerController::Unpause()
@@ -123,12 +137,10 @@ void ATankPlayerController::SwitchCannon()
 
 void ATankPlayerController::SetTurretDirForward(float AxisValue)
 {
-	if (TankPawn)
-		TankPawn->SetTurretDirX(AxisValue);
+	TurretForwardAxisValue = AxisValue;
 }
 
 void ATankPlayerController::SetTurretDirRight(float AxisValue)
 {
-	if (TankPawn)
-		TankPawn->SetTurretDirY(AxisValue);
+	TurretRightAxisValue = AxisValue;
 }

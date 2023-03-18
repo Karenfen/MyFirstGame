@@ -125,7 +125,7 @@ void APlayerTankPawn::Tick(float DeltaTime)
 
 	//if (_TurretDirX == 0.0f && _TurretDirY == 0.0f)
 	if (TankController)
-		RotateTurretTo(TankController->GetMousePosition());
+		RotateTurretTo(TankController->GetTurretTarget());
 	//else
 		//RotateTurretTo(FVector(_TurretDirX, _TurretDirY, 0.0f) + GetActorLocation());
 }
