@@ -6,9 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "MainMenuWidget.generated.h"
 
-/**
- * 
- */
+class UButton;
+
+
 UCLASS()
 class MYPROJECT_API UMainMenuWidget : public UUserWidget
 {
@@ -16,11 +16,17 @@ class MYPROJECT_API UMainMenuWidget : public UUserWidget
 	
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* Button_Start;
+	UButton* Button_Start;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* Button_Quit;
+	UButton* Button_Quit;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* Button_Settings;
 
 	void SetButtonClickeHandler(class AMainMenuLevelScriptActor* mainMenuLevel);
 
+protected:
+	UFUNCTION()
+	void OpenSettings();
 };

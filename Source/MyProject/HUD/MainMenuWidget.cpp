@@ -17,4 +17,12 @@ void UMainMenuWidget::SetButtonClickeHandler(AMainMenuLevelScriptActor* mainMenu
 	{
 		Button_Quit->OnClicked.AddDynamic(mainMenuLevel, &AMainMenuLevelScriptActor::QuitClicked);
 	}
+	if (IsValid(Button_Settings))
+	{
+		Button_Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettings);
+	}
+}
+
+void UMainMenuWidget::OpenSettings()
+{
 }

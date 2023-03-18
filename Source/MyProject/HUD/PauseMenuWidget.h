@@ -8,7 +8,8 @@
 
 
 class UButton;
-
+class UOverlay;
+class UCheckBox;
 
 UCLASS()
 class MYPROJECT_API UPauseMenuWidget : public UUserWidget
@@ -25,6 +26,21 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* Button_Settings;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UOverlay* SettingsPanel;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* Button_SettingsOk;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCheckBox* CheckBox_UseGamePad;
+
 public:
 	void SetButtonClickeHandler(class ATankPlayerController* handler);
+
+protected:
+	UFUNCTION()
+	void ShowSettingsPanel();
+	UFUNCTION()
+	void HideSettingsPanel();
 };
