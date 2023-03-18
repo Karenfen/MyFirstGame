@@ -123,11 +123,10 @@ void APlayerTankPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//if (_TurretDirX == 0.0f && _TurretDirY == 0.0f)
-	if (TankController)
+	if (IsValid(TankController))
+	{
 		RotateTurretTo(TankController->GetTurretTarget());
-	//else
-		//RotateTurretTo(FVector(_TurretDirX, _TurretDirY, 0.0f) + GetActorLocation());
+	}
 }
 
 void APlayerTankPawn::FireSpecial()

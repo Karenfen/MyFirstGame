@@ -28,6 +28,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level loading params")
 	FName LoadLevelName;
 
+	//UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Music")
+	//class UAudioComponent* Music;
+
 protected:
 	virtual void BeginPlay() override;
 
