@@ -9,7 +9,6 @@
 
 ATankPlayerController::ATankPlayerController()
 {
-	SetTickableWhenPaused(true);
 }
 
 void ATankPlayerController::SetupInputComponent()
@@ -35,7 +34,6 @@ void ATankPlayerController::Tick(float DeltaTime)
 void ATankPlayerController::Unpause()
 {
 	SetPause(false);
-	SetInputMode(FInputModeGameAndUI());
 
 	if(IsValid(PauseMenu))
 	{
@@ -52,7 +50,6 @@ void ATankPlayerController::Pause()
 			
 	Super::Pause();
 
-	SetInputMode(FInputModeUIOnly());
 	PauseMenu->AddToViewport();
 }
 
