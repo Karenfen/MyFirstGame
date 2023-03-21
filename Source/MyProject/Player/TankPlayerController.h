@@ -28,13 +28,14 @@ public:
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaTime) override;
 	FVector GetTurretTarget();
+	FVector GetTankTargetRotation();
 	UFUNCTION()
 	void Unpause();
 	UFUNCTION()
 	void Quit();
 	virtual void Pause() override;
 	UFUNCTION()
-	void SetGamePadControll(bool isGamePad) { GamepadControll = isGamePad; };
+	void SetGamePadControll(bool isGamePad);
 
 protected:
 	virtual void BeginPlay() override;
@@ -49,7 +50,11 @@ protected:
 	void SetTurretDirRight(float AxisValue);
 
 	FVector MousePosition;
-	float TurretForwardAxisValue;
-	float TurretRightAxisValue;
+	float TurretForwardDirectionValue;
+	float TurretRightDirectionValue;
+	float TankForwardDirectionValue;
+	float TankRightDirectionValue;
+	float TankForwardSpeedValue;
+	float TankRightSpeedValue;
 	bool GamepadControll = false;
 };

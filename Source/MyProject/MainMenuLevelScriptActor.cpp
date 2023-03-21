@@ -6,7 +6,6 @@
 #include "HUD/MainMenuWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "Kismet/KismetSystemLibrary.h"
-#include <Components/AudioComponent.h>
 
 
 
@@ -26,16 +25,11 @@ void AMainMenuLevelScriptActor::BeginPlay()
 			Menu->SetButtonClickeHandler(this);
 		}
 	}
-
-	//Music = CreateDefaultSubobject<UAudioComponent>(TEXT("Music"));
-	//Music->SetupAttachment(GetRootComponent());
-	//Music->SetAutoActivate(true);
 }
 
 void AMainMenuLevelScriptActor::StartClicked()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
-	
 }
 
 void AMainMenuLevelScriptActor::QuitClicked()

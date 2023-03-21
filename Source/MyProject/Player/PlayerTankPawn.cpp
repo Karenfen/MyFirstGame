@@ -10,6 +10,7 @@
 #include "TankPlayerController.h"
 #include "../Components/HealthComponent.h"
 #include "../HUD/Main_HUD_Widget.h"
+#include <Kismet/KismetMathLibrary.h>
 
 
 APlayerTankPawn::APlayerTankPawn()
@@ -181,6 +182,35 @@ void APlayerTankPawn::DamageTaked(int DamageValue)
 	Super::DamageTaked(DamageValue);
 
 	UpdateHealteHUD();
+}
+
+void APlayerTankPawn::Rotate(float DeltaTime)
+{
+	
+	if (IsValid(TankController))
+	{
+		FVector target = TankController->GetTankTargetRotation();
+		if (target == FVector::ZeroVector)
+		{
+			Super::Rotate(DeltaTime);
+		}
+		else
+		{
+			RotateBodyTo(target);
+		}
+	}
+}
+
+void APlayerTankPawn::RotateBodyTo(const FVector& target)
+{
+	FRotator newRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target);
+	FRotator bodyRotator = GetActorRotation();
+	float angleTurretYawRelativeBody = UKismetMathLibrary::DegreesToRadians(newRotator.Yaw - bodyRotator.Yaw);
+
+	newRotator.Pitch = bodyRotator.Pitch * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) - bodyRotator.Roll * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);
+	newRotator.Roll = bodyRotator.Roll * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) + bodyRotator.Pitch * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);
+	
+	BodyMesh->SetWorldRotation(FMath::Lerp(GetActorRotation(), newRotator, TankRotationInterpolationKey));
 }
 
 void APlayerTankPawn::UpdateHUD()

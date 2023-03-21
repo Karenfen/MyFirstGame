@@ -47,6 +47,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UMain_HUD_Widget> HUD_widget;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Rotation")
+	float TankRotationInterpolationKey = 0.5f;
+
 	float _TurretDirX = 0.0f;
 	float _TurretDirY = 0.0f;
 
@@ -60,13 +63,13 @@ public:
 	void EnemyDestroyed(AActor* destroyedObject);
 	void SwitchCannon();
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
-	FORCEINLINE void SetTurretDirX(float AxisValue) { _TurretDirX = AxisValue; };
-	FORCEINLINE void SetTurretDirY(float AxisValue) { _TurretDirY = AxisValue; };
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void Die(AActor* killer) override;
 	virtual void DamageTaked(int DamageValue) override;
+	virtual void Rotate(float DeltaTime) override;
+	void RotateBodyTo(const FVector& target);
 
 	void UpdateHUD();
 	void UpdateHealteHUD();

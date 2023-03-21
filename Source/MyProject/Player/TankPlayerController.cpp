@@ -39,10 +39,20 @@ FVector ATankPlayerController::GetTurretTarget()
 {
 	if (GamepadControll && IsValid(TankPawn))
 	{
-		return (FVector(TurretForwardAxisValue, TurretRightAxisValue, 0.0f) + TankPawn->GetActorLocation());
+		return (FVector(TurretForwardDirectionValue, TurretRightDirectionValue, 0.0f) + TankPawn->GetActorLocation());
 	}
 
 	return MousePosition;
+}
+
+FVector ATankPlayerController::GetTankTargetRotation()
+{
+	if (GamepadControll && IsValid(TankPawn))
+	{
+		return (FVector(TankForwardDirectionValue, TankRightDirectionValue, 0.0f) + TankPawn->GetActorLocation());
+	}
+
+	return FVector::ZeroVector;
 }
 
 void ATankPlayerController::Unpause()
@@ -67,6 +77,20 @@ void ATankPlayerController::Pause()
 	PauseMenu->AddToViewport();
 }
 
+void ATankPlayerController::SetGamePadControll(bool isGamePad)
+{
+	GamepadControll = isGamePad;
+
+	if (GamepadControll)
+	{
+		bShowMouseCursor = false;
+	}
+	else
+	{
+		bShowMouseCursor = true;
+	}
+}
+
 void ATankPlayerController::Quit()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), mainMenuLevelName);
@@ -86,23 +110,45 @@ void ATankPlayerController::BeginPlay()
 	{
 		PauseMenu->SetButtonClickeHandler(this);
 	}
+
+	SetGamePadControll(true);
 }
 
 void ATankPlayerController::MoveForward(float AxisValue)
 {
-	if(TankPawn)
+	if (!IsValid(TankPawn))
+	{
+		return;
+	}
+
+	if (GamepadControll)
+	{
+		if (AxisValue != 0.0f)
+		{
+			TankForwardDirectionValue = AxisValue;
+		}
+
+		TankForwardSpeedValue = AxisValue;
+
+		TankPawn->MoveForward(FVector::Distance(FVector::ZeroVector, FVector(TankForwardSpeedValue, TankRightSpeedValue, 0.0f)));
+	}
+	else
+	{
 		TankPawn->MoveForward(AxisValue);
+	}
 }
 
 void ATankPlayerController::MoveRight(float AxisValue)
 {
-	if (TankPawn)
-		TankPawn->MoveRight(AxisValue);
+	if(AxisValue != 0.0f)
+		TankRightDirectionValue = AxisValue;
+
+	TankRightSpeedValue = AxisValue;
 }
 
 void ATankPlayerController::RotateRight(float AxisValue)
 {
-	if (TankPawn)
+	if (IsValid(TankPawn))
 		TankPawn->RotateRight(AxisValue);
 }
 
@@ -137,10 +183,12 @@ void ATankPlayerController::SwitchCannon()
 
 void ATankPlayerController::SetTurretDirForward(float AxisValue)
 {
-	TurretForwardAxisValue = AxisValue;
+	if(AxisValue != 0.0f)
+		TurretForwardDirectionValue = AxisValue;
 }
 
 void ATankPlayerController::SetTurretDirRight(float AxisValue)
 {
-	TurretRightAxisValue = AxisValue;
+	if (AxisValue != 0.0f)
+		TurretRightDirectionValue = AxisValue;
 }

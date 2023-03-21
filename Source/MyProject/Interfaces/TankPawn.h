@@ -56,6 +56,6 @@ public:
 
 protected:
 	void Move(float DeltaTime);
-	void Rotate(float DeltaTime);
+	virtual void Rotate(float DeltaTime);
 	virtual void TakeDamage_(FDamageData DamageData) override;
 };
