@@ -57,6 +57,7 @@ protected:
 public:
 	APlayerTankPawn();
 	virtual ~APlayerTankPawn() {};
+	virtual void Destroyed() override;
 	virtual void Fire() override;
 	virtual void Resupply(uint8 numberRounds = 10) override;
 	virtual void Tick(float DeltaTime) override;

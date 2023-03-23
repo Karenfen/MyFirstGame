@@ -30,6 +30,16 @@ APlayerTankPawn::APlayerTankPawn()
 	AudioChangeCannon->SetAutoActivate(false);
 }
 
+void APlayerTankPawn::Destroyed()
+{
+	if (OnDie.IsBound())
+	{
+		OnDie.Broadcast();
+	}
+	
+	Super::Destroyed();
+}
+
 void APlayerTankPawn::Fire()
 {
 	Super::Fire();
@@ -174,11 +184,6 @@ void APlayerTankPawn::Die(AActor* killer)
 	if (IsValid(SecondCannon))
 	{
 		SecondCannon->Destroy();
-	}
-
-	if (OnDie.IsBound())
-	{
-		OnDie.Broadcast();
 	}
 }
 
