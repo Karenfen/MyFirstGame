@@ -15,6 +15,11 @@ class MYPROJECT_API APlayerTankPawn : public ATankPawn
 {
 	GENERATED_BODY()
 
+	DECLARE_EVENT(APlayerTankPawn, FOnDie)
+
+public:
+	FOnDie OnDie;
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArm;
@@ -39,10 +44,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scores")
 	int MaxScores = 1000000;
-
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Component")
-	class UMain_HUD_Widget* HUD;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UMain_HUD_Widget> HUD_widget;
@@ -78,4 +79,8 @@ protected:
 	void UpdateSCAmmoHUD();
 	void UpdateCCIconHUD();
 	void UpdateSCIconHUD();
+
+private:
+	class UMain_HUD_Widget* HUD {nullptr};
+
 };

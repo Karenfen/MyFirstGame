@@ -4,6 +4,7 @@
 #include "PlayerTankPawn.h"
 #include "../HUD/PauseMenuWidget.h"
 #include <Kismet/GameplayStatics.h>
+#include "../HUD/DeathScreenWidget.h"
 
 
 
@@ -96,6 +97,11 @@ void ATankPlayerController::Quit()
 	UGameplayStatics::OpenLevel(GetWorld(), mainMenuLevelName);
 }
 
+void ATankPlayerController::Restart()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), FName(GetWorld()->GetName()));
+}
+
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -104,14 +110,16 @@ void ATankPlayerController::BeginPlay()
 	SetInputMode(FInputModeGameAndUI());
 
 	TankPawn = Cast<APlayerTankPawn>(GetPawn());
+	if (IsValid(TankPawn))
+	{
+		TankPawn->OnDie.AddUObject(this, &ATankPlayerController::PlayerIsDie);
+	}
 
 	PauseMenu = CreateWidget<UPauseMenuWidget>(this, PauseMenuClass);
 	if (IsValid(PauseMenu))
 	{
 		PauseMenu->SetButtonClickeHandler(this);
 	}
-
-	SetGamePadControll(true);
 }
 
 void ATankPlayerController::MoveForward(float AxisValue)
@@ -191,4 +199,15 @@ void ATankPlayerController::SetTurretDirRight(float AxisValue)
 {
 	if (AxisValue != 0.0f)
 		TurretRightDirectionValue = AxisValue;
+}
+
+void ATankPlayerController::PlayerIsDie()
+{
+	DeathScreen = CreateWidget<UDeathScreenWidget>(this, DeathScreenClass);
+	if (IsValid(DeathScreen))
+	{
+		DeathScreen->SetButtonClickeHandler(this);
+		DeathScreen->AddToViewport();
+	}
+	
 }

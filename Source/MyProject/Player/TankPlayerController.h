@@ -14,11 +14,11 @@ protected:
 	UPROPERTY()
 	class APlayerTankPawn* TankPawn {nullptr};
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Component")
-	class UPauseMenuWidget* PauseMenu;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pause Menu")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<class UPauseMenuWidget> PauseMenuClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<class UDeathScreenWidget> DeathScreenClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level loading params")
 	FName mainMenuLevelName;
@@ -33,6 +33,8 @@ public:
 	void Unpause();
 	UFUNCTION()
 	void Quit();
+	UFUNCTION()
+	void Restart();
 	virtual void Pause() override;
 	UFUNCTION()
 	void SetGamePadControll(bool isGamePad);
@@ -48,7 +50,10 @@ protected:
 	void SwitchCannon();
 	void SetTurretDirForward(float AxisValue);
 	void SetTurretDirRight(float AxisValue);
+	UFUNCTION()
+	void PlayerIsDie();
 
+private:
 	FVector MousePosition;
 	float TurretForwardDirectionValue;
 	float TurretRightDirectionValue;
@@ -57,4 +62,7 @@ protected:
 	float TankForwardSpeedValue;
 	float TankRightSpeedValue;
 	bool GamepadControll = false;
+
+	class UPauseMenuWidget* PauseMenu {nullptr};
+	class UDeathScreenWidget* DeathScreen {nullptr};
 };

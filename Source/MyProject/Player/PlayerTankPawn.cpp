@@ -175,6 +175,11 @@ void APlayerTankPawn::Die(AActor* killer)
 	{
 		SecondCannon->Destroy();
 	}
+
+	if (OnDie.IsBound())
+	{
+		OnDie.Broadcast();
+	}
 }
 
 void APlayerTankPawn::DamageTaked(int DamageValue)

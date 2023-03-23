@@ -19,7 +19,7 @@ protected:
 	UPROPERTY()
 	class AMenuPlayerController* MenuController;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Component")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	class UMainMenuWidget* Menu;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu")
