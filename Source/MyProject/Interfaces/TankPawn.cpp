@@ -124,7 +124,7 @@ void ATankPawn::Move(float DeltaTime)
 		UPrimitiveComponent* mesh = Cast<UPrimitiveComponent>(RootComponent);
 		if (mesh)
 		{
-			mesh->AddForce(GetActorForwardVector() * EnginePower * DeltaTime * _targetForwardAxisValue, NAME_None, true);
+			mesh->AddForce(GetActorForwardVector() * EnginePower * _targetForwardAxisValue, NAME_None, true);
 			return;
 		}
 	}
