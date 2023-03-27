@@ -57,9 +57,9 @@ public:
 	virtual void RotateTurretTo(FVector TargetPosition);
 	FORCEINLINE FVector GetTurretForwardVector() { return TurretMesh->GetForwardVector(); };
 	FVector GetEyesPosition();
+	FORCEINLINE TSubclassOf<ACannon> CurentCannonClass() { return CannonClass; };
 	UFUNCTION()
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass);
-	FORCEINLINE TSubclassOf<ACannon> CurentCannonClass() { return CannonClass; };
 
 protected:
 	// Called when the game starts or when spawned
@@ -73,5 +73,4 @@ protected:
 	virtual void Die(AActor* killer);
 	UFUNCTION()
 	virtual void Destroyed();
-
 };

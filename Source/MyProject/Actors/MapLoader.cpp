@@ -2,6 +2,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include <MyProject/Player/PlayerTankPawn.h>
+#include <MyProject/SavePlayerState.h>
 
 
 AMapLoader::AMapLoader()
@@ -44,14 +46,17 @@ void AMapLoader::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp,
 	if (!IsActivated)
 		return;
 
-	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	APlayerTankPawn* PlayerPawn = Cast<APlayerTankPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if (OtherActor == PlayerPawn)
 	{
-		//if(!Boss)
-		//	UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
-		//else
-		//	if(Boss->IsReadyForFinishDestroy())
-		//		UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
+		USavePlayerState* savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::CreateSaveGameObject(USavePlayerState::StaticClass()));
+		if(IsValid(savePlayerInstance))
+		{
+			savePlayerInstance->SavePlayerState(PlayerPawn->GetState());
+			savePlayerInstance->SetAvailability(true);
+			UGameplayStatics::SaveGameToSlot(savePlayerInstance, TEXT("Player state"), 0);
+		}
+
 		UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
 	}
 }

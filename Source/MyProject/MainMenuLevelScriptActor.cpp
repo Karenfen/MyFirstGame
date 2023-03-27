@@ -6,6 +6,7 @@
 #include "HUD/MainMenuWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "Kismet/KismetSystemLibrary.h"
+#include "SavePlayerState.h"
 
 
 
@@ -24,6 +25,13 @@ void AMainMenuLevelScriptActor::BeginPlay()
 			Menu->AddToViewport();
 			Menu->SetButtonClickeHandler(this);
 		}
+	}
+
+	USavePlayerState* savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::CreateSaveGameObject(USavePlayerState::StaticClass()));
+	if (IsValid(savePlayerInstance))
+	{
+		savePlayerInstance->SetAvailability(false);
+		UGameplayStatics::SaveGameToSlot(savePlayerInstance, TEXT("Player state"), 0);
 	}
 }
 

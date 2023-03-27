@@ -22,6 +22,37 @@ enum class EAmmoBoxType : uint8
 	RoundsBox = 1 UMETA(DisplayName = "Set rounds")
 };
 
+UENUM(BlueprintType)
+enum class ESaveSlots : uint8
+{
+	PlayerTemp = 0 UMETA(DisplayName = "Player temp slot"),
+	Game = 1 UMETA(DisplayName = "Game slot")
+};
+
+USTRUCT()
+struct FPlayerTankState
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+		TSubclassOf<ACannon> FirstCannon{nullptr};
+
+	UPROPERTY()
+		int FCAmmo = -1;
+
+	UPROPERTY()
+		TSubclassOf<ACannon> SecondCannon{nullptr};
+
+	UPROPERTY()
+		int SCAmmo = -1;
+
+	UPROPERTY()
+		int CurrentHealth = -1;
+
+	UPROPERTY()
+		int Scores = -1;
+};
+
 UCLASS()
 class MYPROJECT_API UGameStruct : public UObject
 {

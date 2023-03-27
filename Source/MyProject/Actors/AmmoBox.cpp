@@ -25,7 +25,7 @@ void AAmmoBox::OnMeshOverLapBegin(UPrimitiveComponent* OverLappedComp, AActor* O
 		switch (Type)
 		{
 		case EAmmoBoxType::CannonBox:
-			playerPawn->SetupCannon(CannonClass);
+			playerPawn->AddCannon(CannonClass);
 			break;
 		case EAmmoBoxType::RoundsBox:
 			playerPawn->Resupply(sizeAmmo);

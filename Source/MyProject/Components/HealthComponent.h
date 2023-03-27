@@ -34,4 +34,5 @@ public:
 	void AddHealth(int AddiditionalHealthValue);	
 	FORCEINLINE int GetCurrentHealth() const { return CurrentHealth; };
 	FORCEINLINE int GetMaxHealth() const { return MaxHealth; };
+	FORCEINLINE void SetCurrentHealth(int newHealth) { CurrentHealth = newHealth; };
 };

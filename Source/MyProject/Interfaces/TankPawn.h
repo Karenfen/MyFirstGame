@@ -43,7 +43,6 @@ protected:
 public:
 	ATankPawn();
 	virtual ~ATankPawn() {};
-	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void RotateTurretTo(FVector TargetPosition)  override;
@@ -53,6 +52,7 @@ public:
 	void MoveRight(float AxisValue);
 	UFUNCTION()
 	void RotateRight(float AxisValue);
+	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
 
 protected:
 	void Move(float DeltaTime);

@@ -57,14 +57,17 @@ protected:
 public:
 	APlayerTankPawn();
 	virtual ~APlayerTankPawn() {};
-	virtual void Destroyed() override;
 	virtual void Fire() override;
 	virtual void Resupply(uint8 numberRounds = 10) override;
 	virtual void Tick(float DeltaTime) override;
 	void FireSpecial();
 	void EnemyDestroyed(AActor* destroyedObject);
 	void SwitchCannon();
+	void AddCannon(TSubclassOf<ACannon> newCannonClass);
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
+
+	// Function for saving
+	FPlayerTankState GetState();
 
 protected:
 	virtual void BeginPlay() override;
@@ -72,7 +75,14 @@ protected:
 	virtual void DamageTaked(int DamageValue) override;
 	virtual void Rotate(float DeltaTime) override;
 	void RotateBodyTo(const FVector& target);
+	void SetupSecondCannon(TSubclassOf<ACannon> newCannonClass);
 
+	// Functions for saving/loading
+	void SetStateAfterInit();
+	void SetStateBeforeInit();
+	void UpdateState();
+
+	// functions for update HUD
 	void UpdateHUD();
 	void UpdateHealteHUD();
 	void UpdateScoresHUD();
@@ -83,5 +93,6 @@ protected:
 
 private:
 	class UMain_HUD_Widget* HUD {nullptr};
-
+	FPlayerTankState state;
+	float deathHeight = -1000.0f;
 };

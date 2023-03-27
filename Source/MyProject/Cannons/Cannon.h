@@ -87,6 +87,7 @@ public:
 	bool IsEmpty();
 	FORCEINLINE int GetAmmo() const { return Ammo; };
 	FORCEINLINE int GetMaxAmmo() const { return maxAmmo; };
+	FORCEINLINE void SetAmmo(int newAmmo) { Ammo = newAmmo; };
 	TScriptInterface<ISlateTextureAtlasInterface> GetIconBrush() { return AtlasRegion; };
 
 protected:

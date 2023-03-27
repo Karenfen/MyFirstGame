@@ -10,7 +10,11 @@
 #include "TankPlayerController.h"
 #include "../Components/HealthComponent.h"
 #include "../HUD/Main_HUD_Widget.h"
+#include "../SavePlayerState.h"
 #include <Kismet/KismetMathLibrary.h>
+#include "Kismet/GameplayStatics.h"
+#include "Components/ArrowComponent.h"
+
 
 
 APlayerTankPawn::APlayerTankPawn()
@@ -28,16 +32,6 @@ APlayerTankPawn::APlayerTankPawn()
 	AudioChangeCannon = APawn::CreateDefaultSubobject<UAudioComponent>(TEXT("AudioChangeCannon"));
 	AudioChangeCannon->SetupAttachment(TurretMesh);
 	AudioChangeCannon->SetAutoActivate(false);
-}
-
-void APlayerTankPawn::Destroyed()
-{
-	if (OnDie.IsBound())
-	{
-		OnDie.Broadcast();
-	}
-	
-	Super::Destroyed();
 }
 
 void APlayerTankPawn::Fire()
@@ -84,6 +78,47 @@ void APlayerTankPawn::SwitchCannon()
 	}
 }
 
+void APlayerTankPawn::AddCannon(TSubclassOf<ACannon> newCannonClass)
+{
+	if (!newCannonClass)
+	{
+		return;
+	}
+
+	if (!IsValid(Cannon))
+	{
+		SetupCannon(newCannonClass);
+		return;
+	}
+
+	if (!IsValid(SecondCannon))
+	{
+		SetupSecondCannon(newCannonClass);
+		return;
+	}
+
+	if (CannonClass == newCannonClass)
+	{
+		Resupply();
+		return;
+	}
+
+	if (SecondCannonClass == newCannonClass)
+	{
+		if (IsValid(AudioResupply))
+		{
+			AudioResupply->Play();
+		}
+
+		SecondCannon->Resupply();
+		UpdateSCAmmoHUD();
+
+		return;
+	}
+
+	SetupCannon(newCannonClass);
+}
+
 void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 {
 	if (!newCannonClass)
@@ -91,43 +126,104 @@ void APlayerTankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 		return;
 	}
 
-	if (IsValid(Cannon))
-	{
-		if(CannonClass == newCannonClass)
-		{
-			Resupply();
-			return;
-		}
-
-		if (IsValid(SecondCannon))
-		{
-			if (SecondCannonClass == newCannonClass)
-			{
-				if (IsValid(AudioResupply))
-					AudioResupply->Play();
-
-				SecondCannon->Resupply();
-				UpdateSCAmmoHUD();
-
-				return;
-			}
-
-			Cannon->Destroy();
-		}
-		else
-		{
-			SecondCannon = Cannon;
-			SecondCannonClass = CannonClass;
-			SecondCannon->SetActorHiddenInGame(true);
-			UpdateSCAmmoHUD();
-			UpdateSCIconHUD();
-		}
-	}
-
 	Super::SetupCannon(newCannonClass);
 
 	UpdateCCAmmoHUD();
 	UpdateCCIconHUD();
+}
+
+void APlayerTankPawn::SetupSecondCannon(TSubclassOf<ACannon> newCannonClass)
+{
+	if (newCannonClass)
+	{
+		if (IsValid(SecondCannon))
+		{
+			SecondCannon->Destroy();
+		}
+
+		FActorSpawnParameters params;
+		params.Instigator = this;
+		params.Owner = this;
+
+		SecondCannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, params);
+
+		if(IsValid(SecondCannon))
+		{
+			SecondCannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			SecondCannonClass = newCannonClass;
+
+			if (IsValid(AudioSetupCannon))
+			{
+				AudioSetupCannon->Play();
+			}
+
+			UpdateSCAmmoHUD();
+			UpdateSCIconHUD();
+		}
+	}
+}
+
+void APlayerTankPawn::SetStateAfterInit()
+{
+	if (state.CurrentHealth > 0 && IsValid(HealthComponent))
+	{
+		HealthComponent->SetCurrentHealth(state.CurrentHealth);
+	}
+
+	if (state.FCAmmo >= 0 && IsValid(Cannon))
+	{
+		Cannon->SetAmmo(state.FCAmmo);
+	}
+
+	if (state.SCAmmo >= 0 && IsValid(SecondCannon))
+	{
+		SecondCannon->SetAmmo(state.SCAmmo);
+	}
+
+	if (state.Scores >= 0)
+	{
+		CurrentScores = state.Scores;
+	}
+}
+
+void APlayerTankPawn::SetStateBeforeInit()
+{
+	if (state.FirstCannon)
+	{
+		CannonClass = state.FirstCannon;
+	}
+
+	if (state.SecondCannon)
+	{
+		SecondCannonClass = state.SecondCannon;
+	}
+}
+
+void APlayerTankPawn::UpdateState()
+{
+	state.FirstCannon = CannonClass;
+	state.SecondCannon = SecondCannonClass;
+	state.Scores = CurrentScores;
+
+	if (IsValid(Cannon))
+	{
+		state.FCAmmo = Cannon->GetAmmo();
+	}
+	if (IsValid(HealthComponent))
+	{
+		state.CurrentHealth = HealthComponent->GetHealth();
+	}
+	if (IsValid(SecondCannon))
+	{
+		state.SCAmmo = SecondCannon->GetAmmo();
+	}
+}
+
+FPlayerTankState APlayerTankPawn::GetState()
+{
+	UpdateState();
+
+	return state;
 }
 
 void APlayerTankPawn::Tick(float DeltaTime)
@@ -137,6 +233,11 @@ void APlayerTankPawn::Tick(float DeltaTime)
 	if (IsValid(TankController))
 	{
 		RotateTurretTo(TankController->GetTurretTarget());
+	}
+
+	if (GetActorLocation().Z <= deathHeight)
+	{
+		Die(this);
 	}
 }
 
@@ -165,15 +266,25 @@ void APlayerTankPawn::EnemyDestroyed(AActor* destroyedObject)
 
 void APlayerTankPawn::BeginPlay()
 {
-	Super::BeginPlay();
+	USavePlayerState* savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::CreateSaveGameObject(USavePlayerState::StaticClass()));
+	savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::LoadGameFromSlot("Player state", 0));
 
-	SetupCannon(SecondCannonClass);
+	if (IsValid(savePlayerInstance))
+	{
+		state = savePlayerInstance->GetPlayerState();
+	}
+
+	SetStateBeforeInit();
+
+	Super::BeginPlay();
 
 	TankController = Cast<ATankPlayerController>(GetController());
 
 	HUD = CreateWidget<UMain_HUD_Widget>(TankController, HUD_widget);
 	HUD->AddToViewport();
 
+	SetupSecondCannon(SecondCannonClass);
+	SetStateAfterInit();
 	UpdateHUD();
 }
 
@@ -184,6 +295,11 @@ void APlayerTankPawn::Die(AActor* killer)
 	if (IsValid(SecondCannon))
 	{
 		SecondCannon->Destroy();
+	}
+
+	if (OnDie.IsBound())
+	{
+		OnDie.Broadcast();
 	}
 }
 
