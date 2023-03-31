@@ -91,15 +91,15 @@ void APlayerTankPawn::AddCannon(TSubclassOf<ACannon> newCannonClass)
 		return;
 	}
 
-	if (!IsValid(SecondCannon))
-	{
-		SetupSecondCannon(newCannonClass);
-		return;
-	}
-
 	if (CannonClass == newCannonClass)
 	{
 		Resupply();
+		return;
+	}
+
+	if (!IsValid(SecondCannon))
+	{
+		SetupSecondCannon(newCannonClass);
 		return;
 	}
 
