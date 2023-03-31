@@ -234,10 +234,15 @@ void APlayerTankPawn::Tick(float DeltaTime)
 	{
 		RotateTurretTo(TankController->GetTurretTarget());
 	}
+}
 
-	if (GetActorLocation().Z <= deathHeight)
+void APlayerTankPawn::FellOutOfWorld(const UDamageType& dmgType)
+{
+	Super::FellOutOfWorld(dmgType);
+
+	if (OnDie.IsBound())
 	{
-		Die(this);
+		OnDie.Broadcast();
 	}
 }
 

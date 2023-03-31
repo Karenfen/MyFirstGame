@@ -60,6 +60,7 @@ public:
 	virtual void Fire() override;
 	virtual void Resupply(uint8 numberRounds = 10) override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void FellOutOfWorld(const class UDamageType& dmgType);
 	void FireSpecial();
 	void EnemyDestroyed(AActor* destroyedObject);
 	void SwitchCannon();
@@ -94,5 +95,4 @@ protected:
 private:
 	class UMain_HUD_Widget* HUD {nullptr};
 	FPlayerTankState state;
-	float deathHeight = -1000.0f;
 };
