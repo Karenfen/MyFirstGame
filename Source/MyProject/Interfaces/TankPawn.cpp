@@ -62,7 +62,7 @@ void ATankPawn::RotateTurretTo(FVector TargetPosition)
 
 	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
 	FRotator turretRotation = TurretMesh->GetComponentRotation();
-	FRotator bodyRotation = GetActorRotation();
+	FRotator bodyRotation = BodyMesh->GetComponentRotation();
 	float angleTurretYawRelativeBody = UKismetMathLibrary::DegreesToRadians(targetRotation.Yaw - bodyRotation.Yaw);
 
 	targetRotation.Pitch = bodyRotation.Pitch * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) - bodyRotation.Roll * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);
@@ -140,7 +140,7 @@ void ATankPawn::Rotate(float DeltaTime)
 {
 	float yawRotation = RotationSpeed * _targetRotateRightdAxisValue * DeltaTime;
 	FRotator currentRotation = GetActorRotation();
-
+	
 	currentRotation.Yaw += yawRotation;
 	SetActorRotation(currentRotation);
 }
