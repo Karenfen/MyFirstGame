@@ -206,6 +206,8 @@ bool ACannon::ProjectileShot()
 
 	if (projectile)
 	{
+		projectile->SetOwner(this);
+
 		if (ShootEffect)
 			ShootEffect->ActivateSystem();
 
@@ -240,6 +242,9 @@ void ACannon::TraceShot()
 	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
 	traceParams.bTraceComplex = true;
 	traceParams.bReturnPhysicalMaterial = false;
+	traceParams.AddIgnoredActor(this);
+	traceParams.AddIgnoredActor(this->GetOwner());
+
 	FVector start = ProjectileSpawnPoint->GetComponentLocation();
 	FVector end = start + ProjectileSpawnPoint->GetForwardVector() * FireRange;
 
