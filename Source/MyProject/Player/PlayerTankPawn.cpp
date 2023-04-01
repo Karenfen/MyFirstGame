@@ -32,12 +32,6 @@ APlayerTankPawn::APlayerTankPawn()
 	AudioChangeCannon = APawn::CreateDefaultSubobject<UAudioComponent>(TEXT("AudioChangeCannon"));
 	AudioChangeCannon->SetupAttachment(TurretMesh);
 	AudioChangeCannon->SetAutoActivate(false);
-
-    FRArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Forward right force fector"));
-	FRArrow->SetupAttachment(BodyMesh);
-
-	RRArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Rear right force fector"));
-	RRArrow->SetupAttachment(BodyMesh);
 }
 
 void APlayerTankPawn::Fire()
@@ -329,12 +323,7 @@ void APlayerTankPawn::Rotate(float DeltaTime)
 		FVector target = TankController->GetTankTargetRotation();
 		if (target == FVector::ZeroVector)
 		{
-			UPrimitiveComponent* mesh = Cast<UPrimitiveComponent>(RootComponent);
-			if (mesh)
-			{
-				mesh->AddForceAtLocation(FRArrow->GetForwardVector() * RotationSpeed * EnginePower * _targetRotateRightdAxisValue, FRArrow->GetComponentLocation(), NAME_None);
-				mesh->AddForceAtLocation(RRArrow->GetForwardVector() * RotationSpeed * EnginePower * _targetRotateRightdAxisValue, RRArrow->GetComponentLocation(), NAME_None);
-			}
+			Super::Rotate(DeltaTime);
 		}
 		else
 		{

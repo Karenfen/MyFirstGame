@@ -63,11 +63,19 @@ float ATankAIController::GetRotationValue()
 	float rightAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(rightDirection, moveDirection)));
 	float rotationValue = 0.0f;
 
-	if (forwardAngle > 2.0f)
+	if (forwardAngle >= RotateAccurency)
+	{
 		rotationValue = 1.0f;
+	}
+	else
+	{
+		rotationValue = forwardAngle / RotateAccurency;
+	}
 
 	if (rightAngle > 90.0f)
+	{
 		rotationValue = -rotationValue;
+	}
 
 	return rotationValue;
 }

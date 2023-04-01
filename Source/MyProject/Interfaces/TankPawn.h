@@ -8,6 +8,8 @@
 
 
 class UAudioComponent;
+class UArrowComponent;
+
 
 UCLASS()
 class MYPROJECT_API ATankPawn : public AMachineryActor
@@ -16,13 +18,13 @@ class MYPROJECT_API ATankPawn : public AMachineryActor
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-	float MoveSpeed = 200.0f;
+	float MoveSpeed = 400.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float EnginePower = 1000.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-	float RotationSpeed = 100.0f;
+	float RotationSpeed = 400.0f;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	UAudioComponent* AudioSetupCannon;
@@ -35,6 +37,12 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	UAudioComponent* AudioHit;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UArrowComponent* FRArrow;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UArrowComponent* RRArrow;
 
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;

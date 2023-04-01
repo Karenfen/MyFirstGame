@@ -3,6 +3,8 @@
 #include "Components/AudioComponent.h"
 #include "Engine/TargetPoint.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/ArrowComponent.h"
+
 
 
 
@@ -27,6 +29,12 @@ ATankPawn::ATankPawn()
 	AudioHit = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioHit"));
 	AudioHit->SetupAttachment(BodyMesh);
 	AudioHit->SetAutoActivate(false);
+
+	FRArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Forward right force fector"));
+	FRArrow->SetupAttachment(BodyMesh);
+
+	RRArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Rear right force fector"));
+	RRArrow->SetupAttachment(BodyMesh);
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -119,30 +127,13 @@ void ATankPawn::Move(float DeltaTime)
 			AudioHalt->Stop();
 	}
 
-	if (RootComponent->IsSimulatingPhysics())
-	{
-		UPrimitiveComponent* mesh = Cast<UPrimitiveComponent>(RootComponent);
-		if (mesh)
-		{
-			mesh->AddForce(GetActorForwardVector() * EnginePower * _targetForwardAxisValue, NAME_None, true);
-			return;
-		}
-	}
-
-	FVector currentLocation = GetActorLocation();
-	FVector forwardVector = GetActorForwardVector();
-	FVector rightVector = GetActorRightVector();
-	FVector movePosition = currentLocation + ((forwardVector * _targetForwardAxisValue + rightVector * _targetRightdAxisValue) * MoveSpeed * DeltaTime);
-	AActor::SetActorLocation(movePosition, true);
+	BodyMesh->AddForce(GetActorForwardVector() * EnginePower * _targetForwardAxisValue, NAME_None, true);
 }
 
 void ATankPawn::Rotate(float DeltaTime)
 {
-	float yawRotation = RotationSpeed * _targetRotateRightdAxisValue * DeltaTime;
-	FRotator currentRotation = GetActorRotation();
-	
-	currentRotation.Yaw += yawRotation;
-	SetActorRotation(currentRotation);
+	BodyMesh->AddForceAtLocation(FRArrow->GetForwardVector() * RotationSpeed * EnginePower * _targetRotateRightdAxisValue, FRArrow->GetComponentLocation(), NAME_None);
+	BodyMesh->AddForceAtLocation(RRArrow->GetForwardVector() * RotationSpeed * EnginePower * _targetRotateRightdAxisValue, RRArrow->GetComponentLocation(), NAME_None);
 }
 
 void ATankPawn::TakeDamage_(FDamageData DamageData)
