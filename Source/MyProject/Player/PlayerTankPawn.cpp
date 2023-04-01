@@ -341,7 +341,7 @@ void APlayerTankPawn::RotateBodyTo(const FVector& target)
 	newRotator.Pitch = bodyRotator.Pitch * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) - bodyRotator.Roll * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);
 	newRotator.Roll = bodyRotator.Roll * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) + bodyRotator.Pitch * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);
 	
-	BodyMesh->SetWorldRotation(FMath::Lerp(GetActorRotation(), newRotator, TankRotationInterpolationKey));
+	SetActorRotation(FMath::Lerp(bodyRotator, newRotator, TankRotationInterpolationKey));
 }
 
 void APlayerTankPawn::UpdateHUD()
