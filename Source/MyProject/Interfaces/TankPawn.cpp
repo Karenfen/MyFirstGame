@@ -133,7 +133,11 @@ void ATankPawn::Move(float DeltaTime)
 void ATankPawn::Rotate(float DeltaTime)
 {
 	BodyMesh->AddForceAtLocation(FRArrow->GetForwardVector() * RotationSpeed * EnginePower * _targetRotateRightdAxisValue, FRArrow->GetComponentLocation(), NAME_None);
-	BodyMesh->AddForceAtLocation(RRArrow->GetForwardVector() * RotationSpeed * EnginePower * _targetRotateRightdAxisValue, RRArrow->GetComponentLocation(), NAME_None);
+	
+	if(_targetForwardAxisValue == 0.0f)
+	{
+		BodyMesh->AddForceAtLocation(RRArrow->GetForwardVector() * RotationSpeed * 1.5f * EnginePower * _targetRotateRightdAxisValue, RRArrow->GetComponentLocation(), NAME_None);
+	}
 }
 
 void ATankPawn::TakeDamage_(FDamageData DamageData)
