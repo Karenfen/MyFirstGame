@@ -107,8 +107,12 @@ void ACannon::FireSpecial()
 		GetWorld()->GetTimerManager().SetTimer(BurstTimerHandle, this, &ACannon::Burst, 1.0f / BurstRate, true, 0.0f);
 		break;
 	}
+
 	--Ammo;
 	--Ammo;
+	if (Ammo < 0)
+		Ammo = 0;
+
 	GetWorld()->GetTimerManager().SetTimer(ReloadSpecTimerHandle, this, &ACannon::ReloadSpec, (1.0f / FireRate) * 3.0f, false);
 }
 
