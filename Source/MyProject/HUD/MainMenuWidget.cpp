@@ -13,6 +13,10 @@ void UMainMenuWidget::SetButtonClickeHandler(AMainMenuLevelScriptActor* mainMenu
 	{
 		Button_Start->OnClicked.AddDynamic(mainMenuLevel, &AMainMenuLevelScriptActor::StartClicked);
 	}
+	if (IsValid(Button_Continue))
+	{
+		Button_Continue->OnClicked.AddDynamic(mainMenuLevel, &AMainMenuLevelScriptActor::ContinueCliced);
+	}
 	if (IsValid(Button_Quit))
 	{
 		Button_Quit->OnClicked.AddDynamic(mainMenuLevel, &AMainMenuLevelScriptActor::QuitClicked);
@@ -20,6 +24,23 @@ void UMainMenuWidget::SetButtonClickeHandler(AMainMenuLevelScriptActor* mainMenu
 	if (IsValid(Button_Settings))
 	{
 		Button_Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettings);
+	}
+}
+
+void UMainMenuWidget::SetContinueButtonIsAnabled(bool isAnabled)
+{
+	if (IsValid(Button_Continue))
+	{
+		Button_Continue->SetIsEnabled(isAnabled);
+
+		if(isAnabled)
+		{
+			Button_Continue->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			Button_Continue->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
 

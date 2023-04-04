@@ -53,7 +53,6 @@ void AMapLoader::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		if(IsValid(savePlayerInstance))
 		{
 			savePlayerInstance->SavePlayerState(PlayerPawn->GetState());
-			savePlayerInstance->SetAvailability(true);
 			UGameplayStatics::SaveGameToSlot(savePlayerInstance, TEXT("Player state"), 0);
 		}
 

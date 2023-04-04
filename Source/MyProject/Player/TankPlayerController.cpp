@@ -5,6 +5,8 @@
 #include "../HUD/PauseMenuWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "../HUD/DeathScreenWidget.h"
+#include <MyProject/MySaveGame.h>
+#include "../HUD/NoticeWidget.h"
 
 
 
@@ -72,6 +74,12 @@ void ATankPlayerController::Pause()
 	{
 		return;
 	}
+
+	if (IsPaused())
+	{
+		Unpause();
+		return;
+	}
 			
 	Super::Pause();
 
@@ -89,6 +97,37 @@ void ATankPlayerController::SetGamePadControll(bool isGamePad)
 	else
 	{
 		bShowMouseCursor = true;
+	}
+}
+
+void ATankPlayerController::SaveGame()
+{
+	UMySaveGame* GameSaveInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	if (IsValid(GameSaveInstance))
+	{
+		USavePlayerState* savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::CreateSaveGameObject(USavePlayerState::StaticClass()));
+		savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::LoadGameFromSlot("Player state", 0));
+
+		if(IsValid(savePlayerInstance))
+		{
+			GameSaveInstance->SavePlayerState(savePlayerInstance->GetPlayerState());
+			GameSaveInstance->SaveLevel(FName(GetWorld()->GetName()));
+
+			UGameplayStatics::SaveGameToSlot(GameSaveInstance, TEXT("Save game"), 1);
+
+			if (IsValid(Notice))
+			{
+				Notice->SetMassege(FText::FromString("Game saved!"));
+				Notice->AddToViewport();
+				return;
+			}
+		}
+	}
+
+	if (IsValid(Notice))
+	{
+		Notice->SetMassege(FText::FromString("Game not saved!"));
+		Notice->AddToViewport();
 	}
 }
 
@@ -120,6 +159,8 @@ void ATankPlayerController::BeginPlay()
 	{
 		PauseMenu->SetButtonClickeHandler(this);
 	}
+
+	Notice = CreateWidget<UNoticeWidget>(this, NoticeClass);
 }
 
 void ATankPlayerController::MoveForward(float AxisValue)

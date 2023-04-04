@@ -165,25 +165,27 @@ void APlayerTankPawn::SetupSecondCannon(TSubclassOf<ACannon> newCannonClass)
 
 void APlayerTankPawn::SetStateAfterInit()
 {
-	if (state.CurrentHealth > 0 && IsValid(HealthComponent))
+	if (state.IsEmpty())
+	{
+		return;
+	}
+
+	if (IsValid(HealthComponent))
 	{
 		HealthComponent->SetCurrentHealth(state.CurrentHealth);
 	}
 
-	if (state.FCAmmo >= 0 && IsValid(Cannon))
+	if (IsValid(Cannon))
 	{
 		Cannon->SetAmmo(state.FCAmmo);
 	}
 
-	if (state.SCAmmo >= 0 && IsValid(SecondCannon))
+	if (IsValid(SecondCannon))
 	{
 		SecondCannon->SetAmmo(state.SCAmmo);
 	}
 
-	if (state.Scores >= 0)
-	{
-		CurrentScores = state.Scores;
-	}
+	CurrentScores = state.Scores;
 }
 
 void APlayerTankPawn::SetStateBeforeInit()

@@ -8,6 +8,7 @@
 #include "../Player/TankPlayerController.h"
 
 
+
 void UPauseMenuWidget::SetButtonClickeHandler(ATankPlayerController* handler)
 {
 	if (IsValid(Button_Resume))
@@ -29,6 +30,10 @@ void UPauseMenuWidget::SetButtonClickeHandler(ATankPlayerController* handler)
 	if (IsValid(CheckBox_UseGamePad))
 	{
 		CheckBox_UseGamePad->OnCheckStateChanged.AddDynamic(handler, &ATankPlayerController::SetGamePadControll);
+	}
+	if (IsValid(Button_Save))
+	{
+		Button_Save->OnClicked.AddDynamic(handler, &ATankPlayerController::SaveGame);
 	}
 }
 

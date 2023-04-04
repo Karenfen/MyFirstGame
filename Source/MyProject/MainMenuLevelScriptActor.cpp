@@ -7,6 +7,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "Kismet/KismetSystemLibrary.h"
 #include "SavePlayerState.h"
+#include "MySaveGame.h"
 
 
 
@@ -27,20 +28,61 @@ void AMainMenuLevelScriptActor::BeginPlay()
 		}
 	}
 
-	USavePlayerState* savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::CreateSaveGameObject(USavePlayerState::StaticClass()));
-	if (IsValid(savePlayerInstance))
+	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot("Save game", 1));
+
+	if (IsValid(SaveGameInstance))
 	{
-		savePlayerInstance->SetAvailability(false);
-		UGameplayStatics::SaveGameToSlot(savePlayerInstance, TEXT("Player state"), 0);
+		if (SaveGameInstance->IsEmpty())
+		{
+			Menu->SetContinueButtonIsAnabled(false);
+			SaveGameInstance = nullptr;
+		}
+		else
+		{
+			Menu->SetContinueButtonIsAnabled(true);
+		}
+	}
+	else
+	{
+		Menu->SetContinueButtonIsAnabled(false);
+		SaveGameInstance = nullptr;
 	}
 }
 
 void AMainMenuLevelScriptActor::StartClicked()
 {
+	USavePlayerState* savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::CreateSaveGameObject(USavePlayerState::StaticClass()));
+	if (IsValid(savePlayerInstance))
+	{
+		savePlayerInstance->SavePlayerState(FPlayerTankState());
+		UGameplayStatics::SaveGameToSlot(savePlayerInstance, TEXT("Player state"), 0);
+	}
+
 	UGameplayStatics::OpenLevel(GetWorld(), LoadLevelName);
 }
 
 void AMainMenuLevelScriptActor::QuitClicked()
 {
 	UKismetSystemLibrary::QuitGame(this, MenuController, EQuitPreference::Quit, true);
+}
+
+void AMainMenuLevelScriptActor::ContinueCliced()
+{
+	if (IsValid(SaveGameInstance))
+	{
+		if (SaveGameInstance->IsEmpty())
+		{
+			return;
+		}
+
+		USavePlayerState* savePlayerInstance = Cast<USavePlayerState>(UGameplayStatics::CreateSaveGameObject(USavePlayerState::StaticClass()));
+		if (IsValid(savePlayerInstance))
+		{
+			savePlayerInstance->SavePlayerState(SaveGameInstance->GetPlayerState());
+			UGameplayStatics::SaveGameToSlot(savePlayerInstance, TEXT("Player state"), 0);
+
+			UGameplayStatics::OpenLevel(GetWorld(), SaveGameInstance->LoadLevel());
+		}
+	}
 }

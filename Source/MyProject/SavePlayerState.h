@@ -18,15 +18,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FPlayerTankState PlayerState;
 
-	UPROPERTY(EditAnywhere)
-	bool IsAvailable = false;
-
 public:
 	USavePlayerState();
 	void SavePlayerState(const FPlayerTankState& newState);
 	FPlayerTankState GetPlayerState() const;
+	bool IsEmpty() const;
+
 protected:
-	void SetAvailability(bool avaible) { IsAvailable = avaible; };
 	friend class AMainMenuLevelScriptActor;
 	friend class AMapLoader;
 };

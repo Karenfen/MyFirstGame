@@ -11,15 +11,14 @@ USavePlayerState::USavePlayerState()
 void USavePlayerState::SavePlayerState(const FPlayerTankState& newState)
 {
 	PlayerState = newState;
-	IsAvailable = true;
 }
 
 FPlayerTankState USavePlayerState::GetPlayerState() const
 {
-	if (IsAvailable)
-	{
-		return PlayerState;
-	}
+	return PlayerState;
+}
 
-	return FPlayerTankState();
+bool USavePlayerState::IsEmpty() const
+{
+	return PlayerState.IsEmpty();
 }

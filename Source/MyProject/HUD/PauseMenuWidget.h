@@ -27,6 +27,9 @@ public:
 	UButton* Button_Settings;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* Button_Save;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UOverlay* SettingsPanel;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))

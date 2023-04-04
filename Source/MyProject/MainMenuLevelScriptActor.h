@@ -37,4 +37,10 @@ public:
 
 	UFUNCTION()
 	void QuitClicked();
+
+	UFUNCTION()
+	void ContinueCliced();
+
+private:
+	class UMySaveGame* SaveGameInstance{ nullptr };
 };

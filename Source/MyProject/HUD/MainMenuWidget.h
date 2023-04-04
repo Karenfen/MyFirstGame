@@ -19,12 +19,16 @@ public:
 	UButton* Button_Start;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* Button_Continue;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* Button_Quit;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* Button_Settings;
 
 	void SetButtonClickeHandler(class AMainMenuLevelScriptActor* mainMenuLevel);
+	void SetContinueButtonIsAnabled(bool isAnabled);
 
 protected:
 	UFUNCTION()

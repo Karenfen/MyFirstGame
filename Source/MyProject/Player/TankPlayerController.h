@@ -20,6 +20,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<class UDeathScreenWidget> DeathScreenClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<class UNoticeWidget> NoticeClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level loading params")
 	FName mainMenuLevelName;
 
@@ -38,6 +41,8 @@ public:
 	virtual void Pause() override;
 	UFUNCTION()
 	void SetGamePadControll(bool isGamePad);
+	UFUNCTION()
+	void SaveGame();
 
 protected:
 	virtual void BeginPlay() override;
@@ -65,4 +70,5 @@ private:
 
 	class UPauseMenuWidget* PauseMenu {nullptr};
 	class UDeathScreenWidget* DeathScreen {nullptr};
+	class UNoticeWidget* Notice{nullptr};
 };

@@ -38,19 +38,23 @@ struct FPlayerTankState
 		TSubclassOf<ACannon> FirstCannon{nullptr};
 
 	UPROPERTY()
-		int FCAmmo = -1;
+		int FCAmmo = 0;
 
 	UPROPERTY()
 		TSubclassOf<ACannon> SecondCannon{nullptr};
 
 	UPROPERTY()
-		int SCAmmo = -1;
+		int SCAmmo = 0;
 
 	UPROPERTY()
-		int CurrentHealth = -1;
+		int CurrentHealth = 0;
 
 	UPROPERTY()
-		int Scores = -1;
+		int Scores = 0;
+
+	bool IsEmpty() const;
+
+	bool operator== (const FPlayerTankState& other) const;
 };
 
 UCLASS()
