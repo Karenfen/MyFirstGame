@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "E:\\Unreal Projects\\MyFirstGame\\Content\\Icons",
+  "images": [
+    {
+      "name": "burst.png",
+      "path": "D:/игровые файлы/icons/burst.png",
+      "folder": ""
+    },
+    {
+      "name": "health.png",
+      "path": "D:/игровые файлы/icons/health.png",
+      "folder": ""
+    },
+    {
+      "name": "laser.png",
+      "path": "D:/игровые файлы/icons/laser.png",
+      "folder": ""
+    },
+    {
+      "name": "none.png",
+      "path": "D:/игровые файлы/icons/none.png",
+      "folder": ""
+    },
+    {
+      "name": "rocket.png",
+      "path": "D:/игровые файлы/icons/rocket.png",
+      "folder": ""
+    }
+  ],
+  "folders": [],
+  "packOptions": {
+    "textureName": "HUDicons",
+    "textureFormat": "png",
+    "removeFileExtension": false,
+    "prependFolderName": true,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "UnrealEngine",
+    "fileName": "pack-result",
+    "savePath": "E:\\Unreal Projects\\MyFirstGame\\Content\\Icons",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": true,
+    "allowTrim": true,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "MaxRectsBin",
+    "packerMethod": "BestShortSideFit"
+  }
+}
