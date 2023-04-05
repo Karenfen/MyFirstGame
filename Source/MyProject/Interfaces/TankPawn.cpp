@@ -4,7 +4,7 @@
 #include "Engine/TargetPoint.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
-
+#include "Components/BoxComponent.h"
 
 
 
@@ -35,6 +35,9 @@ ATankPawn::ATankPawn()
 
 	RRArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Rear right force fector"));
 	RRArrow->SetupAttachment(BodyMesh);
+
+	Bottom = CreateDefaultSubobject<UBoxComponent>(TEXT("Bottom collision"));
+	Bottom->SetupAttachment(BodyMesh);
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
@@ -44,6 +47,17 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 	if (AudioSetupCannon)
 	{
 		AudioSetupCannon->Play();
+	}
+}
+
+void ATankPawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (IsValid(Bottom))
+	{
+		Bottom->OnComponentBeginOverlap.AddDynamic(this, &ATankPawn::BottomStartOverlap);
+		Bottom->OnComponentEndOverlap.AddDynamic(this, &ATankPawn::BottomEndOverlap);
 	}
 }
 
@@ -101,6 +115,11 @@ void ATankPawn::RotateRight(float AxisValue)
 
 void ATankPawn::Move(float DeltaTime)
 {
+	if (BottomOverlapCount == 0)
+	{
+		return;
+	}
+
 	if (_targetForwardAxisValue == 0.0f)
 	{
 		if (IsValid(AudioHalt))

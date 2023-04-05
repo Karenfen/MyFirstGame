@@ -44,13 +44,18 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UArrowComponent* RRArrow;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UBoxComponent* Bottom;
+
 	float _targetForwardAxisValue = 0.0f;
 	float _targetRightdAxisValue = 0.0f;
 	float _targetRotateRightdAxisValue = 0.0f;
+	int BottomOverlapCount = 0;
 
 public:
 	ATankPawn();
 	virtual ~ATankPawn() {};
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void RotateTurretTo(FVector TargetPosition)  override;
@@ -66,4 +71,8 @@ protected:
 	void Move(float DeltaTime);
 	virtual void Rotate(float DeltaTime);
 	virtual void TakeDamage_(FDamageData DamageData) override;
+	UFUNCTION()
+	void BottomStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) { ++BottomOverlapCount; };
+	UFUNCTION()
+	void BottomEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) { --BottomOverlapCount; };
 };
