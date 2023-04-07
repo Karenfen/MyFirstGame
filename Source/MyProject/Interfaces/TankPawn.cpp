@@ -50,6 +50,16 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 	}
 }
 
+FVector ATankPawn::GetTurretWorldLocation()
+{
+	if (IsValid(TurretMesh))
+	{
+		return (TurretMesh->GetComponentLocation());
+	}
+
+	return GetActorLocation();
+}
+
 void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
@@ -82,9 +92,9 @@ void ATankPawn::RotateTurretTo(FVector TargetPosition)
 		return;
 	}
 
-	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetTurretWorldLocation(), TargetPosition);
 	FRotator turretRotation = TurretMesh->GetComponentRotation();
-	FRotator bodyRotation = BodyMesh->GetComponentRotation();
+	FRotator bodyRotation = GetActorRotation();
 	float angleTurretYawRelativeBody = UKismetMathLibrary::DegreesToRadians(targetRotation.Yaw - bodyRotation.Yaw);
 
 	targetRotation.Pitch = bodyRotation.Pitch * UKismetMathLibrary::Cos(angleTurretYawRelativeBody) - bodyRotation.Roll * UKismetMathLibrary::Sin(angleTurretYawRelativeBody);

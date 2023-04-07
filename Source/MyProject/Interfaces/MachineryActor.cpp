@@ -97,7 +97,6 @@ void AMachineryActor::Destroyed()
 
 void AMachineryActor::DamageTaked(int DamageValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
 }
 
 void AMachineryActor::RotateTurretTo(FVector TargetPosition)

@@ -66,6 +66,7 @@ public:
 	UFUNCTION()
 	void RotateRight(float AxisValue);
 	virtual void SetupCannon(TSubclassOf<ACannon> newCannonClass) override;
+	FVector GetTurretWorldLocation();
 
 protected:
 	void Move(float DeltaTime);

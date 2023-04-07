@@ -7,6 +7,7 @@
 #include "../HUD/DeathScreenWidget.h"
 #include <MyProject/MySaveGame.h>
 #include "../HUD/NoticeWidget.h"
+#include <Kismet/KismetMathLibrary.h>
 
 
 
@@ -204,12 +205,14 @@ void ATankPlayerController::RotateRight(float AxisValue)
 void ATankPlayerController::MousePositionUpdate()
 {
 	FVector mouseDirection;
+	FVector playerPos = TankPawn->GetTurretWorldLocation();
+
 	DeprojectMousePositionToWorld(MousePosition, mouseDirection);
-	FVector pawnPos = TankPawn->GetActorLocation();
-	MousePosition.Z = pawnPos.Z;
-	FVector dir = MousePosition - pawnPos;
-	dir.Normalize();
-	MousePosition = pawnPos + dir * 1000;
+
+	float distance = FVector::Distance(MousePosition, playerPos);
+	distance /= UKismetMathLibrary::Cos(acosf(FVector::DotProduct(mouseDirection, playerPos.DownVector)));
+
+	MousePosition = MousePosition + mouseDirection * distance;
 }
 
 void ATankPlayerController::Fire()
