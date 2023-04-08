@@ -19,19 +19,22 @@
 
 APlayerTankPawn::APlayerTankPawn()
 {
-	SpringArm = APawn::CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArm->SetupAttachment(BodyMesh);
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->bInheritPitch = false;
 	SpringArm->bInheritYaw = false;
 	SpringArm->bInheritRoll = false;
 
-	Camera = APawn::CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
-	AudioChangeCannon = APawn::CreateDefaultSubobject<UAudioComponent>(TEXT("AudioChangeCannon"));
+	AudioChangeCannon = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioChangeCannon"));
 	AudioChangeCannon->SetupAttachment(TurretMesh);
 	AudioChangeCannon->SetAutoActivate(false);
+
+	Laser = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Laser"));
+	Laser->SetupAttachment(CannonSetupPoint);
 }
 
 void APlayerTankPawn::Fire()
@@ -163,6 +166,34 @@ void APlayerTankPawn::SetupSecondCannon(TSubclassOf<ACannon> newCannonClass)
 	}
 }
 
+void APlayerTankPawn::UpdateLaser()
+{
+	if (!IsValid(Laser))
+	{
+		return;
+	}
+
+	FHitResult hitResult;
+	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+	traceParams.bTraceComplex = true;
+	traceParams.bReturnPhysicalMaterial = false;
+	traceParams.AddIgnoredActor(this);
+
+	FVector start = CannonSetupPoint->GetComponentLocation();
+	FVector end = start + (CannonSetupPoint->GetForwardVector() * LaserDistance);
+
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
+	{
+		LaserScale.Z = hitResult.Distance;
+	}
+	else
+	{
+		LaserScale.Z = LaserDistance;
+	}
+
+	Laser->SetWorldScale3D(LaserScale);
+}
+
 void APlayerTankPawn::SetStateAfterInit()
 {
 	if (state.IsEmpty())
@@ -236,6 +267,8 @@ void APlayerTankPawn::Tick(float DeltaTime)
 	{
 		RotateTurretTo(TankController->GetTurretTarget());
 	}
+
+	UpdateLaser();
 }
 
 void APlayerTankPawn::FellOutOfWorld(const UDamageType& dmgType)
@@ -293,6 +326,13 @@ void APlayerTankPawn::BeginPlay()
 	SetupSecondCannon(SecondCannonClass);
 	SetStateAfterInit();
 	UpdateHUD();
+
+	if (IsValid(Laser))
+	{
+		LaserScale = Laser->GetRelativeScale3D();
+		LaserScale.Z = LaserDistance;
+		Laser->SetRelativeScale3D(LaserScale);
+	}
 }
 
 void APlayerTankPawn::Die(AActor* killer)

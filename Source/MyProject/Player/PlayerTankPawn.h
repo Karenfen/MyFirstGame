@@ -22,6 +22,9 @@ public:
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UStaticMeshComponent* Laser;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -51,6 +54,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Rotation")
 	float TankRotationInterpolationKey = 0.5f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aiming")
+	float LaserDistance = 500.0f;
+
 	float _TurretDirX = 0.0f;
 	float _TurretDirY = 0.0f;
 
@@ -77,6 +83,7 @@ protected:
 	virtual void Rotate(float DeltaTime) override;
 	void RotateBodyTo(const FVector& target);
 	void SetupSecondCannon(TSubclassOf<ACannon> newCannonClass);
+	void UpdateLaser();
 
 	// Functions for saving/loading
 	void SetStateAfterInit();
@@ -95,4 +102,5 @@ protected:
 private:
 	class UMain_HUD_Widget* HUD {nullptr};
 	FPlayerTankState state;
+	FVector LaserScale = FVector::OneVector;
 };
