@@ -181,6 +181,12 @@ void APlayerTankPawn::UpdateLaser()
 
 	FVector start = CannonSetupPoint->GetComponentLocation();
 	FVector end = start + (CannonSetupPoint->GetForwardVector() * LaserDistance);
+	
+	if (TankController) {
+		if (!TankController->IsGamepadControll) {
+			end = TankController->MousePosition;
+		}
+	}
 
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
 	{
@@ -188,7 +194,7 @@ void APlayerTankPawn::UpdateLaser()
 	}
 	else
 	{
-		LaserScale.Z = LaserDistance;
+		LaserScale.Z = FVector::Distance(start, end);
 	}
 
 	Laser->SetWorldScale3D(LaserScale);

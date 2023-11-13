@@ -27,6 +27,12 @@ protected:
 	FName mainMenuLevelName;
 
 public:
+	UPROPERTY()
+	FVector MousePosition = FVector::ZeroVector;
+
+	UPROPERTY()
+	bool IsGamepadControll = false;
+
 	ATankPlayerController();
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaTime) override;
@@ -59,14 +65,12 @@ protected:
 	void PlayerIsDie();
 
 private:
-	FVector MousePosition;
 	float TurretForwardDirectionValue;
 	float TurretRightDirectionValue;
 	float TankForwardDirectionValue;
 	float TankRightDirectionValue;
 	float TankForwardSpeedValue;
 	float TankRightSpeedValue;
-	bool GamepadControll = false;
 
 	class UPauseMenuWidget* PauseMenu {nullptr};
 	class UDeathScreenWidget* DeathScreen {nullptr};

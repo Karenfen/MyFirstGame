@@ -33,7 +33,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!GamepadControll && IsValid(TankPawn))
+	if (!IsGamepadControll && IsValid(TankPawn))
 	{
 		MousePositionUpdate();
 	}
@@ -41,7 +41,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 FVector ATankPlayerController::GetTurretTarget()
 {
-	if (GamepadControll && IsValid(TankPawn))
+	if (IsGamepadControll && IsValid(TankPawn))
 	{
 		return (FVector(TurretForwardDirectionValue, TurretRightDirectionValue, 0.0f) + TankPawn->GetActorLocation());
 	}
@@ -51,7 +51,7 @@ FVector ATankPlayerController::GetTurretTarget()
 
 FVector ATankPlayerController::GetTankTargetRotation()
 {
-	if (GamepadControll && IsValid(TankPawn))
+	if (IsGamepadControll && IsValid(TankPawn))
 	{
 		return (FVector(TankForwardDirectionValue, TankRightDirectionValue, 0.0f) + TankPawn->GetActorLocation());
 	}
@@ -89,9 +89,9 @@ void ATankPlayerController::Pause()
 
 void ATankPlayerController::SetGamePadControll(bool isGamePad)
 {
-	GamepadControll = isGamePad;
+	IsGamepadControll = isGamePad;
 
-	if (GamepadControll)
+	if (IsGamepadControll)
 	{
 		bShowMouseCursor = false;
 	}
@@ -171,7 +171,7 @@ void ATankPlayerController::MoveForward(float AxisValue)
 		return;
 	}
 
-	if (GamepadControll)
+	if (IsGamepadControll)
 	{
 		if (AxisValue != 0.0f)
 		{
