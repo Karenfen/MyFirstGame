@@ -6,6 +6,8 @@
 #include "Components/Overlay.h"
 #include "Components/CheckBox.h"
 #include "../Player/TankPlayerController.h"
+#include "MySettingsWidget.h"
+
 
 
 
@@ -21,36 +23,20 @@ void UPauseMenuWidget::SetButtonClickeHandler(ATankPlayerController* handler)
 	}
 	if (IsValid(Button_Settings))
 	{
-		Button_Settings->OnClicked.AddDynamic(this, &UPauseMenuWidget::ShowSettingsPanel);
-	}
-	if (IsValid(Button_SettingsOk))
-	{
-		Button_SettingsOk->OnClicked.AddDynamic(this, &UPauseMenuWidget::HideSettingsPanel);
-	}
-	if (IsValid(CheckBox_UseGamePad))
-	{
-		CheckBox_UseGamePad->OnCheckStateChanged.AddDynamic(handler, &ATankPlayerController::SetGamePadControll);
+		Button_Settings->OnClicked.AddDynamic(this, &UPauseMenuWidget::OpenSettings);
 	}
 	if (IsValid(Button_Save))
 	{
 		Button_Save->OnClicked.AddDynamic(handler, &ATankPlayerController::SaveGame);
 	}
-}
-
-void UPauseMenuWidget::ShowSettingsPanel()
-{
-	if (IsValid(SettingsPanel))
-	{
-		SettingsPanel->SetIsEnabled(true);
-		SettingsPanel->SetVisibility(ESlateVisibility::Visible);
+	if (IsValid(SettingsWidget)) {
+		SettingsWidget->SetButtonClickeHandler();
 	}
 }
 
-void UPauseMenuWidget::HideSettingsPanel()
+void UPauseMenuWidget::OpenSettings()
 {
-	if (IsValid(SettingsPanel))
-	{
-		SettingsPanel->SetIsEnabled(false);
-		SettingsPanel->SetVisibility(ESlateVisibility::Hidden);
+	if (IsValid(SettingsWidget)) {
+		SettingsWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }

@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* Button_Settings;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UMySettingsWidget* SettingsWidget;
+
 	void SetButtonClickeHandler(class AMainMenuLevelScriptActor* mainMenuLevel);
 	void SetContinueButtonIsAnabled(bool isAnabled);
 

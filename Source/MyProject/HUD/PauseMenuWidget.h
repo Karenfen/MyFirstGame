@@ -30,20 +30,12 @@ public:
 	UButton* Button_Save;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UOverlay* SettingsPanel;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_SettingsOk;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCheckBox* CheckBox_UseGamePad;
+	class UMySettingsWidget* SettingsWidget;
 
 public:
 	void SetButtonClickeHandler(class ATankPlayerController* handler);
 
 protected:
 	UFUNCTION()
-	void ShowSettingsPanel();
-	UFUNCTION()
-	void HideSettingsPanel();
+	void OpenSettings();
 };

@@ -4,6 +4,7 @@
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
 #include "../MainMenuLevelScriptActor.h"
+#include "MySettingsWidget.h"
 
 
 
@@ -24,6 +25,10 @@ void UMainMenuWidget::SetButtonClickeHandler(AMainMenuLevelScriptActor* mainMenu
 	if (IsValid(Button_Settings))
 	{
 		Button_Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettings);
+	}
+
+	if (IsValid(SettingsWidget)) {
+		SettingsWidget->SetButtonClickeHandler();
 	}
 }
 
@@ -46,4 +51,7 @@ void UMainMenuWidget::SetContinueButtonIsAnabled(bool isAnabled)
 
 void UMainMenuWidget::OpenSettings()
 {
+	if (IsValid(SettingsWidget)) {
+		SettingsWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
