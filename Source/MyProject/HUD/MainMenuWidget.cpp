@@ -22,14 +22,6 @@ void UMainMenuWidget::SetButtonClickeHandler(AMainMenuLevelScriptActor* mainMenu
 	{
 		Button_Quit->OnClicked.AddDynamic(mainMenuLevel, &AMainMenuLevelScriptActor::QuitClicked);
 	}
-	if (IsValid(Button_Settings))
-	{
-		Button_Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettings);
-	}
-
-	if (IsValid(SettingsWidget)) {
-		SettingsWidget->SetButtonClickeHandler();
-	}
 }
 
 void UMainMenuWidget::SetContinueButtonIsAnabled(bool isAnabled)
@@ -52,6 +44,18 @@ void UMainMenuWidget::SetContinueButtonIsAnabled(bool isAnabled)
 void UMainMenuWidget::OpenSettings()
 {
 	if (IsValid(SettingsWidget)) {
-		SettingsWidget->SetVisibility(ESlateVisibility::Visible);
+		SettingsWidget->AddToViewport();
+	}
+}
+
+void UMainMenuWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+
+	if (IsValid(Button_Settings))
+	{
+		Button_Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettings);
 	}
 }

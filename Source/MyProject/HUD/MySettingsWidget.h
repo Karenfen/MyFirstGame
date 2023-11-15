@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/ComboBoxKey.h"
 #include "MySettingsWidget.generated.h"
 
 class UButton;
 class UWidgetSwitcher;
-class UScrollBox;
+class UVerticalBox;
 
 
 UCLASS()
@@ -24,30 +25,49 @@ public:
 	UButton* Button_Controll;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_Ok;
+	UButton* Button_ApplyGraphics;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_Cancel;
+	UButton* Button_DefaultGraphics;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* Button_ApplyControll;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* Button_DefaultControll;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* Button_Close;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UWidgetSwitcher* WidgetSwitcher;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UScrollBox* ScrollBox_Graphics;
+	UVerticalBox* VerticalBox_Graphics;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UScrollBox* ScrollBox_Controll;
+	UVerticalBox* VerticalBox_Controll;
+
+	// graphics buttons
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UComboBoxKey* ComboBoxKey_Resolution;
 
 public:
-	void SetButtonClickeHandler();
+	void LoadGraphicsSettings();
 
 protected:
+	virtual void NativeConstruct() override;
+
 	UFUNCTION()
 	void SetActiveGraphicsPanel();
 	UFUNCTION()
 	void SetActiveControllPanel();
+
+	// graphics settings setters
 	UFUNCTION()
-	void Ok();
+	void ApplyGraphicsSettings();
 	UFUNCTION()
-	void Cancel();
+	void SetDefaultGraphicsSettings();
+
+	void SetResolution(FName SelectedItem, ESelectInfo::Type SelectionType);
 };

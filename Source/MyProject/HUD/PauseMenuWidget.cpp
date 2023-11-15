@@ -21,22 +21,28 @@ void UPauseMenuWidget::SetButtonClickeHandler(ATankPlayerController* handler)
 	{
 		Button_Quit->OnClicked.AddDynamic(handler, &ATankPlayerController::Quit);
 	}
-	if (IsValid(Button_Settings))
-	{
-		Button_Settings->OnClicked.AddDynamic(this, &UPauseMenuWidget::OpenSettings);
-	}
 	if (IsValid(Button_Save))
 	{
 		Button_Save->OnClicked.AddDynamic(handler, &ATankPlayerController::SaveGame);
-	}
-	if (IsValid(SettingsWidget)) {
-		SettingsWidget->SetButtonClickeHandler();
 	}
 }
 
 void UPauseMenuWidget::OpenSettings()
 {
 	if (IsValid(SettingsWidget)) {
-		SettingsWidget->SetVisibility(ESlateVisibility::Visible);
+		SettingsWidget->AddToViewport();
 	}
+}
+
+void UPauseMenuWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+
+	if (IsValid(Button_Settings))
+	{
+		Button_Settings->OnClicked.AddDynamic(this, &UPauseMenuWidget::OpenSettings);
+	}
+
 }

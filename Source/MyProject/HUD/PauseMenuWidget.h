@@ -10,6 +10,7 @@
 class UButton;
 class UOverlay;
 class UCheckBox;
+class UMySettingsWidget;
 
 UCLASS()
 class MYPROJECT_API UPauseMenuWidget : public UUserWidget
@@ -29,8 +30,11 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* Button_Save;
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UMySettingsWidget* SettingsWidget;
+	UPROPERTY(EditAnywhere)
+	UMySettingsWidget* SettingsWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	TSubclassOf<UMySettingsWidget> SettingsWidgetClass;
 
 public:
 	void SetButtonClickeHandler(class ATankPlayerController* handler);
@@ -38,4 +42,5 @@ public:
 protected:
 	UFUNCTION()
 	void OpenSettings();
+	virtual void NativeConstruct() override;
 };
