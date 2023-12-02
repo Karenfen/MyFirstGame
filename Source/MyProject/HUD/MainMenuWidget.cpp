@@ -44,7 +44,11 @@ void UMainMenuWidget::SetContinueButtonIsAnabled(bool isAnabled)
 void UMainMenuWidget::OpenSettings()
 {
 	if (IsValid(SettingsWidget)) {
-		SettingsWidget->AddToViewport();
+		SettingsWidget->Open();
+	}
+	else {
+		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget->AddToViewport(100);
 	}
 }
 
@@ -52,10 +56,24 @@ void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+	if(!IsValid(SettingsWidget)) {
+		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget->AddToViewport(100);
+	}
 
 	if (IsValid(Button_Settings))
 	{
 		Button_Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettings);
 	}
+}
+
+void UMainMenuWidget::ReleaseSlateResources(bool bReleaseChildren)
+{
+	Super::ReleaseSlateResources(bReleaseChildren);
+
+	Button_Start = nullptr;
+	Button_Continue = nullptr;
+	Button_Quit = nullptr;
+	Button_Settings = nullptr;
+	SettingsWidget = nullptr;
 }

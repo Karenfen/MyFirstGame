@@ -5,6 +5,8 @@
 #include "Components/Button.h"
 #include "Components/Overlay.h"
 #include "Components/CheckBox.h"
+#include "Components/Slider.h"
+#include "Components/CheckBox.h"
 #include "../Player/TankPlayerController.h"
 #include "MySettingsWidget.h"
 
@@ -27,10 +29,24 @@ void UPauseMenuWidget::SetButtonClickeHandler(ATankPlayerController* handler)
 	}
 }
 
+void UPauseMenuWidget::Open()
+{
+	SetVisibility(ESlateVisibility::Visible);
+}
+
+void UPauseMenuWidget::Close()
+{
+	SetVisibility(ESlateVisibility::Hidden);
+}
+
 void UPauseMenuWidget::OpenSettings()
 {
 	if (IsValid(SettingsWidget)) {
-		SettingsWidget->AddToViewport();
+		SettingsWidget->Open();
+	}
+	else {
+		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget->AddToViewport(100);
 	}
 }
 
@@ -38,7 +54,12 @@ void UPauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+	SetVisibility(ESlateVisibility::Hidden);
+
+	if(!IsValid(SettingsWidget))	{
+		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget->AddToViewport(100);
+	}
 
 	if (IsValid(Button_Settings))
 	{

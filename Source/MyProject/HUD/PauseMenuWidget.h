@@ -38,6 +38,10 @@ public:
 
 public:
 	void SetButtonClickeHandler(class ATankPlayerController* handler);
+	UFUNCTION()
+	void Open();
+	UFUNCTION()
+	void Close();
 
 protected:
 	UFUNCTION()

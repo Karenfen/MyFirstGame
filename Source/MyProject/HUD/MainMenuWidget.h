@@ -41,4 +41,5 @@ protected:
 	UFUNCTION()
 	void OpenSettings();
 	virtual void NativeConstruct() override;
+	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
 };
