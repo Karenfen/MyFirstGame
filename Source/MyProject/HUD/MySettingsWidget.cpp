@@ -233,7 +233,7 @@ void UMySettingsWidget::SetDefaultGraphicsSettings()
 void UMySettingsWidget::SetResolution(FString SelectedItem, ESelectInfo::Type SelectionType)
 {
 	// set resolution
-	if (SelectionType != ESelectInfo::Direct && IsValid(UserSettings)) {
+	if (IsValid(UserSettings)) {
 		UserSettings->SetScreenResolution(ResolutionFromString(SelectedItem));
 	}
 
@@ -244,10 +244,9 @@ void UMySettingsWidget::SetScreenModeFull()
 {
 	if (IsValid(UserSettings)) {
 		UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
-		UserSettings->ApplyResolutionSettings(true);
-		UpdateFullScreenModButtons();
-		UpdateResolutionScale();
+
 		UpdateResolution();
+		UpdateFullScreenModButtons();
 	}
 }
 
@@ -255,10 +254,9 @@ void UMySettingsWidget::SetScreenModeFullWindowed()
 {
 	if (IsValid(UserSettings)) {
 		UserSettings->SetFullscreenMode(EWindowMode::WindowedFullscreen);
-		UserSettings->ApplyResolutionSettings(true);
-		UpdateFullScreenModButtons();
-		UpdateResolutionScale();
+
 		UpdateResolution();
+		UpdateFullScreenModButtons();
 	}
 }
 
@@ -266,10 +264,9 @@ void UMySettingsWidget::SetScreenModeWindowed()
 {
 	if (IsValid(UserSettings)) {
 		UserSettings->SetFullscreenMode(EWindowMode::Windowed);
-		UserSettings->ApplyResolutionSettings(true);
-		UpdateFullScreenModButtons();
-		UpdateResolutionScale();
+
 		UpdateResolution();
+		UpdateFullScreenModButtons();
 	}
 }
 
@@ -313,8 +310,11 @@ void UMySettingsWidget::UpdateResolution()
 
 		FIntPoint currentResolution = UserSettings->GetScreenResolution();
 
+		if (ComboBoxString_Resolution->FindOptionIndex(ResolutionToString(currentResolution)) == -1) {
+			currentResolution = *(Resolutions.begin());
+		}
+			 
 		ComboBoxString_Resolution->SetSelectedOption(ResolutionToString(currentResolution));
-
 	}
 }
 
