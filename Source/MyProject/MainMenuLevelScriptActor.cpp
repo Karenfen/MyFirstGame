@@ -21,10 +21,12 @@ void AMainMenuLevelScriptActor::BeginPlay()
 	{
 		Menu = CreateWidget<UMainMenuWidget>(MenuController, MenuClass);
 
-		if (IsValid(Menu))
-		{
+		if (IsValid(Menu)) {
 			Menu->AddToViewport();
 			Menu->SetButtonClickeHandler(this);
+		}
+		else {
+			QuitClicked();
 		}
 	}
 

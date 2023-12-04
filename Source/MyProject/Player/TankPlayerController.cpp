@@ -65,26 +65,36 @@ void ATankPlayerController::Unpause()
 
 	if(IsValid(PauseMenu))
 	{
-		PauseMenu->RemoveFromViewport();
+		PauseMenu->Close();
 	}
 }
 
 void ATankPlayerController::Pause()
 {
-	if (!IsValid(PauseMenu))
-	{
-		return;
-	}
-
-	if (IsPaused())
+	if (IsPaused()) 
 	{
 		Unpause();
-		return;
 	}
-			
-	Super::Pause();
+	else
+	{
+		if (IsValid(PauseMenu))
+		{
+			PauseMenu->Open();
+		}
+		else
+		{
+			PauseMenu = CreateWidget<UPauseMenuWidget>(this, PauseMenuClass);
 
-	PauseMenu->AddToViewport();
+			if (IsValid(PauseMenu))
+			{
+				PauseMenu->SetButtonClickeHandler(this);
+				PauseMenu->AddToViewport();
+				PauseMenu->Open();
+			}
+		}
+
+		Super::Pause();
+	}
 }
 
 void ATankPlayerController::SetGamePadControll(bool isGamePad)
@@ -159,6 +169,7 @@ void ATankPlayerController::BeginPlay()
 	if (IsValid(PauseMenu))
 	{
 		PauseMenu->SetButtonClickeHandler(this);
+		PauseMenu->AddToViewport();
 	}
 
 	Notice = CreateWidget<UNoticeWidget>(this, NoticeClass);
