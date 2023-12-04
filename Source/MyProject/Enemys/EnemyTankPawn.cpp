@@ -28,8 +28,11 @@ TArray<FVector> AEnemyTankPawn::GetPatrollingPoints()
 void AEnemyTankPawn::Die(AActor* killer)
 {
 	APlayerTankPawn* player = Cast<APlayerTankPawn>(killer);
+
 	if (player == APawn::GetWorld()->GetFirstPlayerController()->GetPawn() && player != nullptr)
 		player->EnemyDestroyed(this);
+
+	Controller->Destroy();
 
 	Super::Die(killer);
 }

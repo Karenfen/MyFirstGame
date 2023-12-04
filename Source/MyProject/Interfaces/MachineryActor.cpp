@@ -64,6 +64,11 @@ void AMachineryActor::Resupply(uint8 numberRounds)
 
 void AMachineryActor::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 {
+	if (IsValid(Cannon)) {
+		Cannon->Destroy();
+		Cannon = nullptr;
+	}
+
 	FActorSpawnParameters params;
 	params.Instigator = this;
 	params.Owner = this;
@@ -85,7 +90,7 @@ void AMachineryActor::Die(AActor* killer)
 	{
 		Cannon->Destroy();
 	}
-
+	Cannon = nullptr;
 	Destroy();
 }
 

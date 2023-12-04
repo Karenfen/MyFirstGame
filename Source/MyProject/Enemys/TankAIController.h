@@ -64,4 +64,7 @@ protected:
 	bool IsPlayerSeen();
 	void SwitchCannon();
 	void Initialize();
+
+public:
+	~ATankAIController();
 };

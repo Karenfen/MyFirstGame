@@ -203,3 +203,8 @@ void ATankAIController::Initialize()
 	else if (PoolCannonClasses.Num() > 1)
 		GetWorld()->GetTimerManager().SetTimer(switchCannonTimerHandle, this, &ATankAIController::SwitchCannon, TimeToSwitchCannon, true, TimeToSwitchCannon);
 }
+
+ATankAIController::~ATankAIController()
+{
+	
+}
