@@ -326,24 +326,37 @@ void UMySettingsWidget::UpdateFullScreenModButtons()
 		switch (screenMode)
 		{
 		case EWindowMode::Fullscreen:
+			Button_ScreenModeFull->SetIsEnabled(false);
 			Button_ScreenModeFull->SetBackgroundColor(BackgroundColorSelected);
+
+			Button_ScreenModeFullWindowed->SetIsEnabled(true);
 			Button_ScreenModeFullWindowed->SetBackgroundColor(BackgroundColorUnselected);
+
+			Button_ScreenModeWindowed->SetIsEnabled(true);
 			Button_ScreenModeWindowed->SetBackgroundColor(BackgroundColorUnselected);
 			break;
+
 		case EWindowMode::WindowedFullscreen:
+			Button_ScreenModeFull->SetIsEnabled(true);
 			Button_ScreenModeFull->SetBackgroundColor(BackgroundColorUnselected);
+
+			Button_ScreenModeFullWindowed->SetIsEnabled(false);
 			Button_ScreenModeFullWindowed->SetBackgroundColor(BackgroundColorSelected);
+
+			Button_ScreenModeWindowed->SetIsEnabled(true);
 			Button_ScreenModeWindowed->SetBackgroundColor(BackgroundColorUnselected);
 			break;
+
 		case EWindowMode::Windowed:
+			Button_ScreenModeFull->SetIsEnabled(true);
 			Button_ScreenModeFull->SetBackgroundColor(BackgroundColorUnselected);
+
+			Button_ScreenModeFullWindowed->SetIsEnabled(true);
 			Button_ScreenModeFullWindowed->SetBackgroundColor(BackgroundColorUnselected);
+
+			Button_ScreenModeWindowed->SetIsEnabled(false);
 			Button_ScreenModeWindowed->SetBackgroundColor(BackgroundColorSelected);
-			break;
-		default:
-			Button_ScreenModeFull->SetBackgroundColor(BackgroundColorUnselected);
-			Button_ScreenModeFullWindowed->SetBackgroundColor(BackgroundColorUnselected);
-			Button_ScreenModeWindowed->SetBackgroundColor(BackgroundColorUnselected);
+
 			break;
 		}
 	}
