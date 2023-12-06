@@ -1,25 +1,17 @@
-#include "MySettingsWidget.h"
+#include "MyGraphicSettingsWidget.h"
 #include "MyOptionWidgetWithPercents.h"
 
-#include "Components/Button.h"
 #include "Components/CheckBox.h"
+#include "Components/Button.h"
 #include "Components/ComboBoxString.h"
 #include "Components/Slider.h"
-#include "Components/TextBlock.h"
-#include "Components/VerticalBox.h"
-#include "Components/WidgetSwitcher.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
-
-
-
-void UMySettingsWidget::UpdateGraphicsSettings()
+void UMyGraphicSettingsWidget::UpdateSettings()
 {
-	if(!IsValid(UserSettings)) {
-		UserSettings = UGameUserSettings::GetGameUserSettings();
-	}
+	Super::UpdateSettings();
 
 	if (IsValid(UserSettings)) {
 		// основные настройки графики
@@ -28,8 +20,8 @@ void UMySettingsWidget::UpdateGraphicsSettings()
 		}
 
 		UpdateFullScreenModButtons();
-		UpdateResolutionScale();
 		UpdateResolution();
+		UpdateResolutionScale();
 
 		// расширенные настройки графики
 		if (IsValid(BP_OptionWidget_ViewDistance)) {
@@ -65,31 +57,10 @@ void UMySettingsWidget::UpdateGraphicsSettings()
 	}
 }
 
-void UMySettingsWidget::Open()
-{
-	UpdateGraphicsSettings();
-	SetVisibility(ESlateVisibility::Visible);
-}
-
-void UMySettingsWidget::ReleaseSlateResources(bool bReleaseChildren)
+void UMyGraphicSettingsWidget::ReleaseSlateResources(bool bReleaseChildren)
 {
 	Super::ReleaseSlateResources(bReleaseChildren);
 
-	Button_Graphic = nullptr;
-	Button_Controll = nullptr;
-	Button_Audio = nullptr;
-	Button_ApplyGraphics = nullptr;
-	Button_DefaultGraphics = nullptr;
-	Button_Auto = nullptr;
-	Button_ApplyControll = nullptr;
-	Button_DefaultControll = nullptr;
-	Button_ApplyAudio = nullptr;
-	Button_DefaultAudio = nullptr;
-	Button_Close = nullptr;
-	WidgetSwitcher = nullptr;
-	VerticalBox_Graphics = nullptr;
-	VerticalBox_Controll = nullptr;
-	VerticalBox_Audio = nullptr;
 	ComboBoxString_Resolution = nullptr;
 	Button_ScreenModeFull = nullptr;
 	Button_ScreenModeFullWindowed = nullptr;
@@ -109,51 +80,25 @@ void UMySettingsWidget::ReleaseSlateResources(bool bReleaseChildren)
 	BP_OptionWidget_Shading = nullptr;
 }
 
-void UMySettingsWidget::NativeConstruct()
+void UMyGraphicSettingsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SetVisibility(ESlateVisibility::Hidden);
-
-	if (IsValid(Button_Graphic)) {
-		Button_Graphic->OnClicked.AddDynamic(this, &UMySettingsWidget::SetActiveGraphicsPanel);
-	}
-
-	if (IsValid(Button_Controll)) {
-		Button_Controll->OnClicked.AddDynamic(this, &UMySettingsWidget::SetActiveControllPanel);
-	}
-
-	if (IsValid(Button_Audio)) {
-		Button_Audio->OnClicked.AddDynamic(this, &UMySettingsWidget::SetActiveControllPanel);
-	}
-
-	if (IsValid(Button_ApplyGraphics)) {
-		Button_ApplyGraphics->OnClicked.AddDynamic(this, &UMySettingsWidget::ApplyGraphicsSettings);
-	}
-
-	if (IsValid(Button_DefaultGraphics)) {
-		Button_DefaultGraphics->OnClicked.AddDynamic(this, &UMySettingsWidget::SetDefaultGraphicsSettings);
-	}
-
-	if (IsValid(Button_Close)) {
-		Button_Close->OnClicked.AddDynamic(this, &UMySettingsWidget::CloseSettings);
-	}
-
 	// основные настройки графики
 	if (IsValid(ComboBoxString_Resolution)) {
-		ComboBoxString_Resolution->OnSelectionChanged.AddDynamic(this, &UMySettingsWidget::SetResolution);
+		ComboBoxString_Resolution->OnSelectionChanged.AddDynamic(this, &UMyGraphicSettingsWidget::SetResolution);
 	}
 
 	if (IsValid(Button_ScreenModeFull)) {
-		Button_ScreenModeFull->OnClicked.AddDynamic(this, &UMySettingsWidget::SetScreenModeFull);
+		Button_ScreenModeFull->OnClicked.AddDynamic(this, &UMyGraphicSettingsWidget::SetScreenModeFull);
 	}
 
 	if (IsValid(Button_ScreenModeFullWindowed)) {
-		Button_ScreenModeFullWindowed->OnClicked.AddDynamic(this, &UMySettingsWidget::SetScreenModeFullWindowed);
+		Button_ScreenModeFullWindowed->OnClicked.AddDynamic(this, &UMyGraphicSettingsWidget::SetScreenModeFullWindowed);
 	}
 
 	if (IsValid(Button_ScreenModeWindowed)) {
-		Button_ScreenModeWindowed->OnClicked.AddDynamic(this, &UMySettingsWidget::SetScreenModeWindowed);
+		Button_ScreenModeWindowed->OnClicked.AddDynamic(this, &UMyGraphicSettingsWidget::SetScreenModeWindowed);
 	}
 
 	if (IsValid(UserSettings)) {
@@ -201,54 +146,19 @@ void UMySettingsWidget::NativeConstruct()
 	}
 }
 
-void UMySettingsWidget::SetActiveGraphicsPanel()
-{
-	if (IsValid(WidgetSwitcher) && IsValid(VerticalBox_Graphics)) {
-		WidgetSwitcher->SetActiveWidget(VerticalBox_Graphics);
-	}
-}
-
-void UMySettingsWidget::SetActiveControllPanel()
-{
-	if (IsValid(WidgetSwitcher) && IsValid(VerticalBox_Controll)) {
-		WidgetSwitcher->SetActiveWidget(VerticalBox_Controll);
-	}
-}
-
-void UMySettingsWidget::SetActiveAudioPanel()
-{
-	if (IsValid(WidgetSwitcher) && IsValid(VerticalBox_Audio)) {
-		WidgetSwitcher->SetActiveWidget(VerticalBox_Audio);
-	}
-}
-
-void UMySettingsWidget::CloseSettings()
+void UMyGraphicSettingsWidget::ApplySettings()
 {
 	if (IsValid(UserSettings)) {
-		UserSettings->LoadSettings();
-	}
-	SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UMySettingsWidget::ApplyGraphicsSettings()
-{
-	if(IsValid(UserSettings)) {
 		UserSettings->ApplySettings(true);
 	}
 }
 
-void UMySettingsWidget::SetDefaultGraphicsSettings()
+void UMyGraphicSettingsWidget::SetResolution(FString SelectedItem, ESelectInfo::Type SelectionType)
 {
-	// set defaut
-	if (IsValid(UserSettings)) {
-		UserSettings->SetToDefaults();
-		UpdateGraphicsSettings();
+	if (SelectedItem.IsEmpty()) {
+		return;
 	}
-}
 
-void UMySettingsWidget::SetResolution(FString SelectedItem, ESelectInfo::Type SelectionType)
-{
-	// set resolution
 	if (IsValid(UserSettings)) {
 		UserSettings->SetScreenResolution(ResolutionFromString(SelectedItem));
 	}
@@ -256,7 +166,7 @@ void UMySettingsWidget::SetResolution(FString SelectedItem, ESelectInfo::Type Se
 	UpdateResolutionScale();
 }
 
-void UMySettingsWidget::SetScreenModeFull()
+void UMyGraphicSettingsWidget::SetScreenModeFull()
 {
 	if (IsValid(UserSettings)) {
 		UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
@@ -266,7 +176,7 @@ void UMySettingsWidget::SetScreenModeFull()
 	}
 }
 
-void UMySettingsWidget::SetScreenModeFullWindowed()
+void UMyGraphicSettingsWidget::SetScreenModeFullWindowed()
 {
 	if (IsValid(UserSettings)) {
 		UserSettings->SetFullscreenMode(EWindowMode::WindowedFullscreen);
@@ -276,7 +186,7 @@ void UMySettingsWidget::SetScreenModeFullWindowed()
 	}
 }
 
-void UMySettingsWidget::SetScreenModeWindowed()
+void UMyGraphicSettingsWidget::SetScreenModeWindowed()
 {
 	if (IsValid(UserSettings)) {
 		UserSettings->SetFullscreenMode(EWindowMode::Windowed);
@@ -286,12 +196,11 @@ void UMySettingsWidget::SetScreenModeWindowed()
 	}
 }
 
-void UMySettingsWidget::SetQualityAuto()
+void UMyGraphicSettingsWidget::SetQualityAuto()
 {
-	// set auto
 }
 
-void UMySettingsWidget::UpdateResolutionScale()
+void UMyGraphicSettingsWidget::UpdateResolutionScale()
 {
 	if (IsValid(BP_OptionWidgetWithPercents_ResolutionScale)) {
 		float CurrentScaleNormalized;
@@ -306,11 +215,11 @@ void UMySettingsWidget::UpdateResolutionScale()
 	}
 }
 
-void UMySettingsWidget::UpdateResolution()
+void UMyGraphicSettingsWidget::UpdateResolution()
 {
 	if (IsValid(ComboBoxString_Resolution) && IsValid(UserSettings)) {
 		ComboBoxString_Resolution->ClearOptions();
-		
+
 		TArray<FIntPoint> Resolutions;
 
 		if (UserSettings->GetFullscreenMode() == EWindowMode::Windowed) {
@@ -329,12 +238,12 @@ void UMySettingsWidget::UpdateResolution()
 		if (ComboBoxString_Resolution->FindOptionIndex(ResolutionToString(currentResolution)) == -1) {
 			currentResolution = *(Resolutions.begin());
 		}
-			 
+
 		ComboBoxString_Resolution->SetSelectedOption(ResolutionToString(currentResolution));
 	}
 }
 
-void UMySettingsWidget::UpdateFullScreenModButtons()
+void UMyGraphicSettingsWidget::UpdateFullScreenModButtons()
 {
 	if (IsValid(UserSettings) && IsValid(Button_ScreenModeFull) && IsValid(Button_ScreenModeFullWindowed) && IsValid(Button_ScreenModeWindowed)) {
 		EWindowMode::Type screenMode = UserSettings->GetFullscreenMode();
@@ -378,12 +287,12 @@ void UMySettingsWidget::UpdateFullScreenModButtons()
 	}
 }
 
-FString UMySettingsWidget::ResolutionToString(const FIntPoint& resolution) const
+FString UMyGraphicSettingsWidget::ResolutionToString(const FIntPoint& resolution) const
 {
 	return FString::FromInt(resolution.X) + ResolutionSeporater + FString::FromInt(resolution.Y);
 }
 
-FIntPoint UMySettingsWidget::ResolutionFromString(FString& res_str)
+FIntPoint UMyGraphicSettingsWidget::ResolutionFromString(FString& res_str)
 {
 	FString str_width, str_height;
 

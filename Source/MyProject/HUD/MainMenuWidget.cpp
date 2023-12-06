@@ -4,7 +4,7 @@
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
 #include "../MainMenuLevelScriptActor.h"
-#include "MySettingsWidget.h"
+#include "MySettingsMenuWidget.h"
 
 
 
@@ -47,7 +47,7 @@ void UMainMenuWidget::OpenSettings()
 		SettingsWidget->Open();
 	}
 	else {
-		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget = CreateWidget<UMySettingsMenuWidget>(this, SettingsWidgetClass);
 		SettingsWidget->AddToViewport(100);
 	}
 }
@@ -57,7 +57,7 @@ void UMainMenuWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	if(!IsValid(SettingsWidget)) {
-		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget = CreateWidget<UMySettingsMenuWidget>(this, SettingsWidgetClass);
 		SettingsWidget->AddToViewport(100);
 	}
 

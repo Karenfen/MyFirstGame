@@ -7,7 +7,7 @@
 #include "MainMenuWidget.generated.h"
 
 class UButton;
-class UMySettingsWidget;
+class UMySettingsMenuWidget;
 
 
 UCLASS()
@@ -29,10 +29,10 @@ public:
 	UButton* Button_Settings;
 
 	UPROPERTY(EditAnywhere)
-	UMySettingsWidget* SettingsWidget;
+	UMySettingsMenuWidget* SettingsWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	TSubclassOf<UMySettingsWidget> SettingsWidgetClass;
+	TSubclassOf<UMySettingsMenuWidget> SettingsWidgetClass;
 
 	void SetButtonClickeHandler(class AMainMenuLevelScriptActor* mainMenuLevel);
 	void SetContinueButtonIsAnabled(bool isAnabled);

@@ -8,7 +8,7 @@
 #include "Components/Slider.h"
 #include "Components/CheckBox.h"
 #include "../Player/TankPlayerController.h"
-#include "MySettingsWidget.h"
+#include "MySettingsMenuWidget.h"
 
 
 
@@ -45,7 +45,7 @@ void UPauseMenuWidget::OpenSettings()
 		SettingsWidget->Open();
 	}
 	else {
-		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget = CreateWidget<UMySettingsMenuWidget>(this, SettingsWidgetClass);
 		SettingsWidget->AddToViewport(100);
 	}
 }
@@ -57,7 +57,7 @@ void UPauseMenuWidget::NativeConstruct()
 	SetVisibility(ESlateVisibility::Hidden);
 
 	if(!IsValid(SettingsWidget))	{
-		SettingsWidget = CreateWidget<UMySettingsWidget>(this, SettingsWidgetClass);
+		SettingsWidget = CreateWidget<UMySettingsMenuWidget>(this, SettingsWidgetClass);
 		SettingsWidget->AddToViewport(100);
 	}
 

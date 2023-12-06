@@ -1,71 +1,25 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
-#include "Blueprint/UserWidget.h"
 #include "CoreMinimal.h"
-#include "MySettingsWidget.generated.h"
+#include "IMySettingsWidget.h"
+#include "MyGraphicSettingsWidget.generated.h"
 
 class UButton;
-class UWidgetSwitcher;
-class UVerticalBox;
-class UCheckBox;
-class UTextBlock;
-class UMyOptionWidget;
-class UMyOptionWidgetWithPercents;
 class UComboBoxString;
+class UCheckBox;
+class UMyOptionWidgetWithPercents;
+class UMyOptionWidget;
+
 
 
 UCLASS()
-class MYPROJECT_API UMySettingsWidget : public UUserWidget
+class MYPROJECT_API UMyGraphicSettingsWidget : public UIMySettingsWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_Graphic;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_Controll;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_Audio;
-	
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_ApplyGraphics;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_DefaultGraphics;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* Button_Auto;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_ApplyControll;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_DefaultControll;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_ApplyAudio;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_DefaultAudio;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* Button_Close;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UWidgetSwitcher* WidgetSwitcher;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UVerticalBox* VerticalBox_Graphics;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UVerticalBox* VerticalBox_Controll;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UVerticalBox* VerticalBox_Audio;
 
 	// элементы настройки графики (основные)
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -117,38 +71,22 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UMyOptionWidget* BP_OptionWidget_Shading;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Select Color", meta = (sRGB = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Variables", meta = (sRGB = "true"))
 	FLinearColor BackgroundColorSelected;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Select Color", meta = (sRGB = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Variables", meta = (sRGB = "true"))
 	FLinearColor BackgroundColorUnselected;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Select Color")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Variables")
 	FString ResolutionSeporater;
-
+	
 public:
-	void UpdateGraphicsSettings();
-	UFUNCTION()
-	void Open();
+	virtual void UpdateSettings() override;
 
 protected:
 	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
 	virtual void NativeConstruct() override;
-
-	UFUNCTION()
-	void SetActiveGraphicsPanel();
-	UFUNCTION()
-	void SetActiveControllPanel();
-	UFUNCTION()
-	void SetActiveAudioPanel();
-	UFUNCTION()
-	void CloseSettings();
-
-	// graphics settings setters
-	UFUNCTION()
-	void ApplyGraphicsSettings();
-	UFUNCTION()
-	void SetDefaultGraphicsSettings();
+	virtual void ApplySettings() override;
 	UFUNCTION()
 	void SetResolution(FString SelectedItem, ESelectInfo::Type SelectionType);
 	UFUNCTION()
@@ -164,7 +102,4 @@ protected:
 	void UpdateFullScreenModButtons();
 	FString ResolutionToString(const FIntPoint& resolution) const;
 	FIntPoint ResolutionFromString(FString& res_str);
-
-protected:
-	class UGameUserSettings* UserSettings {nullptr};
 };
